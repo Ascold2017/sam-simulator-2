@@ -69,7 +69,7 @@ export const useMainStore = defineStore("mainStore", {
 
   actions: {
     connect() {
-      this.socket = new WebSocket("ws://127.0.0.1:8000");
+      this.socket = new WebSocket("ws://127.0.0.1:8001/socket");
       this.socket.addEventListener("open", () => {
         console.info("SOCKET OPENED");
         this.isEnabled = true;
@@ -102,6 +102,8 @@ export const useMainStore = defineStore("mainStore", {
         if (action) {
           const payload = JSON.parse(jsonPayload);
           action(payload);
+        } else {
+          console.log(message.data);
         }
       });
     },
@@ -149,12 +151,26 @@ export const useMainStore = defineStore("mainStore", {
         console.log(e.message);
       }
     },
+    async startMission(id: number) {
+      try {
+        const response = await fetch("http://127.0.0.1:8001/start", {
+          method: "POST",
+          mode: "cors",
+          body: JSON.stringify({ id })
+        });
+      } catch (e: any) {
+        console.log(e.message);
+      }
+    },
     async getFlightObjectTypes() {
       try {
-        const response = await fetch("http://127.0.0.1:8001/flight-object-types", {
-          method: "GET",
-          mode: "cors",
-        });
+        const response = await fetch(
+          "http://127.0.0.1:8001/flight-object-types",
+          {
+            method: "GET",
+            mode: "cors",
+          },
+        );
         const data = await response.json();
         this.flightObjectTypes = data;
       } catch (e: any) {
@@ -179,7 +195,7 @@ export const useMainStore = defineStore("mainStore", {
         const response = await fetch("http://127.0.0.1:8001/select-target", {
           method: "POST",
           mode: "cors",
-          body: this.currentTargetId,
+          body: JSON.stringify({ "id": this.currentTargetId }),
         });
       } catch (e: any) {
         console.log(e.message);
@@ -190,7 +206,7 @@ export const useMainStore = defineStore("mainStore", {
         const response = await fetch("http://127.0.0.1:8001/unselect-target", {
           method: "POST",
           mode: "cors",
-          body: this.currentTargetId,
+          body: JSON.stringify({ "id": this.currentTargetId }),
         });
       } catch (e: any) {
         console.log(e.message);
@@ -201,33 +217,32 @@ export const useMainStore = defineStore("mainStore", {
         const response = await fetch("http://127.0.0.1:8001/reset-targets", {
           method: "POST",
           mode: "cors",
-          body: this.currentTargetId,
         });
       } catch (e: any) {
         console.log(e.message);
       }
     },
-    async launchMissile() {
+    async launchMissile(channelId: number, method: string) {
       try {
         const response = await fetch("http://127.0.0.1:8001/launch-missile", {
           method: "POST",
           mode: "cors",
-          body: this.currentTargetId,
+          body: JSON.stringify({ "id": this.currentTargetId, channelId, method }),
         });
       } catch (e: any) {
         console.log(e.message);
       }
     },
-    async resetMissile() {
+    async resetMissile(channelId: number) {
       try {
         const response = await fetch("http://127.0.0.1:8001/reset-missile", {
           method: "POST",
           mode: "cors",
-          body: this.currentTargetId,
+          body: JSON.stringify({ channelId }),
         });
       } catch (e: any) {
         console.log(e.message);
       }
-    }
+    },
   },
 });

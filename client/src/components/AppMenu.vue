@@ -39,6 +39,7 @@ const openScreen = (screen: string) => {
 
 const loadMission = (missionId: number) => {
   isActive.value = false;
+  mainStore.startMission(missionId);
 }
 /*
 const acceleration = ref((window as any).__ACCELERATION__ as number);

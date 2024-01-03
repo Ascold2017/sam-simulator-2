@@ -3,6 +3,7 @@ import { load } from 'https://deno.land/std@0.210.0/dotenv/mod.ts';
 
 const env = await load();
 export default class SnowRadarObject extends BaseRadarObject {
+	public type = 'SNOW_RADAR_OBJECT';
 	constructor() {
 		const maxDistance = Number(env['MAX_DISTANCE']);
 		super({

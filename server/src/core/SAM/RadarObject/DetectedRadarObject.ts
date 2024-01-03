@@ -3,6 +3,7 @@ import Missile from '#engine/FlightObject/Missile.ts';
 import BaseRadarObject from './BaseRadarObject.ts';
 
 export default class DetectedRadarObject extends BaseRadarObject {
+	public type = 'DETECTED_RADAR_OBJECT';
 	public isMissile: boolean;
 	private flightObject: BaseFlightObject;
 	constructor(flightObject: BaseFlightObject) {

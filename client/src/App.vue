@@ -9,11 +9,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import AppMenu from '@/components/AppMenu.vue'
 import SAMScreen from '@/components/SAM/SAM.vue';
 import EditorScreen from '@/components/Editor/EditorScreen.vue'
+import { useMainStore } from './store/main';
 
+const mainStore = useMainStore();
 enum ScreensEnum {
   SAM = 'SAM',
   Editor = 'Editor'
@@ -22,6 +24,11 @@ enum ScreensEnum {
 const activeScreen = ref(ScreensEnum.SAM);
 const openScreen = (screen: string) => activeScreen.value = screen as ScreensEnum;
 
+onMounted(() => {
+  mainStore.getSamSettings();
+  // mainStore.getFlightObjectTypes();
+  mainStore.getMissions();
+})
 </script>
 
 <style>
