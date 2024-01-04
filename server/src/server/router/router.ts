@@ -17,7 +17,7 @@ const router: (HttpRoute | WebSocketRoute)[] = [
 		path: '/',
 		handler: async (req) => {
 			try {
-				const file = Deno.openSync('./../public/index.html', {
+				const file = Deno.openSync('./public/index.html', {
 					read: true,
 				});
 				return new Response(file.readable);
