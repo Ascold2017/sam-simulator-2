@@ -156,7 +156,7 @@ export const useMainStore = defineStore("mainStore", {
         const response = await fetch("http://127.0.0.1:8001/start", {
           method: "POST",
           mode: "cors",
-          body: JSON.stringify({ id })
+          body: JSON.stringify({ id }),
         });
       } catch (e: any) {
         console.log(e.message);
@@ -185,6 +185,8 @@ export const useMainStore = defineStore("mainStore", {
           mode: "cors",
         });
         const data = await response.json();
+        this.missileChannels = Array.from(Array(data["MISSILES_CHANNEL_COUNT"]))
+          .map((_, index) => ({ id: index, isBusy: true }));
         this.samParams = data;
       } catch (e: any) {
         console.log(e.message);
@@ -206,7 +208,7 @@ export const useMainStore = defineStore("mainStore", {
         const response = await fetch("http://127.0.0.1:8001/unselect-target", {
           method: "POST",
           mode: "cors",
-          body: JSON.stringify({ "id": this.currentTargetId }),
+          body: JSON.stringify({ id: this.currentTargetId }),
         });
       } catch (e: any) {
         console.log(e.message);
@@ -227,8 +229,13 @@ export const useMainStore = defineStore("mainStore", {
         const response = await fetch("http://127.0.0.1:8001/launch-missile", {
           method: "POST",
           mode: "cors",
-          body: JSON.stringify({ "id": this.currentTargetId, channelId, method }),
+          body: JSON.stringify({
+            id: this.currentTargetId,
+            channelId,
+            method,
+          }),
         });
+        Sounds.missileStart();
       } catch (e: any) {
         console.log(e.message);
       }
