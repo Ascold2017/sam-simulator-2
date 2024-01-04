@@ -1,5 +1,5 @@
 import { HttpRoute, WebSocketRoute } from '#src/server/WebServerApplication.ts';
-import { getMissions } from '#src/server/controllers/missions.ts';
+import { getMissions, startMission } from '#src/server/controllers/missions.ts';
 import { getFlightObjectTypes } from '#src/server/controllers/editor.ts';
 import {
 	getSAMSettings,
@@ -8,11 +8,26 @@ import {
 	resetTargets,
 	selectTarget,
 	socket,
-	startMission,
 	unselectTarget,
 } from '#src/server/controllers/sam.ts';
 
 const router: (HttpRoute | WebSocketRoute)[] = [
+	{
+		type: 'http',
+		path: '/',
+		handler: async (req) => {
+			try {
+				const file = Deno.openSync('./../public/index.html', {
+					read: true,
+				});
+				return new Response(file.readable);
+			} catch {
+				// If the file cannot be opened, return a "404 Not Found" response
+				return new Response('404 Not Found', { status: 404 });
+			}
+		},
+	},
+
 	{
 		type: 'http',
 		path: '/missions',

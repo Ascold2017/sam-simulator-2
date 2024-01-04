@@ -8,7 +8,7 @@
             fontFamily: 'DS-DigitalB',
             fontSize: 14,
             textAlign: 'center',
-            width: 100
+            width: 150
         }" />
         <SAMButton label="SEEK" :x="0" :y="30" name="seekTarget" @click="mainStore.seekTarget" :value="false" />
         <SAMButton label="SLCT" :x="65" :y="30" name="selectTarget" @click="mainStore.selectTarget" :value="false" />

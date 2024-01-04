@@ -45,6 +45,10 @@ export class SAM {
 	}
 
 	private updateRadar() {
+		if (!this.isEnabled) {
+			this.radarObjects = [];
+			return;
+		}
 		const enemys = this.engine.getFlightObjects()
 			.filter((fo) =>
 				fo instanceof Enemy &&
@@ -106,6 +110,7 @@ export class SAM {
 	}
 
 	public setIsEnabled(value: boolean) {
+		console.log('SAM ENABLED:', value);
 		this.isEnabled = value;
 	}
 
