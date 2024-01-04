@@ -69,7 +69,7 @@ export const useMainStore = defineStore("mainStore", {
 
   actions: {
     connect() {
-      this.socket = new WebSocket("ws://127.0.0.1:8001/socket");
+      this.socket = new WebSocket(import.meta.env.VITE_SOCKET_BASE_URL + "/socket");
       this.socket.addEventListener("open", () => {
         console.info("SOCKET OPENED");
         this.isEnabled = true;
@@ -112,7 +112,6 @@ export const useMainStore = defineStore("mainStore", {
       this.isEnabled = false;
       this.radarObjects = [];
       this.selectedTargetIds = [];
-      this.missileChannels = [];
       this.missilesLeft = 0;
     },
     setIsEnabled(value: boolean) {
@@ -141,7 +140,7 @@ export const useMainStore = defineStore("mainStore", {
     },
     async getMissions() {
       try {
-        const response = await fetch("http://127.0.0.1:8001/missions", {
+        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/missions", {
           method: "GET",
           mode: "cors",
         });
@@ -153,7 +152,7 @@ export const useMainStore = defineStore("mainStore", {
     },
     async startMission(id: number) {
       try {
-        const response = await fetch("http://127.0.0.1:8001/start", {
+        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/start", {
           method: "POST",
           mode: "cors",
           body: JSON.stringify({ id }),
@@ -165,7 +164,7 @@ export const useMainStore = defineStore("mainStore", {
     async getFlightObjectTypes() {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8001/flight-object-types",
+          import.meta.env.VITE_API_BASE_URL + "/flight-object-types",
           {
             method: "GET",
             mode: "cors",
@@ -180,7 +179,7 @@ export const useMainStore = defineStore("mainStore", {
 
     async getSamSettings() {
       try {
-        const response = await fetch("http://127.0.0.1:8001/sam-settings", {
+        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/sam-settings", {
           method: "GET",
           mode: "cors",
         });
@@ -194,7 +193,7 @@ export const useMainStore = defineStore("mainStore", {
     },
     async selectTarget() {
       try {
-        const response = await fetch("http://127.0.0.1:8001/select-target", {
+        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/select-target", {
           method: "POST",
           mode: "cors",
           body: JSON.stringify({ id: this.currentTargetId }),
@@ -205,7 +204,7 @@ export const useMainStore = defineStore("mainStore", {
     },
     async unselectTarget() {
       try {
-        const response = await fetch("http://127.0.0.1:8001/unselect-target", {
+        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/unselect-target", {
           method: "POST",
           mode: "cors",
           body: JSON.stringify({ id: this.currentTargetId }),
@@ -216,7 +215,7 @@ export const useMainStore = defineStore("mainStore", {
     },
     async resetTargets() {
       try {
-        const response = await fetch("http://127.0.0.1:8001/reset-targets", {
+        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/reset-targets", {
           method: "POST",
           mode: "cors",
         });
@@ -226,7 +225,7 @@ export const useMainStore = defineStore("mainStore", {
     },
     async launchMissile(channelId: number, method: string) {
       try {
-        const response = await fetch("http://127.0.0.1:8001/launch-missile", {
+        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/launch-missile", {
           method: "POST",
           mode: "cors",
           body: JSON.stringify({
@@ -242,7 +241,7 @@ export const useMainStore = defineStore("mainStore", {
     },
     async resetMissile(channelId: number) {
       try {
-        const response = await fetch("http://127.0.0.1:8001/reset-missile", {
+        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/reset-missile", {
           method: "POST",
           mode: "cors",
           body: JSON.stringify({ channelId }),
