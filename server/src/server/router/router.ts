@@ -21,7 +21,8 @@ const router: (HttpRoute | WebSocketRoute)[] = [
 					read: true,
 				});
 				return new Response(file.readable);
-			} catch {
+			} catch (e) {
+				console.log(e);
 				// If the file cannot be opened, return a "404 Not Found" response
 				return new Response('404 Not Found', { status: 404 });
 			}
