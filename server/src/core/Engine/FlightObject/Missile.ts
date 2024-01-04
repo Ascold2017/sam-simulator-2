@@ -1,10 +1,8 @@
-import { load } from 'https://deno.land/std@0.210.0/dotenv/mod.ts';
+import samParams from '#src/assets/samParams.json' with { type: 'json' };
 import type Engine from '../Engine.ts';
 import Vector3D from '#core/Vector3D.ts';
 import BaseFlightObject from './BaseFlightObject.ts';
 import type Enemy from './Enemy.ts';
-
-const env = await load();
 
 type GuidanceMethod = '3P' | '1/2';
 
@@ -23,9 +21,9 @@ export default class Missile extends BaseFlightObject {
 		const name = `Missile-${+new Date()}`;
 		super(engine, name, 1);
 		this.target = target;
-		this.maxDistance = Number(env['MISSILE_MAX_DISTANCE']);
-		this.killRadius = Number(env['MISSILE_KILL_RADIUS']);
-		this.velocity = Number(env['MISSILE_VELOCITY']);
+		this.maxDistance = Number(samParams['MISSILE_MAX_DISTANCE']);
+		this.killRadius = Number(samParams['MISSILE_KILL_RADIUS']);
+		this.velocity = Number(samParams['MISSILE_VELOCITY']);
 		this.method = method;
 	}
 

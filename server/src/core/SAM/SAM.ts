@@ -1,4 +1,3 @@
-import { load } from 'https://deno.land/std@0.210.0/dotenv/mod.ts';
 import type Engine from '#engine/Engine.ts';
 import Enemy from '#engine/FlightObject/Enemy.ts';
 import Missile from '#engine/FlightObject/Missile.ts';
@@ -6,9 +5,8 @@ import BaseRadarObject from './RadarObject/BaseRadarObject.ts';
 import DetectedRadarObject from './RadarObject/DetectedRadarObject.ts';
 import SnowRadarObject from './RadarObject/SnowRadarObject.ts';
 import UndetectedRadarObject from './RadarObject/UndetectedRadarObject.ts';
+import samParams from '#src/assets/samParams.json' with { type: 'json' };
 import _ from 'lodash';
-
-const env = await load();
 
 export class MissileChannel {
 	public id: number;
@@ -30,15 +28,16 @@ export class MissileChannel {
 export class SAM {
 	public isEnabled = false;
 	private engine: Engine;
-	private radarObjects: BaseRadarObject[] = [];
+	private radarObjects:
+		(DetectedRadarObject | UndetectedRadarObject | SnowRadarObject)[] = [];
 	private selectedObjectIds: string[] = [];
 	private missileChannels: Record<number, MissileChannel> = {};
-	private missilesLeft = Number(env['MISSILES_COUNT']);
+	private missilesLeft = Number(samParams['MISSILES_COUNT']);
 	constructor(engine: Engine) {
 		this.engine = engine;
 		this.engine.addFPSLoop('updateRadar', () => this.updateRadar(), 40);
 		const channelsCount = Number(
-			env['MISSILES_CHANNEL_COUNT'] || 0,
+			samParams['MISSILES_CHANNEL_COUNT'] || 0,
 		);
 		for (let i = 0; i < channelsCount; i++) {
 			this.missileChannels[i] = new MissileChannel(i);
@@ -50,7 +49,7 @@ export class SAM {
 			.filter((fo) =>
 				fo instanceof Enemy &&
 				BaseRadarObject.getDistance(fo.getCurrentPoint()) <
-					Number(env['MAX_DISTANCE'])
+					Number(samParams['MAX_DISTANCE'])
 			)
 			.sort(DetectedRadarObject.sortByVisibilityComparator);
 
@@ -59,10 +58,10 @@ export class SAM {
 				const distance = BaseRadarObject.getDistance(
 					e.getCurrentPoint(),
 				);
-				return distance < Number(env['MAX_CAPTURE_RANGE']) &&
-					distance > Number(env['MIN_CAPTURE_RANGE']);
+				return distance < Number(samParams['MAX_CAPTURE_RANGE']) &&
+					distance > Number(samParams['MIN_CAPTURE_RANGE']);
 			})
-			.slice(0, Number(env['RADAR_MAX_DETECT_COUNT']) - 1);
+			.slice(0, Number(samParams['RADAR_MAX_DETECT_COUNT']) - 1);
 
 		const undetectedEnemys = enemys.filter((e) =>
 			!detectedEnemys.some((de) => de.id === e.id)
@@ -110,14 +109,16 @@ export class SAM {
 		this.isEnabled = value;
 	}
 
-	public getRadarObjects(): BaseRadarObject[] {
+	public getRadarObjects(): (
+		| DetectedRadarObject
+		| UndetectedRadarObject
+		| SnowRadarObject
+	)[] {
 		return _.cloneDeep(this.radarObjects);
 	}
 
-	public getSelectedObjects(): DetectedRadarObject[] {
-		return this.radarObjects.filter((ro) =>
-			this.selectedObjectIds.includes(ro.id)
-		) as DetectedRadarObject[];
+	public getSelectedObjectIds(): string[] {
+		return this.selectedObjectIds.slice(0);
 	}
 
 	public getMissileChannels(): MissileChannel[] {
@@ -168,7 +169,7 @@ export class SAM {
 			radarObject &&
 			!this.selectedObjectIds.some((id) => id === targetId) &&
 			this.selectedObjectIds.length <
-				Number(env['RADAR_MAX_SELECTED_COUNT'])
+				Number(samParams['RADAR_MAX_SELECTED_COUNT'])
 		) {
 			this.selectedObjectIds.push(radarObject.id);
 		}

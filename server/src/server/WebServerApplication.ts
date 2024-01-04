@@ -3,13 +3,26 @@ interface Endpoint {
 	handler: (req: Request) => Promise<Response> | Response;
 }
 
-export default class WebServer {
+export interface HttpRoute {
+	type: 'http';
+	path: string;
+	handler: (req: Request) => Promise<Response> | Response;
+}
+
+export interface WebSocketRoute {
+	type: 'websocket';
+	path: string;
+	handler: (socket: WebSocket) => void;
+}
+
+export default class WebServerApplication {
 	private server: Deno.Listener;
 	private endpoints: Endpoint[] = [];
-	constructor(port: number) {
+	constructor(port: number, router: (HttpRoute | WebSocketRoute)[]) {
 		this.server = Deno.listen({ port });
 		console.log('Server listen at port: ', port);
 		this.init();
+		this.addRouter(router);
 	}
 
 	private async init() {
@@ -25,6 +38,7 @@ export default class WebServer {
 			const endpoint = this.endpoints.find((e) =>
 				e.path === url.pathname
 			);
+
 			const response = endpoint
 				? await endpoint.handler(requestEvent.request)
 				: new Response('Method not allowed', {
@@ -37,14 +51,14 @@ export default class WebServer {
 		}
 	}
 
-	public addEndpoint(
+	private addEndpoint(
 		path: string,
 		handler: (req: Request) => Promise<Response> | Response,
 	) {
 		this.endpoints.push({ path, handler });
 	}
 
-	public addSocketEndpoint(
+	private addSocketEndpoint(
 		path: string,
 		handler: (socket: WebSocket) => void,
 	) {
@@ -63,5 +77,16 @@ export default class WebServer {
 		};
 
 		this.endpoints.push({ path, handler: socketHandler });
+	}
+
+	private addRouter(routes: (HttpRoute | WebSocketRoute)[]) {
+		routes.forEach((route) => {
+			if (route.type === 'http') {
+				this.addEndpoint(route.path, route.handler);
+			}
+			if (route.type === 'websocket') {
+				this.addSocketEndpoint(route.path, route.handler);
+			}
+		});
 	}
 }

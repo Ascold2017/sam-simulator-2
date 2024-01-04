@@ -195,7 +195,7 @@ export const useMainStore = defineStore("mainStore", {
         const response = await fetch("http://127.0.0.1:8001/select-target", {
           method: "POST",
           mode: "cors",
-          body: JSON.stringify({ "id": this.currentTargetId }),
+          body: JSON.stringify({ id: this.currentTargetId }),
         });
       } catch (e: any) {
         console.log(e.message);

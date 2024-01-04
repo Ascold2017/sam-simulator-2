@@ -45,12 +45,11 @@ const props = defineProps<{ index: number; missileChannel: any }>();
 const mainStore = useMainStore();
 const guidanceMethod = ref<'3P' | '1/2'>('3P');
 function launchMissile() {
-    // const target = sam!.getRadarObjects().filter(fo => fo instanceof DetectedRadarObject)[mainStore.currentTargetIndex];
-    // sam?.launchMissile(target.id, props.index, guidanceMethod.value);
+    mainStore.launchMissile(props.missileChannel.id, guidanceMethod.value);
 }
 
 function resetMissile() {
-    // sam?.resetMissile(props.index);
+    mainStore.resetMissile(props.missileChannel.id)
 }
 
 function selectMethod(method: '3P' | '1/2') {

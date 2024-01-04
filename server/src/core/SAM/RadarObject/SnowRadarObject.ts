@@ -1,11 +1,10 @@
 import BaseRadarObject from './BaseRadarObject.ts';
-import { load } from 'https://deno.land/std@0.210.0/dotenv/mod.ts';
+import samParams from '#src/assets/samParams.json' with { type: 'json' };
 
-const env = await load();
 export default class SnowRadarObject extends BaseRadarObject {
 	public type = 'SNOW_RADAR_OBJECT';
 	constructor() {
-		const maxDistance = Number(env['MAX_DISTANCE']);
+		const maxDistance = Number(samParams['MAX_DISTANCE']);
 		super({
 			id: Math.random().toString(),
 			currentPoint: {

@@ -1,7 +1,5 @@
-import { load } from 'https://deno.land/std@0.210.0/dotenv/mod.ts';
+import samParams from '#src/assets/samParams.json' with { type: 'json' };
 import type { IPoint } from '#engine/Engine.ts';
-
-const env = await load();
 
 interface BaseRadarObjectConstructor {
 	id: string;
@@ -54,15 +52,15 @@ export default class BaseRadarObject {
 		this.visibilityK = payload.visibilityK > 1 ? 1 : payload.visibilityK;
 
 		const inAllowedElevation =
-			this.elevation > Number(env['MIN_ELEVATION']) &&
-			this.elevation < Number(env['MAX_ELEVATION']);
+			this.elevation > Number(samParams['MIN_ELEVATION']) &&
+			this.elevation < Number(samParams['MAX_ELEVATION']);
 		this.isVisible = this.isInVision(distance, payload.currentPoint.z) &&
 			inAllowedElevation &&
-			distance < Number(env['MAX_DISTANCE']);
+			distance < Number(samParams['MAX_DISTANCE']);
 	}
 
 	protected isInVision(distance: number, height: number) {
-		return Math.sqrt(2 * 6371009 * Number(env['RADAR_HEIGHT'])) +
+		return Math.sqrt(2 * 6371009 * Number(samParams['RADAR_HEIGHT'])) +
 				Math.sqrt(2 * 6371009 * height) > distance;
 	}
 
@@ -76,7 +74,7 @@ export default class BaseRadarObject {
 
 	protected getTargetElevation(distance: number, height: number) {
 		const targetHeightOffset = height -
-			Number(env['RADAR_HEIGHT']);
+			Number(samParams['RADAR_HEIGHT']);
 		// Vertical angle from SNR to target
 		return (targetHeightOffset / distance);
 	}
