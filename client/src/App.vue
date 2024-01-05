@@ -14,8 +14,10 @@ import AppMenu from '@/components/AppMenu.vue'
 import SAMScreen from '@/components/SAM/SAM.vue';
 import EditorScreen from '@/components/Editor/EditorScreen.vue'
 import { useMainStore } from './store/main';
+import { useMissionEditorStore } from './store/missionEditor';
 
 const mainStore = useMainStore();
+const missionEditorStore = useMissionEditorStore()
 enum ScreensEnum {
   SAM = 'SAM',
   Editor = 'Editor'
@@ -26,8 +28,8 @@ const openScreen = (screen: string) => activeScreen.value = screen as ScreensEnu
 
 onMounted(() => {
   mainStore.getSamSettings();
-  // mainStore.getFlightObjectTypes();
-  mainStore.getMissions();
+  missionEditorStore.getFlightObjectTypes();
+  missionEditorStore.getMissions();
 })
 </script>
 

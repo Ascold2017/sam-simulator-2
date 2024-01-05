@@ -9,9 +9,11 @@ export interface IPoint {
 	v: number;
 }
 export interface IMission {
-	identifier: string;
+	id: number;
+	flightObjectTypeId: number;
 	points: IPoint[];
 	rcs: number;
+	delay: number;
 }
 
 export default class Engine extends LoopEngine {
@@ -25,7 +27,7 @@ export default class Engine extends LoopEngine {
 			this.addFlightObject(
 				new Enemy(
 					this,
-					mission.identifier,
+					String(mission.id),
 					mission.points,
 					mission.rcs,
 					false,

@@ -1,143 +1,115 @@
 <template>
-  <v-container class="mb-6">
-    <v-row justify="center" align="start">
-      <v-col class="d-flex justify-center" cols="6">
-        <canvas ref="editorRef" width="600" height="600" class="border mx-auto"
-          style="background-size: 100%; background-position: center;" @click="exportCoordinates"></canvas>
-      </v-col>
-      <v-col class="d-flex justify-center" cols="6">
-        <v-card width="800">
-          <v-card-text>
-            <h3 class="mb-3">Put flight point and set target params</h3>
-            <v-select label="Flight object type" :items="mainStore.flightObjectTypes" item-title="name" item-value="id"
-              :model-value="flightObjectType" @update:model-value="setFlightObjectType" />
-            <v-text-field label="Starting for, s" :model-value="timeOffset" @update:model-value="setTimeOffset" />
-            <h4>Way | Flight distance: {{ flightParams.range }} km | Flight time: {{ flightParams.time }} min
-            </h4>
-            <v-table density="compact" class="mb-3">
-              <thead>
-                <tr>
-                  <td>X</td>
-                  <td>Y</td>
-                  <td>Altitude, m</td>
-                  <td>Velocity, m/s</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(point, i) in points" :key="i">
-                  <td>{{ point.x }}</td>
-                  <td>{{ point.y }}</td>
-                  <td>
-                    <v-text-field hide-details density="compact" variant="outlined" :model-value="point.z"
-                      @update:model-value="setPointParam(i, 'z', $event)" />
-                  </td>
-                  <td v-show="i < points.length - 1">
-                    <v-text-field hide-details density="compact" variant="outlined" :model-value="point.v"
-                      @update:model-value="setPointParam(i, 'v', $event)" type="number" :min="0"
-                      :max="flightObjectMaxVelocity" />
-                  </td>
-                </tr>
-              </tbody>
-            </v-table>
-            <div class="mb-3 d-flex justify-space-between">
-              <v-btn @click="addFlightMission" :disabled="points.length < 2" color="success">Add flight mission
-              </v-btn>
-              <v-btn @click="resetFlightMission" color="warning">Reset</v-btn>
-            </div>
-            <v-divider class="mb-3" />
-            <h4>Flight missions</h4>
-            <v-table density="compact" class="mb-3">
-              <thead>
-                <tr>
-                  <td>Flight object type</td>
-                  <td>Starting for, s</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="flightObjectMission in flightObjectMissions">
-                  <td>{{ flightObjectMission.flightObjectType }}</td>
-                  <td>{{ flightObjectMission.startFrom }}</td>
-                </tr>
-              </tbody>
-            </v-table>
+  <v-container class="mb-6" fluid>
+    <v-card flat>
+      <v-card-text>
+        <div class="d-flex">
+          <EditorMap />
+          <v-divider vertical class="mx-3" />
 
+          <div>
+            <v-card class="mb-3" elevation="9">
+              <v-card-title class="d-flex">
+                Missions
+                <v-spacer />
+                <v-btn color="success" @click="missionEditorStore.clearMission">New</v-btn>
+              </v-card-title>
 
-            <v-divider class="mb-6" />
+              <v-table density="compact">
+                <thead>
+                  <tr>
+                    <td>Name</td>
+                    <td>Tasks count</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="mission in missionEditorStore.missions"
+                    @click="missionEditorStore.selectMission(mission.id!)">
+                    <td>{{ mission.name }}</td>
+                    <td>{{ mission.tasks.length }}</td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </v-card>
+            <v-card title="Current flight task" class="mb-3" elevation="9">
+              <h3 class="mb-3 px-3">Put flight point and set target params</h3>
+              <v-select label="Flight object type" class="mx-3" :items="missionEditorStore.flightObjectTypes"
+                item-title="name" item-value="id" :model-value="missionEditorStore.selectedTask.flightObjectTypeId"
+                @update:model-value="missionEditorStore.selectedTask.flightObjectTypeId = $event" />
 
-            <div class="mb-3 d-flex justify-space-between">
-              <v-btn @click="clear" color="error">Reset all</v-btn>
-              <v-btn @click="exportFlightMissions">Download <v-icon>mdi-download</v-icon>
-              </v-btn>
-            </div>
+              <v-text-field label="Starting for, s" class="mx-3" :model-value="missionEditorStore.selectedTask.delay"
+                @update:model-value="missionEditorStore.selectedTask.delay = +$event" />
+              <h4 class="mb-3 px-3">Way | Flight distance: {{ flightParams.range }} km | Flight time: {{ flightParams.time
+              }}
+                min
+              </h4>
+              <div class="mb-3 mx-3 d-flex justify-space-between">
+                <v-btn @click="missionEditorStore.saveTask" :disabled="missionEditorStore.selectedTask.points.length < 2"
+                  color="success">{{ missionEditorStore.selectedTask.id !== null ? 'Save task' : 'Add task' }}
+                </v-btn>
+                <v-btn @click="missionEditorStore.resetTask" color="warning">Reset</v-btn>
+              </div>
+            </v-card>
+            <v-card title="Flight tasks" elevation="9" class="mb-3">
+              <v-table density="compact" class="mb-3">
+                <thead>
+                  <tr>
+                    <td>N</td>
+                    <td>Flight object type</td>
+                    <td>Starting for, s</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="task in missionEditorStore.currentMission.tasks"
+                    @click="missionEditorStore.selectTask(task.id!)">
+                    <td>{{ task.id }}</td>
+                    <td>{{ task.flightObjectTypeId || 'None' }}</td>
+                    <td>{{ task.delay }}</td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </v-card>
 
-            <v-file-input label="Mission file" class="mb-3" hide-details append-icon="mdi-upload"
-              @change="importFlightMissions"></v-file-input>
-
-            <v-btn @click="startFlightMissions" block color="error">LAUNCH!</v-btn>
-          </v-card-text>
-
-
-        </v-card>
-      </v-col>
-    </v-row>
+            <v-card elevation="9" class="px-3 py-3">
+              <v-text-field label="Mission name" :model-value="missionEditorStore.currentMission.name"
+                  @update:model-value="missionEditorStore.currentMission.name = $event" />
+              <div class="d-flex justify-space-between">
+                
+                <v-btn @click="missionEditorStore.saveMission" color="success">{{ missionEditorStore.currentMission.id !== null ? 'Update mission' : 'Create mission' }}</v-btn>
+                <v-btn @click="missionEditorStore.resetMission" color="warning">Reset mission</v-btn>
+              </div>
+            </v-card>
+          </div>
+        </div>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import Editor from '@/components/Editor/Editor';
+import EditorMap from './EditorMap.vue';
 import { useMainStore } from '@/store/main';
+import { useMissionEditorStore } from '@/store/missionEditor';
 import { onMounted, ref, inject, computed } from 'vue';
 
-const editorRef = ref<HTMLCanvasElement | null>(null);
 const mainStore = useMainStore();
+const missionEditorStore = useMissionEditorStore();
 
-const editor = ref<Editor | null>(null);
-onMounted(() => {
-  editor.value = new Editor(editorRef.value!);
+const flightParams = computed(() => {
+  const range = missionEditorStore.selectedTask.points.reduce((acc, point, index, points) => {
+    const prevPoint = index === 0 ? point : points[index - 1];
+    const length = Math.hypot(point.x - prevPoint.x, point.y - prevPoint.y);
+    return acc + length;
+  }, 0) / 1000;
+  const time = missionEditorStore.selectedTask.points.reduce((acc, point, index, points) => {
+    const prevPoint = index === 0 ? point : points[index - 1];
+    const length = Math.hypot(point.x - prevPoint.x, point.y - prevPoint.y);
+    const time = (length / prevPoint.v) / 60;
+    return acc + time;
+  }, 0);
+  return {
+    range: range.toFixed(1),
+    time: time.toFixed(1)
+  }
 })
 
-const flightObjectType = ref<number | null>(null);
-const flightObjectMaxVelocity = ref<number>(100);
-
-const setFlightObjectType = (value: number) => {
-  const foType = mainStore.flightObjectTypes.find(fo => fo.id === value)!
-  flightObjectType.value = value;
-  editor.value!.setFlightObjectType(value);
-  flightObjectMaxVelocity.value = foType.maxVelocity;
-}
-
-const timeOffset = computed(() => editor.value?.getTimeOffset());
-const setTimeOffset = (v: string) => editor.value!.setTimeOffset(+v);
-
-const exportCoordinates = (e: MouseEvent) => {
-  if (!flightObjectType.value) return;
-  editor.value?.addPoint(e)
-}
-
-const setPointParam = (index: number, paramName: string, paramValue: string) => editor.value?.setParamAtPoint(index, paramName, Number(paramValue));
-const points = computed(() => editor.value?.getPoints() || []);
-const flightParams = computed(() => editor.value?.getFlightParams() || { time: 0, range: 0 })
-
-const resetFlightMission = () => {
-  editor.value?.reset()
-  setTimeOffset('0');
-  flightObjectType.value = null;
-}
-
-const flightObjectMissions = computed(() => (editor.value?.getFlightObjectMissions() || []).map(fm => ({ ...fm, flightObjectType: mainStore.flightObjectTypes.find(ft => ft.id === fm.flightObjectTypeId)?.name })))
-const clear = () => editor.value?.clear()
-const exportFlightMissions = () => editor.value?.exportFlightMissions();
-
-const importFlightMissions = (e: Event) => {
-  const file = (e.target as HTMLInputElement).files![0];
-  editor.value?.importFlightMissions(file);
-}
-const startFlightMissions = () => {
-  // engine?.startMission(editor.value!.getFlightMissions())
-}
-function addFlightMission() {
-  if (points.value.length < 2) return
-  editor.value!.addFlightMission();
-  resetFlightMission();
-}
 </script>

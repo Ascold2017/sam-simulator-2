@@ -26,15 +26,6 @@ export interface IMissileChannel {
   isBusy: boolean;
 }
 
-export interface IMission {
-  id: number;
-  name: string;
-}
-export interface IFlightObjectType {
-  id: number;
-  maxVelocity: number;
-  name: string;
-}
 export const useMainStore = defineStore("mainStore", {
   state: () => ({
     socket: null as WebSocket | null,
@@ -44,9 +35,6 @@ export const useMainStore = defineStore("mainStore", {
     selectedTargetIds: [] as string[],
     missileChannels: [] as IMissileChannel[],
     missilesLeft: 0,
-
-    missions: [] as IMission[],
-    flightObjectTypes: [] as IFlightObjectType[],
 
     samParams: {
       MAX_DISTANCE: 0,
@@ -137,44 +125,6 @@ export const useMainStore = defineStore("mainStore", {
       }
 
       this.currentTargetId = this.detectedEnemies[index]?.id || null;
-    },
-    async getMissions() {
-      try {
-        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/missions", {
-          method: "GET",
-          mode: "cors",
-        });
-        const data = await response.json();
-        this.missions = data;
-      } catch (e: any) {
-        console.log(e.message);
-      }
-    },
-    async startMission(id: number) {
-      try {
-        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/start", {
-          method: "POST",
-          mode: "cors",
-          body: JSON.stringify({ id }),
-        });
-      } catch (e: any) {
-        console.log(e.message);
-      }
-    },
-    async getFlightObjectTypes() {
-      try {
-        const response = await fetch(
-          import.meta.env.VITE_API_BASE_URL + "/flight-object-types",
-          {
-            method: "GET",
-            mode: "cors",
-          },
-        );
-        const data = await response.json();
-        this.flightObjectTypes = data;
-      } catch (e: any) {
-        console.log(e.message);
-      }
     },
 
     async getSamSettings() {

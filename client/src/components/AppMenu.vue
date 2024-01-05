@@ -7,7 +7,7 @@
     </template>
     <v-card class="px-3 py-3">
       <v-btn variant="text" @click="openScreen('SAM')">Back</v-btn>
-      <v-btn variant="text" v-for="mission in mainStore.missions" @click="loadMission(mission.id)">{{ mission.name }}</v-btn>
+      <v-btn variant="text" v-for="mission in missionEditorStore.missions" @click="loadMission(mission.id!)">{{ mission.name }}</v-btn>
       <v-btn variant="text" @click="openScreen('Editor')">Mission editor</v-btn>
       <!--
       <v-btn-toggle mandatory :model-value="acceleration" @update:model-value="setAcceleration">
@@ -25,12 +25,14 @@
 <script setup lang="ts">
 import { ref, defineEmits, defineProps } from 'vue';
 import { useMainStore } from '@/store/main';
+import { useMissionEditorStore } from '@/store/missionEditor';
 const emit = defineEmits<{
   (e: 'openScreen', screen: string): void;
 }>();
 
 const isActive = ref(true)
 const mainStore = useMainStore();
+const missionEditorStore = useMissionEditorStore();
 
 const openScreen = (screen: string) => {
   emit('openScreen', screen);
@@ -39,7 +41,7 @@ const openScreen = (screen: string) => {
 
 const loadMission = (missionId: number) => {
   isActive.value = false;
-  mainStore.startMission(missionId);
+  missionEditorStore.startMission(missionId);
 }
 /*
 const acceleration = ref((window as any).__ACCELERATION__ as number);
