@@ -1,19 +1,20 @@
-import SOUNDS from '@/const/SOUNDS/SOUNDS';
-const startSound = new Audio(SOUNDS.START);
-const idleSound = new Audio(SOUNDS.IDLE);
-const stopSound = new Audio(SOUNDS.STOP);
-const turnOnSound = new Audio(SOUNDS.TURN_ON);
-const turnOffSound = new Audio(SOUNDS.TURN_OFF);
-const turnStartSound = new Audio(SOUNDS.TURN_START);
-const turnIdleSound = new Audio(SOUNDS.TURN_IDLE);
-const startMissileSound = new Audio(SOUNDS.START_MISSILE);
-  const rotateClicks = [
-    new Audio(SOUNDS.ROTATE_CLICK_1),
-    new Audio(SOUNDS.ROTATE_CLICK_2),
-    new Audio(SOUNDS.ROTATE_CLICK_3),
-    new Audio(SOUNDS.ROTATE_CLICK_4),
-
- ]
+import start from '@/assets/sounds/start.ogg'
+import idle from '@/assets/sounds/idle.ogg'
+import stop from '@/assets/sounds/stop.mp3'
+import turnOn from '@/assets/sounds/turnOn.mp3';
+import turnOff from '@/assets/sounds/turnOff.mp3';
+import turnStart from '@/assets/sounds/turnStart.mp3';
+import turnIdle from '@/assets/sounds/turnIdle.ogg';
+import startMissile from '@/assets/sounds/startMissile.mp3';
+const idleSound = new Audio(idle);
+const startSound = new Audio(start);
+const stopSound = new Audio(stop);
+const turnOnSound = new Audio(turnOn);
+const turnOffSound = new Audio(turnOff);
+const turnStartSound = new Audio(turnStart);
+const turnIdleSound = new Audio(turnIdle);
+const startMissileSound = new Audio(startMissile);
+  
 let isTurning = false;
 export default class Sounds {
   static isEnabled = true;
@@ -92,12 +93,5 @@ export default class Sounds {
     if (!Sounds.isEnabled) return
     startMissileSound.currentTime = 0;
     startMissileSound.play();
-  }
-
-  static rotateClick() {
-    if (!Sounds.isEnabled) return
-    const sound = rotateClicks[Math.round(Math.random() * 3)];
-    sound.volume = 0.5;
-    sound.play();
   }
 }

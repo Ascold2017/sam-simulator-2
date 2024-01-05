@@ -3,7 +3,6 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify';
-import { viteSingleFile } from "vite-plugin-singlefile"
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), vuetify({ autoImport: true })],
@@ -13,7 +12,7 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: '../public',
-    assetsDir: '../public/static'
+    outDir: 'dist',
+
   }
 })

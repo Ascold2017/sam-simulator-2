@@ -1,4 +1,4 @@
-import Sounds from "@/const/SOUNDS/index";
+import Sounds from "@/const/sounds";
 import { defineStore } from "pinia";
 
 export interface IRadarObject {

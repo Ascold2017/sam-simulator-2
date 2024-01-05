@@ -1,12 +1,24 @@
 interface Endpoint {
-	path: string;
-	handler: (req: Request) => Promise<Response> | Response;
+	pattern: URLPattern;
+	handler: (
+		req: Request,
+		params: Params,
+	) => Promise<Response> | Response;
+}
+
+interface Params {
+	params: Record<string, string | undefined>;
+	hash: Record<string, string | undefined>;
+	search: Record<string, string | undefined>;
 }
 
 export interface HttpRoute {
 	type: 'http';
 	path: string;
-	handler: (req: Request) => Promise<Response> | Response;
+	handler: (
+		req: Request,
+		params: Params,
+	) => Promise<Response> | Response;
 }
 
 export interface WebSocketRoute {
@@ -35,12 +47,15 @@ export default class WebServerApplication {
 		const httpConn = Deno.serveHttp(conn);
 		for await (const requestEvent of httpConn) {
 			const url = new URL(requestEvent.request.url);
-			const endpoint = this.endpoints.find((e) =>
-				e.path === url.pathname
-			);
-
+			const endpoint = this.endpoints.find((e) => e.pattern.test(url));
+			const match = endpoint?.pattern.exec(url);
+			const params: Params = {
+				params: match?.pathname.groups || {},
+				hash: match?.hash.groups || {},
+				search: match?.search.groups || {},
+			};
 			const response = endpoint
-				? await endpoint.handler(requestEvent.request)
+				? await endpoint.handler(requestEvent.request, params)
 				: new Response('Method not allowed', {
 					status: 403,
 				});
@@ -52,14 +67,14 @@ export default class WebServerApplication {
 	}
 
 	private addEndpoint(
-		path: string,
-		handler: (req: Request) => Promise<Response> | Response,
+		pattern: URLPattern,
+		handler: (req: Request, params: Params) => Promise<Response> | Response,
 	) {
-		this.endpoints.push({ path, handler });
+		this.endpoints.push({ pattern, handler });
 	}
 
 	private addSocketEndpoint(
-		path: string,
+		pattern: URLPattern,
 		handler: (socket: WebSocket) => void,
 	) {
 		const socketHandler = (req: Request) => {
@@ -76,16 +91,22 @@ export default class WebServerApplication {
 			return response;
 		};
 
-		this.endpoints.push({ path, handler: socketHandler });
+		this.endpoints.push({ pattern, handler: socketHandler });
 	}
 
 	private addRouter(routes: (HttpRoute | WebSocketRoute)[]) {
 		routes.forEach((route) => {
 			if (route.type === 'http') {
-				this.addEndpoint(route.path, route.handler);
+				this.addEndpoint(
+					new URLPattern({ pathname: route.path }),
+					route.handler,
+				);
 			}
 			if (route.type === 'websocket') {
-				this.addSocketEndpoint(route.path, route.handler);
+				this.addSocketEndpoint(
+					new URLPattern({ pathname: route.path }),
+					route.handler,
+				);
 			}
 		});
 	}
