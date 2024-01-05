@@ -1,6 +1,6 @@
 import initData from './initData.json' with { type: 'json' };
 import { DB } from 'https://deno.land/x/sqlite@v3.8/mod.ts';
-export const db = new DB('./src/database/database.db');
+export const db = new DB();
 db.execute(`
   CREATE TABLE IF NOT EXISTS missions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
