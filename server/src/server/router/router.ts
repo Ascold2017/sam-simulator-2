@@ -21,7 +21,7 @@ const router: (HttpRoute | WebSocketRoute)[] = [
 		path: '/',
 		handler: async (req) => {
 			try {
-				const file = Deno.openSync('../client/dist/index.html', {
+				const file = Deno.openSync('./client/dist/index.html', {
 					read: true,
 				});
 				return new Response(file.readable);
@@ -47,7 +47,7 @@ const router: (HttpRoute | WebSocketRoute)[] = [
 
 			try {
 				const file = Deno.openSync(
-					'../client/dist/assets/' + params.filename,
+					'./client/dist/assets/' + params.filename,
 					{
 						read: true,
 					},
@@ -68,7 +68,7 @@ const router: (HttpRoute | WebSocketRoute)[] = [
 		handler: async (req, { params }) => {
 			try {
 				const file = Deno.openSync(
-					'../client/dist/fonts/' + params.filename,
+					'./client/dist/fonts/' + params.filename,
 					{
 						read: true,
 					},
