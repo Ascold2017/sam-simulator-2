@@ -42,7 +42,7 @@
                     <tr v-for="task in missionEditorStore.currentMission.tasks"
                         @click="missionEditorStore.selectTask(task.id!)">
                         <td>{{ task.id }}</td>
-                        <td>{{ task.flightObjectTypeId || 'None' }}</td>
+                        <td>{{ missionEditorStore.flightObjectTypes.find(fot => fot.id === task.flightObjectTypeId)?.name || 'None' }}</td>
                         <td>{{ task.delay }}</td>
                     </tr>
                 </tbody>

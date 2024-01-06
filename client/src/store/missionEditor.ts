@@ -53,7 +53,7 @@ export const useMissionEditorStore = defineStore("missionEditorStore", {
     },
     selectedPoint(state) {
       if (state.selectedPointIndex === null) return { x: 0, y: 0, z: 0, v: 0 }
-      return state.selectedTask.points[state.selectedPointIndex];
+      return state.selectedTask.points[state.selectedPointIndex] || { x: 0, y: 0, z: 0, v: 0 };
     }
   },
 
