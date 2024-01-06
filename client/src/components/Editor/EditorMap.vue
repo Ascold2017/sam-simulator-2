@@ -1,5 +1,5 @@
 <template>
-    <vk-stage :config="{ width: 600, height: 660 }">
+    <vk-stage :config="{ width: 600, height: 600 }">
         <vk-layer>
             <vk-image :config="{ image: img, width: 600, height: 600 }" @click="onClickMap" />
             <vk-line v-for="canvasTask in canvasTasks"
@@ -23,7 +23,7 @@
                 y: 12 * i + 34,
                 text: `${i} | ${point.z} | ${point.v}`,
                 fontFamily: 'Russo One, sans-serif'
-            }" />
+            }" @click="missionEditorStore.selectPoint(i)" />
 
         </vk-layer>
     </vk-stage>
@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { ref } from 'vue';
-import { useMissionEditorStore, type IPoint, type ITask } from '@/store/missionEditor';
+import { useMissionEditorStore, type ITask } from '@/store/missionEditor';
 import { computed } from 'vue';
 import mapImage from '@/assets/map.png';
 const img = ref<HTMLImageElement | null>(null);

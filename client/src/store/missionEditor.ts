@@ -42,6 +42,7 @@ export const useMissionEditorStore = defineStore("missionEditorStore", {
     flightObjectTypes: [] as IFlightObjectType[],
     currentMission: _.cloneDeep(defaultMission),
     selectedTask: _.cloneDeep(defaultTask),
+    selectedPointIndex: null as number | null
   }),
 
   getters: {
@@ -50,6 +51,10 @@ export const useMissionEditorStore = defineStore("missionEditorStore", {
         fot.id === state.selectedTask.flightObjectTypeId
       );
     },
+    selectedPoint(state) {
+      if (state.selectedPointIndex === null) return { x: 0, y: 0, z: 0, v: 0 }
+      return state.selectedTask.points[state.selectedPointIndex];
+    }
   },
 
   actions: {
@@ -102,9 +107,13 @@ export const useMissionEditorStore = defineStore("missionEditorStore", {
       this.selectedTask.points.push(point);
     },
 
-    setPointParam(index: number, paramName: string, value: string) {
+    selectPoint(pointIndex: number) {
+      this.selectedPointIndex = pointIndex;
+    },
+
+    setPointParam(paramName: string, value: string) {
       // @ts-ignore
-      this.selectedTask.points[index][paramName] = value;
+      this.selectedTask.points[this.selectedPointIndex][paramName] = value;
     },
 
     selectTask(taskId: number) {
