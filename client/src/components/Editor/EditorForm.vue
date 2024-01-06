@@ -24,9 +24,9 @@
         </v-card>
         <v-card :title="'Edit point: ' + missionEditorStore.selectedPointIndex" elevation="9" class="mb-3 flex-1-1">
             <h3 class="mb-3 px-3">Click point in list for select</h3>
-            <v-text-field :model-value="missionEditorStore.selectedPoint.z"
+            <v-text-field :disabled="missionEditorStore.selectedPointIndex === null" :model-value="missionEditorStore.selectedPoint.z"
                 @update:model-value="missionEditorStore.setPointParam('z', $event)" label="Height, m" class="mx-3" variant="outlined" />
-            <v-text-field :model-value="missionEditorStore.selectedPoint.v"
+            <v-text-field :disabled="missionEditorStore.selectedPointIndex === null" :model-value="missionEditorStore.selectedPoint.v"
                 @update:model-value="missionEditorStore.setPointParam('v', $event)" label="Velocity, m/s" class="mx-3" variant="outlined" />
         </v-card>
         <v-card title="Flight tasks" elevation="9" width="100%">
