@@ -16,6 +16,8 @@
                 </v-list-item>
             </v-list>
         </v-menu>
+        <v-btn @click="missionEditorStore.undo">Undo</v-btn>
+        <v-btn @click="missionEditorStore.redo">Redo</v-btn>
         <v-spacer />
         <v-text-field label="Mission name" :model-value="missionEditorStore.currentMission.name"
             @update:model-value="missionEditorStore.currentMission.name = $event" density="compact" variant="outlined"
@@ -23,11 +25,22 @@
         <v-btn @click="missionEditorStore.saveMission" color="success">{{ missionEditorStore.currentMission.id !==
             null ? 'Update' : 'Create' }}</v-btn>
         <v-btn @click="missionEditorStore.resetMission" color="warning">Reset</v-btn>
+        <v-btn @click="missionEditorStore.download" color="info">Download</v-btn>
     </v-toolbar>
 </template>
 
 <script setup lang="ts">
 import { useMissionEditorStore } from '@/store/missionEditor';
+import {useEventListener} from '@/helpers/useEventListener';
 
 const missionEditorStore = useMissionEditorStore();
+
+useEventListener('alt.z', (e) => {
+    missionEditorStore.undo();
+});
+
+useEventListener('alt.y', (e) => {
+    missionEditorStore.redo();
+})
+
 </script>

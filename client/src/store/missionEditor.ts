@@ -116,6 +116,10 @@ export const useMissionEditorStore = defineStore("missionEditorStore", {
       this.selectedTask.points[this.selectedPointIndex][paramName] = value;
     },
 
+    removePoint() {
+      this.selectedTask.points = this.selectedTask.points.filter((_, i) => i !== this.selectedPointIndex);
+    },
+
     selectTask(taskId: number) {
       this.selectedTask = _.cloneDeep(
         this.currentMission.tasks.find((t) => t.id === taskId) || defaultTask,
@@ -154,7 +158,6 @@ export const useMissionEditorStore = defineStore("missionEditorStore", {
     },
 
     async saveMission() {
-        console.log(this.currentMission)
         try {
             const response = await fetch(
               import.meta.env.VITE_API_BASE_URL + "/save-mission",
@@ -176,5 +179,15 @@ export const useMissionEditorStore = defineStore("missionEditorStore", {
         this.missions.find((m) => m.id === missionId)!,
       );
     },
+
+    download() {
+      const mission = JSON.stringify(this.currentMission);
+      const filename = this.currentMission.name + '.json';
+      const element = document.createElement('a');
+      element.setAttribute('href','data:application/json;charset=utf-8, ' + encodeURIComponent(mission));
+      element.setAttribute('download', filename);
+      document.body.appendChild(element);
+      element.click();
+    }
   },
 });

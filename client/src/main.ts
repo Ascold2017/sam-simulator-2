@@ -4,11 +4,14 @@ import { createApp } from "vue";
 import VueKonva from 'vue-konva';
 import { createVuetify } from "vuetify";
 import * as components from 'vuetify/components'
+import { PiniaUndo } from 'pinia-undo'
 
 import App from "./App.vue";
 import { createPinia } from "pinia";
 
+
 const pinia = createPinia();
+pinia.use(PiniaUndo);
 
 const vuetify = createVuetify({
   components,

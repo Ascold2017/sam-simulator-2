@@ -3,9 +3,8 @@
         <v-card class="mb-3 mr-3 flex-1-1" elevation="9" title="Edit task">
 
             <h3 class="mb-3 px-3">Put flight point and set target params</h3>
-            <h4 class="mb-3 px-3">Flight distance: {{ flightParams.range }} km | Flight time: {{ flightParams.time
-            }}
-                min
+            <h4 class="mb-3 px-3">
+                Flight distance: {{ flightParams.range }} km | Flight time: {{ flightParams.time }} min
             </h4>
             <v-select label="Flight object type" class="mx-3" :items="missionEditorStore.flightObjectTypes"
                 item-title="name" item-value="id" :model-value="missionEditorStore.selectedTask.flightObjectTypeId"
@@ -28,6 +27,7 @@
                 @update:model-value="missionEditorStore.setPointParam('z', $event)" label="Height, m" class="mx-3" variant="outlined" />
             <v-text-field :disabled="missionEditorStore.selectedPointIndex === null" :model-value="missionEditorStore.selectedPoint.v"
                 @update:model-value="missionEditorStore.setPointParam('v', $event)" label="Velocity, m/s" class="mx-3" variant="outlined" />
+            <v-btn @click="missionEditorStore.removePoint" color="warning" class="mx-3 mt-8">Remove point</v-btn>
         </v-card>
         <v-card title="Flight tasks" elevation="9" width="100%">
             <v-table density="compact" class="mb-3" max-height="300">
