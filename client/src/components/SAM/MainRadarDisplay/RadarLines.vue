@@ -35,7 +35,9 @@
       width: 25,
       height: 12
     }" v-for="azimutLine in azimutLines" />
-   
+    <vk-text
+      :config="{ x: 0, y: 0, text: 'UPDATE', align: 'center', width: 100, fontFamily: 'DS-DigitalB, sans-serif', fontSize: 14, fill: mainStore.isUpdated ? 'red' : 'white' }" />
+
   </vk-group>
 </template>
 

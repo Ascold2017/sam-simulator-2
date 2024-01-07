@@ -8,16 +8,12 @@
             height: 630,
             fill: 'black',
         }" />
-
         <radar-lines v-if="mainStore.isEnabled" :scale="scale" />
         <!-- targets -->
-        <vk-group v-if="mainStore.isEnabled">
+        <vk-group >
             <RadarIndicatorTarget v-for="radarObject in mainStore.radarObjects" :scale="scale" :target="radarObject" />
-            <RadarIndicatorInfo 
-                v-for="(targetObject, i) in mainStore.detectedEnemies"
-                :index="i"
-                :config="{ x: 622, y: 0 }" :target="targetObject"
-            />
+            <RadarIndicatorInfo v-for="(targetObject, i) in mainStore.detectedEnemies" :index="i" :config="{ x: 622, y: 0 }"
+                :target="targetObject" />
         </vk-group>
     </vk-group>
 </template>

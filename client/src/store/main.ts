@@ -35,6 +35,7 @@ export const useMainStore = defineStore("mainStore", {
     selectedTargetIds: [] as string[],
     missileChannels: [] as IMissileChannel[],
     missilesLeft: 0,
+    isUpdated: false,
 
     samParams: {
       MAX_DISTANCE: 0,
@@ -74,7 +75,11 @@ export const useMainStore = defineStore("mainStore", {
         const [type, jsonPayload] = message.data.split("|") as string[];
         const actions: Record<string, (payload: any) => void> = {
           "RADAR_OBJECTS_UPDATE": (payload: IRadarObject[]) => {
-            console.log("UPDATE");
+            this.isUpdated = true;
+            const t = setTimeout(() => {
+              this.isUpdated = false;
+              clearTimeout(t);
+            }, 300)
             this.radarObjects = [...payload];
           },
           "SELECTED_TARGET_IDS_UPDATE": (payload: string[]) =>
