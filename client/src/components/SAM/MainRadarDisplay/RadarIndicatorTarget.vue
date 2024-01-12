@@ -33,7 +33,7 @@
       x: indicatorTarget.x + 310,
       y: indicatorTarget.y + 310, rotation: indicatorTarget.direction
     }">
-      <vk-line :config="{ points: [10, 0, 30, 0], stroke: 'white', strokeWidth: 1 }" />
+      <vk-line :config="{ points: [10, 0, indicatorTarget.l, 0], stroke: 'white', strokeWidth: 1 }" />
     </vk-group>
   </vk-group>
 </template>
@@ -55,6 +55,8 @@ interface IRadarIndicatorTarget {
   isSelected: boolean;
   isCurrent: boolean;
   direction: number;
+  timeToHit: number;
+  l: number;
 }
 
 const props = defineProps<{ target: Partial<IRadarObject>; scale: number }>();
@@ -76,7 +78,14 @@ const indicatorTarget = computed<IRadarIndicatorTarget>(() => {
     isEnemy: props.target.type === 'DETECTED_RADAR_OBJECT' && !props.target.isMissile,
     isSelected: mainStore.selectedTargetIds.includes(props.target.id!),
     isCurrent: mainStore.currentTargetId === props.target.id,
-    direction: props.target.rotation! * (190 / Math.PI)
+    direction: props.target.rotation! * (180 / Math.PI),
+    timeToHit: props.target.distance! / Math.abs(mainStore.samParams.MISSILE_VELOCITY + props.target.radialVelocity!),
+    l: (() => {
+      if (props.target.type !== 'DETECTED_RADAR_OBJECT') return 0;
+      const time = props.target.distance! / Math.abs(mainStore.samParams.MISSILE_VELOCITY + props.target.radialVelocity!);
+      return (props.target.velocity! * time) / (props.scale * 2);
+
+    })(),
   }
 });
 

@@ -25,6 +25,7 @@ export default class Missile extends BaseFlightObject {
 		this.killRadius = Number(samParams['MISSILE_KILL_RADIUS']);
 		this.velocity = Number(samParams['MISSILE_VELOCITY']);
 		this.method = method;
+		console.log(method);
 	}
 
 	update(time: number): void {
@@ -35,10 +36,11 @@ export default class Missile extends BaseFlightObject {
 		this.traveledDistance += dFlightDistance;
 
 		const targetVector = new Vector3D(this.target.getCurrentPoint());
+
 		const prevMissileVector = new Vector3D({ ...this.currentPoint });
 		const targetDistance = targetVector.sub(prevMissileVector)
 			.r() as number;
-		const currentPosition = this.calcMissilePosition3P(
+		const currentPosition = this.calcMissilePosition(
 			targetVector,
 			prevMissileVector,
 			targetDistance,
@@ -64,7 +66,7 @@ export default class Missile extends BaseFlightObject {
 		}
 	}
 
-	private calcMissilePosition3P(
+	private calcMissilePosition(
 		targetVector: Vector3D,
 		prevMissileVector: Vector3D,
 		targetDistance: number,
@@ -82,18 +84,5 @@ export default class Missile extends BaseFlightObject {
 		const t1 = (-b - sqrt) / (2 * a);
 		const t2 = (-b + sqrt) / (2 * a);
 		return targetVector.scale(t1 > t2 ? t1 : t2);
-	}
-
-	private calcMissilePosition12(
-		targetVector: Vector3D,
-		prevMissileVector: Vector3D,
-		targetDistance: number,
-		dFlightDistance: number,
-	) {
-		const distance = dFlightDistance < targetDistance
-			? dFlightDistance
-			: targetDistance;
-
-		return new Vector3D({ x: 0, y: 0, z: 0 });
 	}
 }

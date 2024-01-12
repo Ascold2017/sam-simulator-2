@@ -1,5 +1,5 @@
 <template>
-    <vk-group :config="{ x: config.x, y: config.y + index * 65 }">
+    <vk-group :config="{ x: config.x, y: config.y + index * 80 }">
 
         <vk-text v-for="(row, i) in indicatorTarget.rows" :config="{
             x: 0, y: i * 15,
@@ -33,7 +33,8 @@ const indicatorTarget = computed(() => {
             `|${props.target.id}`,
             `| Azimuth: ${(props.target.azimuth! * (180 / Math.PI)).toFixed(1)}°     | Elevation: ${(props.target.elevation! * (180 / Math.PI)).toFixed(1)}°`,
             `| D: ${(props.target.distance! / 1000).toFixed(1)} km      | H: ${props.target.height!.toFixed(0)} m`,
-            `| V: ${props.target.velocity} m/s     | P: ${(props.target.param! / 1000).toFixed(1)} km`
+            `| V: ${props.target.velocity} m/s | RV: ${props.target.radialVelocity?.toFixed(1)}`,
+            `| P: ${(props.target.param! / 1000).toFixed(1)} km`
         ],
         isCurrent: mainStore.currentTargetId === props.target.id,
         isSelected: mainStore.selectedTargetIds.includes(props.target.id!)
