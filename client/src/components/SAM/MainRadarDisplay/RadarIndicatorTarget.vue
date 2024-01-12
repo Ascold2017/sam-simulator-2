@@ -1,5 +1,6 @@
 <template>
   <vk-group>
+    <!-- Target-->
     <vk-arc :config="{
       x: 310, y: 310,
       innerRadius: indicatorTarget.radius,
@@ -9,32 +10,29 @@
       strokeWidth: indicatorTarget.strokeWidth,
       stroke: `rgba(150, 249, 123, ${indicatorTarget.alpha})`
     }" />
-    <vk-arc v-if="indicatorTarget.isDetected && indicatorTarget.isEnemy" :config="{
+    <!-- Target select circle -->
+    <vk-circle v-if="indicatorTarget.isDetected && indicatorTarget.isEnemy" :config="{
       x: indicatorTarget.x + 310,
       y: indicatorTarget.y + 310,
-      innerRadius: 10,
-      outerRadius: 10,
+      width: 20,
+      height: 20,
       strokeWidth: indicatorTarget.isCurrent ? 2 : 0.5,
       dash: indicatorTarget.isCurrent ? [2, 2] : [],
-      angle: 360,
       stroke: indicatorTarget.isSelected ? 'red' : 'rgb(150, 249, 123)'
     }" />
-    <vk-arc v-if="indicatorTarget.isDetected && !indicatorTarget.isEnemy" :config="{
+    <!-- Missile select circle -->
+    <vk-circle v-if="indicatorTarget.isDetected && !indicatorTarget.isEnemy" :config="{
       x: indicatorTarget.x + 310,
       y: indicatorTarget.y + 310,
-      innerRadius: 5,
-      outerRadius: 5,
+      width: 10,
+      height: 10,
       strokeWidth: 1,
-      angle: 360,
       stroke: 'red'
     }" />
+    <!-- Target approximate hit position -->
+    <vk-circle v-if="indicatorTarget.isDetected && indicatorTarget.isEnemy"
+      :config="{ x: indicatorTarget.hitPosition.x + 310, y: indicatorTarget.hitPosition.y + 310, width: 3, height: 3, fill: 'white' }" />
 
-    <vk-group v-if="indicatorTarget.isDetected && indicatorTarget.isEnemy" :config="{
-      x: indicatorTarget.x + 310,
-      y: indicatorTarget.y + 310, rotation: indicatorTarget.direction
-    }">
-      <vk-line :config="{ points: [10, 0, indicatorTarget.l, 0], stroke: 'white', strokeWidth: 1 }" />
-    </vk-group>
   </vk-group>
 </template>
 
@@ -54,9 +52,7 @@ interface IRadarIndicatorTarget {
   isEnemy: boolean;
   isSelected: boolean;
   isCurrent: boolean;
-  direction: number;
-  timeToHit: number;
-  l: number;
+  hitPosition: { x: number; y: number };
 }
 
 const props = defineProps<{ target: Partial<IRadarObject>; scale: number }>();
@@ -78,14 +74,13 @@ const indicatorTarget = computed<IRadarIndicatorTarget>(() => {
     isEnemy: props.target.type === 'DETECTED_RADAR_OBJECT' && !props.target.isMissile,
     isSelected: mainStore.selectedTargetIds.includes(props.target.id!),
     isCurrent: mainStore.currentTargetId === props.target.id,
-    direction: props.target.rotation! * (180 / Math.PI),
-    timeToHit: props.target.distance! / Math.abs(mainStore.samParams.MISSILE_VELOCITY + props.target.radialVelocity!),
-    l: (() => {
-      if (props.target.type !== 'DETECTED_RADAR_OBJECT') return 0;
-      const time = props.target.distance! / Math.abs(mainStore.samParams.MISSILE_VELOCITY + props.target.radialVelocity!);
-      return (props.target.velocity! * time) / (props.scale * 2);
-
-    })(),
+    hitPosition: (() => {
+      if (props.target.type !== 'DETECTED_RADAR_OBJECT') return { x: 0, y: 0 }
+      return {
+        x: props.target.hitPosition!.x / (props.scale * 2),
+        y: props.target.hitPosition!.y / (props.scale * 2)
+      }
+    })()
   }
 });
 

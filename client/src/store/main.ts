@@ -20,6 +20,10 @@ export interface IRadarObject {
   size: number;
   visibilityK: number;
   isMissile?: boolean;
+  hitPosition: {
+    x: number;
+    y: number;
+  }
 }
 export interface IMissileChannel {
   id: number;

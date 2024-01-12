@@ -40,8 +40,16 @@ export default class Missile extends BaseFlightObject {
 		const prevMissileVector = new Vector3D({ ...this.currentPoint });
 		const targetDistance = targetVector.sub(prevMissileVector)
 			.r() as number;
+
+		const hitPositionPreemtives = {
+			'3P': new Vector3D({ x: 0, y: 0, z: 0 }),
+			'1/2': new Vector3D({ x: 0, y: 0, z: 0 }), // TODO
+		};
+
+		const preemtiveVector = hitPositionPreemtives[this.method];
+
 		const currentPosition = this.calcMissilePosition(
-			targetVector,
+			targetVector.add(preemtiveVector),
 			prevMissileVector,
 			targetDistance,
 			dFlightDistance,

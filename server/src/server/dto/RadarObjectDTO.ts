@@ -18,6 +18,7 @@ export default class RadarObjectDTO {
 	public visibilityK: number;
 	public isMissile: boolean;
 	public type: string;
+	public hitPosition: { x: number; y: number };
 	constructor(
 		radarObject:
 			| DetectedRadarObject
@@ -41,5 +42,6 @@ export default class RadarObjectDTO {
 		this.isMissile = radarObject instanceof DetectedRadarObject
 			? radarObject.isMissile
 			: false;
+		this.hitPosition = radarObject.hitPosition;
 	}
 }

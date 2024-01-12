@@ -1,5 +1,6 @@
 import samParams from '#src/assets/samParams.json' with { type: 'json' };
 import type { IPoint } from '#engine/Engine.ts';
+import Vector3D from '#src/core/Vector3D.ts';
 
 interface BaseRadarObjectConstructor {
 	id: string;
@@ -22,6 +23,7 @@ export default class BaseRadarObject {
 	public size: number;
 	public visibilityK: number;
 	public isVisible: boolean;
+	public hitPosition = { x: 0, y: 0 };
 
 	constructor(payload: BaseRadarObjectConstructor) {
 		this.id = payload.id;
@@ -57,6 +59,7 @@ export default class BaseRadarObject {
 		this.isVisible = this.isInVision(distance, payload.currentPoint.z) &&
 			inAllowedElevation &&
 			distance < Number(samParams['MAX_DISTANCE']);
+		this.hitPosition = this.getHitPosition();
 	}
 
 	protected isInVision(distance: number, height: number) {
@@ -105,5 +108,17 @@ export default class BaseRadarObject {
 				? targetAzimuth - currentRotation
 				: currentRotation - targetAzimuth) - Math.PI;
 		return Math.abs(targetDistance * Math.tan(targetAngle));
+	}
+
+	protected getHitPosition() {
+		const timeToHit = this.distance / (this.radialVelocity +
+			samParams.MISSILE_VELOCITY);
+		const l = this.velocity * timeToHit;
+		const preemtiveVector = {
+			x: l * Math.cos(this.rotation) + this.x,
+			y: l * Math.sin(this.rotation) + this.y,
+		};
+
+		return preemtiveVector;
 	}
 }
