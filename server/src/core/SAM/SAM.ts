@@ -8,6 +8,10 @@ import UndetectedRadarObject from './RadarObject/UndetectedRadarObject.ts';
 import samParams from '#src/assets/samParams.json' with { type: 'json' };
 import _ from 'lodash';
 
+interface IListener {
+	name: string;
+	listener: () => void;
+}
 export class MissileChannel {
 	public id: number;
 	public target: DetectedRadarObject | null = null;
@@ -33,6 +37,7 @@ export class SAM {
 	private selectedObjectIds: string[] = [];
 	private missileChannels: Record<number, MissileChannel> = {};
 	private missilesLeft = Number(samParams['MISSILES_COUNT']);
+	private listeners = [] as IListener[];
 	constructor(engine: Engine) {
 		this.engine = engine;
 		this.engine.addFPSLoop('updateRadar', () => this.updateRadar(), 40);
@@ -84,7 +89,7 @@ export class SAM {
 					(fo) => fo.isVisible,
 				),
 			...missiles.map((fo) => new DetectedRadarObject(fo)),
-			...Array.from(Array(50)).map(() => new SnowRadarObject()),
+			// ...Array.from(Array(50)).map(() => new SnowRadarObject()),
 		];
 		// remove disapperead selected objects
 		this.selectedObjectIds = this.selectedObjectIds.filter(
@@ -107,6 +112,8 @@ export class SAM {
 				this.missileChannels[missileChannelId].reset();
 			}
 		}
+
+		this.listeners.forEach((l) => l.listener());
 	}
 
 	public setIsEnabled(value: boolean) {
@@ -201,5 +208,13 @@ export class SAM {
 		Object.values(this.missileChannels).forEach((missileChannel) =>
 			missileChannel.reset()
 		);
+	}
+
+	public addUpdateListener(name: string, listener: () => void) {
+		this.listeners.push({ name, listener });
+	}
+
+	public removeUpdateListener(name: string) {
+		this.listeners = this.listeners.filter((l) => l.name !== name);
 	}
 }

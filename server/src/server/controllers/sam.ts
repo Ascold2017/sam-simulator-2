@@ -116,9 +116,9 @@ export function socket(socket: WebSocket) {
 		ee.emit('shouldUpdateMissileChannels');
 	}
 
-	engineInstance.addFixedLoop('socketUpdate', () => {
+	samInstance.addUpdateListener('updateListener', () => {
 		if (socket.readyState === socket.OPEN) {
 			updateRadarObjectsAndMissileChannels();
 		}
-	}, Number(samParams['RADAR_UPDATE_INTERVAL']));
+	});
 }
