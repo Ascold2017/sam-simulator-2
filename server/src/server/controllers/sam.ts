@@ -3,6 +3,7 @@ import { engineInstance, samInstance } from '#src/main.ts';
 import samParams from '#src/assets/samParams.json' with { type: 'json' };
 import RadarObjectDTO from '#src/server/dto/RadarObjectDTO.ts';
 import MissileChannelDTO from '#src/server/dto/MissileChannelDTO.ts';
+import MissionLogger from '#src/core/MissionLogger.ts';
 
 const ee = new EventEmitter<{
 	shouldUpdateSelectedTargetIds(): void;
@@ -67,6 +68,12 @@ export async function resetMissile(req: Request) {
 		return new Response(e.message, { status: 500 });
 	}
 }
+
+export async function getLogs(req: Request) {
+	const logger = new MissionLogger();
+	return new Response(JSON.stringify(logger.getLogs()));
+}
+
 let activeSocketsCount = 0;
 export function socket(socket: WebSocket) {
 	socket.onopen = () => {

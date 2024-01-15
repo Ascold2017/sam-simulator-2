@@ -1,6 +1,7 @@
 import { HttpRoute, WebSocketRoute } from '#src/server/WebServerApplication.ts';
 import { startMission } from '#src/server/controllers/editor.ts';
 import {
+	getLogs,
 	getSAMSettings,
 	launchMissile,
 	resetMissile,
@@ -50,6 +51,11 @@ const router: (HttpRoute | WebSocketRoute)[] = [
 		type: 'websocket',
 		path: '/socket',
 		handler: socket,
+	},
+	{
+		type: 'http',
+		path: '/logs',
+		handler: getLogs,
 	},
 ];
 

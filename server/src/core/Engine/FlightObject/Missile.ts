@@ -88,6 +88,9 @@ export default class Missile extends BaseFlightObject {
 			this.traveledDistance > samParams.MIN_CAPTURE_RANGE &&
 			deltaRotation > samParams.MISSILE_MAX_DELTA_ROTATION
 		) {
+			this.logger.log(
+				`MISSILE ON TARGET ${this.target.id} OVERLOADED. METHOD: ${this.method}`,
+			);
 			this.destroy();
 			return;
 		}
@@ -95,12 +98,18 @@ export default class Missile extends BaseFlightObject {
 		if (targetDistance <= this.killRadius) {
 			this.target.kill();
 			this.destroy();
+			this.logger.log(
+				`MISSILE ON TARGET ${this.target.id} HIT. HIT DISTANCE: ${targetDistance}. METHOD: ${this.method}`,
+			);
 			return;
 		}
 		if (
 			this.traveledDistance >= this.maxDistance
 		) {
 			this.destroy();
+			this.logger.log(
+				`MISSILE ON TARGET ${this.target.id} OVER RANGE. METHOD: ${this.method}`,
+			);
 			return;
 		}
 	}

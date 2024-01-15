@@ -7,6 +7,7 @@ import SnowRadarObject from './RadarObject/SnowRadarObject.ts';
 import UndetectedRadarObject from './RadarObject/UndetectedRadarObject.ts';
 import samParams from '#src/assets/samParams.json' with { type: 'json' };
 import _ from 'lodash';
+import MissionLogger from '#src/core/MissionLogger.ts';
 
 interface IListener {
 	name: string;
@@ -38,6 +39,7 @@ export class SAM {
 	private missileChannels: Record<number, MissileChannel> = {};
 	private missilesLeft = Number(samParams['MISSILES_COUNT']);
 	private listeners = [] as IListener[];
+	private logger = new MissionLogger();
 	constructor(engine: Engine) {
 		this.engine = engine;
 		this.engine.addFPSLoop('updateRadar', () => this.updateRadar(), 40);
@@ -117,7 +119,7 @@ export class SAM {
 	}
 
 	public setIsEnabled(value: boolean) {
-		console.log('SAM ENABLED:', value);
+		this.logger.log('SAM ' + value ? 'ENABLED' : 'DISABLED');
 		this.isEnabled = value;
 	}
 
@@ -165,11 +167,16 @@ export class SAM {
 			channel.set(target, missile);
 
 			this.engine.addFlightObject(missile);
+
+			this.logger.log(
+				`MISSILE LAUNCHED ON CHANNEL: ${channelId} (${method}). TARGET: ${target.id} DISTANCE: ${target.distance}`,
+			);
 		}
 	}
 
 	public resetMissile(channelId: number) {
 		this.missileChannels[channelId]?.reset();
+		this.logger.log(`MISSILE RESETTET ON CHANNEL: ${channelId}`);
 	}
 
 	public selectTarget(targetId: string) {
@@ -184,6 +191,7 @@ export class SAM {
 				Number(samParams['RADAR_MAX_SELECTED_COUNT'])
 		) {
 			this.selectedObjectIds.push(radarObject.id);
+			this.logger.log(`TARGET SELECTED: ${targetId}`);
 		}
 	}
 
@@ -200,6 +208,7 @@ export class SAM {
 			this.selectedObjectIds = this.selectedObjectIds.filter((id) =>
 				id !== targetId
 			);
+			this.logger.log(`TARGET UNSELECTED: ${targetId}`);
 		}
 	}
 
@@ -208,6 +217,7 @@ export class SAM {
 		Object.values(this.missileChannels).forEach((missileChannel) =>
 			missileChannel.reset()
 		);
+		this.logger.log(`TARGETS RESETTED`);
 	}
 
 	public addUpdateListener(name: string, listener: () => void) {
