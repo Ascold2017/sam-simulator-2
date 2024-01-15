@@ -39,6 +39,7 @@ export const useMainStore = defineStore("mainStore", {
   state: () => ({
     socket: null as WebSocket | null,
     isEnabled: false,
+    isShowResults: false,
     currentTargetId: null as string | null,
     radarObjects: [] as IRadarObject[],
     selectedTargetIds: [] as string[],
@@ -127,6 +128,8 @@ export const useMainStore = defineStore("mainStore", {
       } else {
         Sounds.stopEngine();
         this.disconnect();
+        this.getLogs();
+        this.isShowResults = true;
       }
     },
     seekTarget() {

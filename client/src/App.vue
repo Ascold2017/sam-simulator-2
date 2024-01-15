@@ -3,11 +3,11 @@
     <v-main dark>
       <SAMScreen v-show="activeScreen === 'SAM'" />
       <EditorScreen v-show="activeScreen === 'Editor'" />
-      <v-container fluid class="px-6 " v-show="activeScreen === 'Results'">
+      <v-dialog v-model="mainStore.isShowResults" persistent>
         <v-list dencity="compact">
           <v-list-item v-for="log in mainStore.logs" :title="log.message" :subtitle="new Date(log.time).toString()" />
         </v-list>
-      </v-container>
+      </v-dialog>
       <AppMenu @open-screen="openScreen" />
     </v-main>
   </v-layout>
@@ -32,9 +32,6 @@ enum ScreensEnum {
 const activeScreen = ref(ScreensEnum.SAM);
 const openScreen = (screen: string) => {
   activeScreen.value = screen as ScreensEnum;
-  if (screen === ScreensEnum.Results) {
-    mainStore.getLogs();
-  }
 }
 
 onMounted(() => {

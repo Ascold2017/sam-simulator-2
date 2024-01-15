@@ -9,7 +9,6 @@
       <v-btn variant="text" @click="openScreen('SAM')">Back</v-btn>
       <v-btn variant="text" v-for="mission in missionEditorStore.missions" @click="loadMission(mission.id!)">{{ mission.name }}</v-btn>
       <v-btn variant="text" @click="openScreen('Editor')">Mission editor</v-btn>
-      <v-btn variant="text" @click="openScreen('Results')">Mission results</v-btn>
       <!--
       <v-btn-toggle mandatory :model-value="acceleration" @update:model-value="setAcceleration">
         <v-btn :value="1">1X</v-btn>

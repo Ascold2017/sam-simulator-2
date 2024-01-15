@@ -2,7 +2,7 @@
   "name": "sam-simulator",
   "version": "2.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode=production",
     "build": "run-p type-check build-only",
     "preview": "vite preview --port 4173",
     "build-only": "vite build",
