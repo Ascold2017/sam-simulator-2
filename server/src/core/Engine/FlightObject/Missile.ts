@@ -89,7 +89,7 @@ export default class Missile extends BaseFlightObject {
 			deltaRotation > samParams.MISSILE_MAX_DELTA_ROTATION
 		) {
 			this.logger.log(
-				`MISSILE ON TARGET ${this.target.id} OVERLOADED. METHOD: ${this.method}`,
+				`[MISSILE] Overloaded. Method: ${this.method}. Target: ${this.target.id}`,
 			);
 			this.destroy();
 			return;
@@ -99,7 +99,9 @@ export default class Missile extends BaseFlightObject {
 			this.target.kill();
 			this.destroy();
 			this.logger.log(
-				`MISSILE ON TARGET ${this.target.id} HIT. HIT DISTANCE: ${targetDistance}. METHOD: ${this.method}`,
+				`[MISSILE] HIT! Target ${this.target.id} has been killed. Hit distance: ${
+					targetDistance.toFixed(1)
+				} m. Method: ${this.method}`,
 			);
 			return;
 		}
@@ -108,7 +110,7 @@ export default class Missile extends BaseFlightObject {
 		) {
 			this.destroy();
 			this.logger.log(
-				`MISSILE ON TARGET ${this.target.id} OVER RANGE. METHOD: ${this.method}`,
+				`[MISSILE] Over range. Target: ${this.target.id}. Method: ${this.method}`,
 			);
 			return;
 		}

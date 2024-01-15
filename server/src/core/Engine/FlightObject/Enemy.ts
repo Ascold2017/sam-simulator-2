@@ -22,7 +22,9 @@ export default class Enemy extends BaseFlightObject {
 	update(time: number) {
 		super.update(time);
 		if (this.currentPointIndex === this.points.length - 1) {
-			this.logger.log(`TARGET ${this.id} END THEIR WAY (NOT DESTROYED)`);
+			this.logger.log(
+				`[TARGET] End way of target: ${this.id}. Not destroyed`,
+			);
 			return this.destroy();
 		}
 		const prevPoint = { ...this.currentPoint };

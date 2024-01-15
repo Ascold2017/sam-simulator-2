@@ -119,7 +119,7 @@ export class SAM {
 	}
 
 	public setIsEnabled(value: boolean) {
-		this.logger.log('SAM ' + value ? 'ENABLED' : 'DISABLED');
+		this.logger.log(`SAM ${value ? 'enabled' : 'disabled'}`);
 		this.isEnabled = value;
 	}
 
@@ -169,14 +169,16 @@ export class SAM {
 			this.engine.addFlightObject(missile);
 
 			this.logger.log(
-				`MISSILE LAUNCHED ON CHANNEL: ${channelId} (${method}). TARGET: ${target.id} DISTANCE: ${target.distance}`,
+				`[MISSILE] Launch on channel: ${channelId} (method: ${method}). Target: ${target.id}, distance: ${
+					(target.distance / 1000).toFixed(1)
+				} km`,
 			);
 		}
 	}
 
 	public resetMissile(channelId: number) {
 		this.missileChannels[channelId]?.reset();
-		this.logger.log(`MISSILE RESETTET ON CHANNEL: ${channelId}`);
+		this.logger.log(`[MISSILE] Reset on channel: ${channelId}`);
 	}
 
 	public selectTarget(targetId: string) {
@@ -191,7 +193,7 @@ export class SAM {
 				Number(samParams['RADAR_MAX_SELECTED_COUNT'])
 		) {
 			this.selectedObjectIds.push(radarObject.id);
-			this.logger.log(`TARGET SELECTED: ${targetId}`);
+			this.logger.log(`[TARGET] Selected: ${targetId}`);
 		}
 	}
 
@@ -208,7 +210,7 @@ export class SAM {
 			this.selectedObjectIds = this.selectedObjectIds.filter((id) =>
 				id !== targetId
 			);
-			this.logger.log(`TARGET UNSELECTED: ${targetId}`);
+			this.logger.log(`[TARGET] Unselected: ${targetId}`);
 		}
 	}
 
@@ -217,7 +219,7 @@ export class SAM {
 		Object.values(this.missileChannels).forEach((missileChannel) =>
 			missileChannel.reset()
 		);
-		this.logger.log(`TARGETS RESETTED`);
+		this.logger.log(`[TARGET] Reset all`);
 	}
 
 	public addUpdateListener(name: string, listener: () => void) {
