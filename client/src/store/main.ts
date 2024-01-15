@@ -30,6 +30,11 @@ export interface IMissileChannel {
   isBusy: boolean;
 }
 
+export interface ILog {
+  time: number;
+  message: string;
+}
+
 export const useMainStore = defineStore("mainStore", {
   state: () => ({
     socket: null as WebSocket | null,
@@ -40,7 +45,7 @@ export const useMainStore = defineStore("mainStore", {
     missileChannels: [] as IMissileChannel[],
     missilesLeft: 0,
     isUpdated: false,
-
+    logs: [] as ILog[],
     samParams: {
       MAX_DISTANCE: 0,
       MIN_CAPTURE_RANGE: 0,
@@ -206,6 +211,18 @@ export const useMainStore = defineStore("mainStore", {
           mode: "cors",
           body: JSON.stringify({ channelId }),
         });
+      } catch (e: any) {
+        console.log(e.message);
+      }
+    },
+    async getLogs() {
+      try {
+        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/logs", {
+          method: "GET",
+          mode: "cors",
+        });
+        const data = await response.json();
+        this.logs = data;
       } catch (e: any) {
         console.log(e.message);
       }
