@@ -14,7 +14,7 @@
             x: -2,
             y: index - 2,
             width: 202,
-            height: 62,
+            height: 76,
             stroke: 'rgb(150, 249, 123)',
             strokeWidth: 1
         }" />
