@@ -1,43 +1,11 @@
+import { samHttpClient, samSocketClient } from "@/adapters/clients";
 import Sounds from "@/helpers/sounds";
+import type { IRadarObject, IMissileChannel, ILog, SamSettingsResponse, SamSelectTargetPayload, SamLaunchMissilePayload, SamResetMissilePayload } from "@/model/sam.model";
 import { defineStore } from "pinia";
 
-export interface IRadarObject {
-  type:
-    | "DETECTED_RADAR_OBJECT"
-    | "UNDETECTED_RADAR_OBJECT"
-    | "SNOW_RADAR_OBJECT";
-  id: string;
-  x: number;
-  y: number;
-  azimuth: number;
-  elevation: number;
-  distance: number;
-  rotation: number;
-  velocity: number;
-  radialVelocity: number;
-  height: number;
-  param: number;
-  size: number;
-  visibilityK: number;
-  isMissile?: boolean;
-  hitPosition: {
-    x: number;
-    y: number;
-  }
-}
-export interface IMissileChannel {
-  id: number;
-  isBusy: boolean;
-}
-
-export interface ILog {
-  time: number;
-  message: string;
-}
 
 export const useMainStore = defineStore("mainStore", {
   state: () => ({
-    socket: null as WebSocket | null,
     isEnabled: false,
     isShowResults: false,
     currentTargetId: null as string | null,
@@ -69,50 +37,32 @@ export const useMainStore = defineStore("mainStore", {
 
   actions: {
     connect() {
-      this.socket = new WebSocket(import.meta.env.VITE_SOCKET_BASE_URL + "/socket");
-      this.socket.addEventListener("open", () => {
-        console.info("SOCKET OPENED");
-        this.isEnabled = true;
-      });
-      this.socket.addEventListener(
-        "close",
-        () => console.info("SOCKET CLOSED"),
-      );
-      this.socket.addEventListener(
-        "error",
-        (e) => console.error("SOCKET ERROR", e),
-      );
-      this.socket.addEventListener("message", (message) => {
-        const [type, jsonPayload] = message.data.split("|") as string[];
-        const actions: Record<string, (payload: any) => void> = {
-          "RADAR_OBJECTS_UPDATE": (payload: IRadarObject[]) => {
-            this.isUpdated = true;
-            const t = setTimeout(() => {
-              this.isUpdated = false;
-              clearTimeout(t);
-            }, 300)
-            this.radarObjects = [...payload];
-          },
-          "SELECTED_TARGET_IDS_UPDATE": (payload: string[]) =>
-            this.selectedTargetIds = [...payload],
-          "MISSILE_CHANNELS_UPDATE": (payload: IMissileChannel[]) =>
-            this.missileChannels = [...payload],
-          "MISSILES_LEFT_UPDATE": (payload: number) =>
-            this.missilesLeft = payload,
-        };
+      this.isEnabled = true;
+      samSocketClient.connect()
+      samSocketClient.listenToEvent('RADAR_OBJECTS_UPDATE', (payload: IRadarObject[]) => {
+        this.isUpdated = true;
+        const t = setTimeout(() => {
+          this.isUpdated = false;
+          clearTimeout(t);
+        }, 300)
+        this.radarObjects = [...payload];
+      })
 
-        const action = actions[type];
-        // @ts-ignore
-        if (action) {
-          const payload = JSON.parse(jsonPayload);
-          action(payload);
-        } else {
-          console.log(message.data);
-        }
-      });
+      samSocketClient.listenToEvent('SELECTED_TARGET_IDS_UPDATE', (payload: string[]) => {
+        this.selectedTargetIds = [...payload]
+      })
+
+      samSocketClient.listenToEvent('MISSILE_CHANNELS_UPDATE', (payload: IMissileChannel[]) => {
+        this.missileChannels = [...payload]
+      })
+
+      samSocketClient.listenToEvent('MISSILES_LEFT_UPDATE', (payload: number) => {
+        this.missilesLeft = payload
+      })
+      
     },
     disconnect() {
-      this.socket && this.socket.close();
+      samSocketClient.disconnect()
       this.isEnabled = false;
       this.radarObjects = [];
       this.selectedTargetIds = [];
@@ -147,11 +97,10 @@ export const useMainStore = defineStore("mainStore", {
 
     async getSamSettings() {
       try {
-        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/sam-settings", {
-          method: "GET",
-          mode: "cors",
-        });
-        const data = await response.json();
+        const data = await samHttpClient.request<undefined, SamSettingsResponse>({
+          method: 'GET',
+          path: '/settings'
+        })
         this.missileChannels = Array.from(Array(data["MISSILES_CHANNEL_COUNT"]))
           .map((_, index) => ({ id: index, isBusy: true }));
         this.samParams = data;
@@ -161,47 +110,47 @@ export const useMainStore = defineStore("mainStore", {
     },
     async selectTarget() {
       try {
-        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/select-target", {
-          method: "POST",
-          mode: "cors",
-          body: JSON.stringify({ id: this.currentTargetId }),
-        });
+        await samHttpClient.request<SamSelectTargetPayload, undefined>({
+          method: 'POST',
+          path: '/select-target',
+          payload: { id: this.currentTargetId! }
+        })
       } catch (e: any) {
         console.log(e.message);
       }
     },
     async unselectTarget() {
       try {
-        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/unselect-target", {
-          method: "POST",
-          mode: "cors",
-          body: JSON.stringify({ id: this.currentTargetId }),
-        });
+        await samHttpClient.request<SamSelectTargetPayload, undefined>({
+          method: 'POST',
+          path: '/unselect-target',
+          payload: { id: this.currentTargetId! }
+        })
       } catch (e: any) {
         console.log(e.message);
       }
     },
     async resetTargets() {
       try {
-        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/reset-targets", {
-          method: "POST",
-          mode: "cors",
-        });
+        await samHttpClient.request<undefined, undefined>({
+          method: 'POST',
+          path: '/reset-targets',
+        })
       } catch (e: any) {
         console.log(e.message);
       }
     },
     async launchMissile(channelId: number, method: string) {
       try {
-        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/launch-missile", {
-          method: "POST",
-          mode: "cors",
-          body: JSON.stringify({
-            id: this.currentTargetId,
-            channelId,
-            method,
-          }),
-        });
+        await samHttpClient.request<SamLaunchMissilePayload, undefined>({
+          method: 'POST',
+          path: '/launch-missile',
+          payload: {
+              id: this.currentTargetId!,
+              channelId,
+              method,
+          }
+        })
         Sounds.missileStart();
       } catch (e: any) {
         console.log(e.message);
@@ -209,22 +158,23 @@ export const useMainStore = defineStore("mainStore", {
     },
     async resetMissile(channelId: number) {
       try {
-        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/reset-missile", {
-          method: "POST",
-          mode: "cors",
-          body: JSON.stringify({ channelId }),
-        });
+        await samHttpClient.request<SamResetMissilePayload, undefined>({
+          method: 'POST',
+          path: '/reset-missile',
+          payload: {
+              channelId,
+          }
+        })
       } catch (e: any) {
         console.log(e.message);
       }
     },
     async getLogs() {
       try {
-        const response = await fetch(import.meta.env.VITE_API_BASE_URL + "/logs", {
-          method: "GET",
-          mode: "cors",
-        });
-        const data = await response.json();
+        const data = await samHttpClient.request<undefined, ILog[]>({
+          path: '/logs',
+          method: 'GET'
+        })
         this.logs = data;
       } catch (e: any) {
         console.log(e.message);

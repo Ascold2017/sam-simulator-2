@@ -1,28 +1,14 @@
 import { defineStore } from "pinia";
 import _ from "lodash";
-export interface IPoint {
-  x: number;
-  y: number;
-  z: number;
-  v: number;
-}
-interface IMission {
-  id: number | null;
-  name: string;
-  tasks: ITask[];
-}
-export interface ITask {
-  id: number | null;
-  points: IPoint[];
-  flightObjectTypeId: number | null;
-  delay: number;
-}
-export interface IFlightObjectType {
-  id: number;
-  maxVelocity: number;
-  altitude: number;
-  name: string;
-}
+import type {
+  EditorStartPayload,
+  IFlightObjectType,
+  IMission,
+  IPoint,
+  ITask,
+} from "@/model/editor.model";
+import { HttpClient } from "@/adapters/httpClient";
+import { editorHttpClient, samHttpClient } from "@/adapters/clients";
 
 const defaultMission: IMission = {
   id: null,
@@ -36,13 +22,16 @@ const defaultTask: ITask = {
   flightObjectTypeId: null,
   delay: 0,
 };
+
+
+
 export const useMissionEditorStore = defineStore("missionEditorStore", {
   state: () => ({
     missions: [] as IMission[],
     flightObjectTypes: [] as IFlightObjectType[],
     currentMission: _.cloneDeep(defaultMission),
     selectedTask: _.cloneDeep(defaultTask),
-    selectedPointIndex: null as number | null
+    selectedPointIndex: null as number | null,
   }),
 
   getters: {
@@ -52,22 +41,19 @@ export const useMissionEditorStore = defineStore("missionEditorStore", {
       );
     },
     selectedPoint(state) {
-      if (state.selectedPointIndex === null) return { x: 0, y: 0, z: 0, v: 0 }
-      return state.selectedTask.points[state.selectedPointIndex] || { x: 0, y: 0, z: 0, v: 0 };
-    }
+      if (state.selectedPointIndex === null) return { x: 0, y: 0, z: 0, v: 0 };
+      return state.selectedTask.points[state.selectedPointIndex] ||
+        { x: 0, y: 0, z: 0, v: 0 };
+    },
   },
 
   actions: {
     async getMissions() {
       try {
-        const response = await fetch(
-          import.meta.env.VITE_API_BASE_URL + "/missions",
-          {
-            method: "GET",
-            mode: "cors",
-          },
-        );
-        const data = await response.json();
+        const data = await editorHttpClient.request<undefined, IMission[]>({
+          method: "GET",
+          path: "/missions",
+        });
         this.missions = data;
       } catch (e: any) {
         console.log(e.message);
@@ -75,28 +61,24 @@ export const useMissionEditorStore = defineStore("missionEditorStore", {
     },
     async startMission(id: number) {
       try {
-        const response = await fetch(
-          import.meta.env.VITE_API_BASE_URL + "/start",
-          {
-            method: "POST",
-            mode: "cors",
-            body: JSON.stringify({ id }),
-          },
-        );
+        await samHttpClient.request<EditorStartPayload, undefined>({
+          method: "POST",
+          path: "/start",
+          payload: { id },
+        });
       } catch (e: any) {
         console.log(e.message);
       }
     },
     async getFlightObjectTypes() {
       try {
-        const response = await fetch(
-          import.meta.env.VITE_API_BASE_URL + "/flight-object-types",
-          {
-            method: "GET",
-            mode: "cors",
-          },
-        );
-        const data = await response.json();
+        const data = await editorHttpClient.request<
+          undefined,
+          IFlightObjectType[]
+        >({
+          method: "GET",
+          path: "/flight-object-types",
+        });
         this.flightObjectTypes = data;
       } catch (e: any) {
         console.log(e.message);
@@ -117,7 +99,9 @@ export const useMissionEditorStore = defineStore("missionEditorStore", {
     },
 
     removePoint() {
-      this.selectedTask.points = this.selectedTask.points.filter((_, i) => i !== this.selectedPointIndex);
+      this.selectedTask.points = this.selectedTask.points.filter((_, i) =>
+        i !== this.selectedPointIndex
+      );
     },
 
     selectTask(taskId: number) {
@@ -158,20 +142,18 @@ export const useMissionEditorStore = defineStore("missionEditorStore", {
     },
 
     async saveMission() {
-        try {
-            const response = await fetch(
-              import.meta.env.VITE_API_BASE_URL + "/save-mission",
-              {
-                method: "POST",
-                mode: "cors",
-                body: JSON.stringify(this.currentMission)
-              },
-            );
-            this.resetMission();
-            this.getMissions();
-          } catch (e: any) {
-            console.log(e.message);
-          }
+      try {
+        await editorHttpClient.request<IMission, undefined>({
+          method: "POST",
+          path: "/save-mission",
+          payload: this.currentMission,
+        });
+
+        this.resetMission();
+        this.getMissions();
+      } catch (e: any) {
+        console.log(e.message);
+      }
     },
 
     selectMission(missionId: number) {
@@ -182,12 +164,15 @@ export const useMissionEditorStore = defineStore("missionEditorStore", {
 
     download() {
       const mission = JSON.stringify(this.currentMission);
-      const filename = this.currentMission.name + '.json';
-      const element = document.createElement('a');
-      element.setAttribute('href','data:application/json;charset=utf-8, ' + encodeURIComponent(mission));
-      element.setAttribute('download', filename);
+      const filename = this.currentMission.name + ".json";
+      const element = document.createElement("a");
+      element.setAttribute(
+        "href",
+        "data:application/json;charset=utf-8, " + encodeURIComponent(mission),
+      );
+      element.setAttribute("download", filename);
       document.body.appendChild(element);
       element.click();
-    }
+    },
   },
 });

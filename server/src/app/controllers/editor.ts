@@ -1,9 +1,9 @@
 import { engineInstance } from '#src/main.ts';
 import { db } from '#src/database/database.ts';
-import MissionDTO, { MissionRow } from '#src/server/dto/MissionDTO.ts';
+import MissionDTO, { MissionRow } from '../dto/MissionDTO.ts';
 import FlightObjectTypesDTO, {
 	FlightObjectTypesRow,
-} from '#src/server/dto/FlightObjectTypesDTO.ts';
+} from '../dto/FlightObjectTypesDTO.ts';
 
 export function getFlightObjectTypes() {
 	const data = db.query<FlightObjectTypesRow>(
