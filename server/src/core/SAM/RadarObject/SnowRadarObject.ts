@@ -1,5 +1,5 @@
 import BaseRadarObject from './BaseRadarObject.ts';
-import samParams from '#src/assets/samParams.json' with { type: 'json' };
+import samParams from '../../../samParams.json' with { type: 'json' };
 
 export default class SnowRadarObject extends BaseRadarObject {
 	public type = 'SNOW_RADAR_OBJECT';

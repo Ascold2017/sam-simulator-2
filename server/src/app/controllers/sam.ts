@@ -1,6 +1,6 @@
 import { EventEmitter } from 'https://deno.land/x/eventemitter@1.2.4/mod.ts';
 import { engineInstance, samInstance } from '#src/main.ts';
-import samParams from '#src/assets/samParams.json' with { type: 'json' };
+import samParams from '../../samParams.json' with { type: 'json' };
 import RadarObjectDTO from '../dto/RadarObjectDTO.ts';
 import MissileChannelDTO from '../dto/MissileChannelDTO.ts';
 import MissionLogger from '#src/core/MissionLogger.ts';

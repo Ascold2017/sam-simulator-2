@@ -5,7 +5,7 @@ import BaseRadarObject from './RadarObject/BaseRadarObject.ts';
 import DetectedRadarObject from './RadarObject/DetectedRadarObject.ts';
 import SnowRadarObject from './RadarObject/SnowRadarObject.ts';
 import UndetectedRadarObject from './RadarObject/UndetectedRadarObject.ts';
-import samParams from '#src/assets/samParams.json' with { type: 'json' };
+import samParams from '../../samParams.json' with { type: 'json' };
 import _ from 'lodash';
 import MissionLogger from '#src/core/MissionLogger.ts';
 

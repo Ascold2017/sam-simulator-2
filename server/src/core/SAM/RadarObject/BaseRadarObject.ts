@@ -1,4 +1,4 @@
-import samParams from '#src/assets/samParams.json' with { type: 'json' };
+import samParams from '../../../samParams.json' with { type: 'json' };
 import type { IPoint } from '#engine/Engine.ts';
 import Vector3D from '#src/core/Vector3D.ts';
 
