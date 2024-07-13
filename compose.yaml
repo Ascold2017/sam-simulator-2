@@ -3,11 +3,11 @@ version: '3.8'
 services:
   server:
     restart: on-failure
-    build: ./server
+    image: docker.io/ascold2017/sam-simulator-server
     hostname: server
 
   client:
-    build: ./client
+    image: docker.io/ascold2017/sam-simulator-client
     ports:
       - "80:80"
     depends_on:

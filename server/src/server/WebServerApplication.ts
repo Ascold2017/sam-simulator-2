@@ -103,6 +103,7 @@ export default class WebServerApplication {
 				);
 			}
 			if (route.type === 'websocket') {
+				console.log(route.path)
 				this.addSocketEndpoint(
 					new URLPattern({ pathname: route.path }),
 					route.handler,
