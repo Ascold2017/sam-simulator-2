@@ -8,18 +8,18 @@ import {
 const router: (HttpRoute | WebSocketRoute)[] = [
 	{
 		type: 'http',
-		path: '/missions',
+		path: '/api/missions',
 		handler: getMissions,
 	},
 
 	{
 		type: 'http',
-		path: '/save-mission',
+		path: '/api/save-mission',
 		handler: saveMission,
 	},
 	{
 		type: 'http',
-		path: '/flight-object-types',
+		path: '/api/flight-object-types',
 		handler: getFlightObjectTypes,
 	},
 ];

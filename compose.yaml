@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  server:
+    restart: on-failure
+    build: ./server
+    hostname: server
+
+  client:
+    build: ./client
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+  
+  
+    

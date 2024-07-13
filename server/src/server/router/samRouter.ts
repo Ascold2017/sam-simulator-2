@@ -14,47 +14,47 @@ import {
 const router: (HttpRoute | WebSocketRoute)[] = [
 	{
 		type: 'http',
-		path: '/sam-settings',
+		path: '/api/sam-settings',
 		handler: getSAMSettings,
 	},
 	{
 		type: 'http',
-		path: '/start',
+		path: '/api/start',
 		handler: startMission,
 	},
 	{
 		type: 'http',
-		path: '/select-target',
+		path: '/api/select-target',
 		handler: selectTarget,
 	},
 	{
 		type: 'http',
-		path: '/unselect-target',
+		path: '/api/unselect-target',
 		handler: unselectTarget,
 	},
 	{
 		type: 'http',
-		path: '/reset-targets',
+		path: '/api/reset-targets',
 		handler: resetTargets,
 	},
 	{
 		type: 'http',
-		path: '/launch-missile',
+		path: '/api/launch-missile',
 		handler: launchMissile,
 	},
 	{
 		type: 'http',
-		path: '/reset-missile',
+		path: '/api/reset-missile',
 		handler: resetMissile,
 	},
 	{
 		type: 'websocket',
-		path: '/socket',
+		path: '/api/socket',
 		handler: socket,
 	},
 	{
 		type: 'http',
-		path: '/logs',
+		path: '/api/logs',
 		handler: getLogs,
 	},
 ];
