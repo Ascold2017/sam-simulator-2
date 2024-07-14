@@ -24,15 +24,17 @@
 
 <script setup lang="ts">
 import { ref, defineEmits, defineProps } from 'vue';
-import { useMainStore } from '@/store/main';
 import { useMissionEditorStore } from '@/store/missionEditor';
+
+const missionEditorStore = useMissionEditorStore();
+
 const emit = defineEmits<{
   (e: 'openScreen', screen: string): void;
 }>();
 
 const isActive = ref(true)
-const mainStore = useMainStore();
-const missionEditorStore = useMissionEditorStore();
+
+
 
 const openScreen = (screen: string) => {
   emit('openScreen', screen);

@@ -37,19 +37,18 @@
 </template>
 
 <script setup lang="ts">
+import { useWeaponStore } from '@/store/sam/weapon';
 import SAMButton from '../SAMButton.vue';
-import { useMainStore } from '@/store/main';
 import { ref } from 'vue';
 const props = defineProps<{ index: number; missileChannel: any }>();
-
-const mainStore = useMainStore();
+const weaponStore = useWeaponStore()
 const guidanceMethod = ref<'3P' | '1/2'>('3P');
 function launchMissile() {
-    mainStore.launchMissile(props.missileChannel.id, guidanceMethod.value);
+    weaponStore.launchMissile(props.missileChannel.id, guidanceMethod.value);
 }
 
 function resetMissile() {
-    mainStore.resetMissile(props.missileChannel.id)
+    weaponStore.resetMissile(props.missileChannel.id)
 }
 
 function selectMethod(method: '3P' | '1/2') {

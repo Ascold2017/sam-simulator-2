@@ -52,9 +52,9 @@ export class Server {
 				response.headers.set('Access-Control-Allow-Origin', '*');
 				response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
 				response.headers.set('Access-Control-Allow-Headers', ' Content-Type')
+				response.headers.set('Content-Type', 'application/json');
 			}
-				
-
+			
 			await requestEvent.respondWith(response);
 		}
 	}

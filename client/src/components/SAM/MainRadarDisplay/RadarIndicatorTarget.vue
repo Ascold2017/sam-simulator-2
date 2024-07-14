@@ -36,7 +36,9 @@
 </template>
 
 <script setup lang="ts">
-import { useMainStore, type IRadarObject } from '@/store/main';
+import type { IRadarObject } from '@/model/sam.model';
+import { useSamSettings } from '@/store/sam/settings';
+import { useTargets } from '@/store/sam/targets';
 import { computed } from 'vue';
 
 interface IRadarIndicatorTarget {
@@ -53,11 +55,11 @@ interface IRadarIndicatorTarget {
 }
 
 const props = defineProps<{ target: Partial<IRadarObject>; scale: number; gridHeight: number; gridWidth: number; }>();
-
-const mainStore = useMainStore();
+const samSettings = useSamSettings()
+const targetsStore = useTargets()
 
 const indicatorTarget = computed<IRadarIndicatorTarget>(() => {
-  const targetSpotDistance = mainStore.samParams.RADAR_DISTANCE_DETECT_ACCURACY / props.scale;
+  const targetSpotDistance = samSettings.samParams.RADAR_DISTANCE_DETECT_ACCURACY / props.scale;
   return {
     x: ((props.target.azimuth! * (180 / Math.PI)) / 360) * props.gridWidth,
     y: props.gridHeight - (props.target.distance! / props.scale),
@@ -66,8 +68,8 @@ const indicatorTarget = computed<IRadarIndicatorTarget>(() => {
     alpha: props.target.visibilityK! * 1,
     isDetected: props.target.type === 'DETECTED_RADAR_OBJECT',
     isEnemy: props.target.type === 'DETECTED_RADAR_OBJECT' && !props.target.isMissile,
-    isSelected: mainStore.selectedTargetIds.includes(props.target.id!),
-    isCurrent: mainStore.currentTargetId === props.target.id,
+    isSelected: targetsStore.selectedTargetIds.includes(props.target.id!),
+    isCurrent: targetsStore.currentTargetId === props.target.id,
     hitPosition: (() => {
       if (props.target.type !== 'DETECTED_RADAR_OBJECT') return { x: 0, y: 0 }
       const hitPositionAzimith = Math.atan2(props.target.hitPosition!.y, props.target.hitPosition!.x)

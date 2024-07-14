@@ -2,12 +2,13 @@
   <v-layout full-height>
     <v-main dark>
       <SAMScreen v-show="activeScreen === 'SAM'" />
-      <EditorScreen v-show="activeScreen === 'Editor'" />
+      <!--
       <v-dialog v-model="mainStore.isShowResults" persistent>
         <v-list dencity="compact">
           <v-list-item v-for="log in mainStore.logs" :title="log.message" :subtitle="new Date(log.time).toString()" />
         </v-list>
       </v-dialog>
+      -->
       <AppMenu @open-screen="openScreen" />
     </v-main>
   </v-layout>
@@ -17,11 +18,11 @@
 import { onMounted, ref } from 'vue'
 import AppMenu from '@/components/AppMenu.vue'
 import SAMScreen from '@/components/SAM/SAM.vue';
-import EditorScreen from '@/components/Editor/EditorScreen.vue'
-import { useMainStore } from './store/main';
+// import EditorScreen from '@/components/Editor/EditorScreen.vue'
 import { useMissionEditorStore } from './store/missionEditor';
+import { useSamSettings } from './store/sam/settings';
 
-const mainStore = useMainStore();
+const samSettings = useSamSettings();
 const missionEditorStore = useMissionEditorStore()
 enum ScreensEnum {
   SAM = 'SAM',
@@ -35,7 +36,7 @@ const openScreen = (screen: string) => {
 }
 
 onMounted(() => {
-  mainStore.getSamSettings();
+  samSettings.getSamSettings();
   missionEditorStore.getFlightObjectTypes();
   missionEditorStore.getMissions();
 })

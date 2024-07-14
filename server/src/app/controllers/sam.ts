@@ -19,7 +19,7 @@ export async function selectTarget(req: Request) {
 		const { id } = await req.json();
 		id && samInstance.selectTarget(id);
 		ee.emit('shouldUpdateSelectedTargetIds');
-		return new Response('ok', { status: 200 });
+		return new Response(JSON.stringify({ ok: true }), { status: 200 });
 	} catch (e) {
 		return new Response(e.message, { status: 500 });
 	}
@@ -30,7 +30,7 @@ export async function unselectTarget(req: Request) {
 		const { id } = await req.json();
 		id && samInstance.unselectTarget(id);
 		ee.emit('shouldUpdateSelectedTargetIds');
-		return new Response('ok', { status: 200 });
+		return new Response(JSON.stringify({ ok: true }), { status: 200 });
 	} catch (e) {
 		return new Response(e.message, { status: 500 });
 	}
@@ -41,7 +41,7 @@ export function resetTargets() {
 		samInstance.resetTargets();
 		ee.emit('shouldUpdateSelectedTargetIds');
 		ee.emit('shouldUpdateMissileChannels');
-		return new Response('ok', { status: 200 });
+		return new Response(JSON.stringify({ ok: true }), { status: 200 });
 	} catch (e) {
 		return new Response(e.message, { status: 500 });
 	}
@@ -52,7 +52,7 @@ export async function launchMissile(req: Request) {
 		const { id, channelId, method } = await req.json();
 		samInstance.launchMissile(id, channelId, method);
 		ee.emit('shouldUpdateMissileChannels');
-		return new Response('ok', { status: 200 });
+		return new Response(JSON.stringify({ ok: true }), { status: 200 });
 	} catch (e) {
 		return new Response(e.message, { status: 500 });
 	}
@@ -63,7 +63,7 @@ export async function resetMissile(req: Request) {
 		const { channelId } = await req.json();
 		samInstance.resetMissile(channelId);
 		ee.emit('shouldUpdateMissileChannels');
-		return new Response('ok', { status: 200 });
+		return new Response(JSON.stringify({ ok: true }), { status: 200 });
 	} catch (e) {
 		return new Response(e.message, { status: 500 });
 	}

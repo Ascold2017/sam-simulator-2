@@ -36,10 +36,14 @@ export class HttpClient {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        try {
+        const contentType = response.headers.get("Content-Type");
+
+        if (contentType && contentType.includes("application/json")) {
             return response.json() as Promise<TResponse>;
-        } catch {
+        } else if (contentType && contentType.includes("text/")) {
             return response.text() as Promise<TResponse>;
+        } else {
+            throw new Error(`Unsupported content type: ${contentType}`);
         }
     }
 }

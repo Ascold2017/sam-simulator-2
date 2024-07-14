@@ -7,13 +7,13 @@
       v-for="i in countLines" />
     <!-- Max capture range circle -->
     <vk-line
-      :config="{ points: [0, gridHeight - mainStore.samParams.MAX_CAPTURE_RANGE / scale, gridWidth, gridHeight - mainStore.samParams.MAX_CAPTURE_RANGE / scale], stroke: 'rgb(150, 249, 123)', dash: [2, 5], strokeWidth: 1.5 }" />
+      :config="{ points: [0, gridHeight - samSettings.samParams.MAX_CAPTURE_RANGE / scale, gridWidth, gridHeight - samSettings.samParams.MAX_CAPTURE_RANGE / scale], stroke: 'rgb(150, 249, 123)', dash: [2, 5], strokeWidth: 1.5 }" />
     <!-- Min capture range circle -->
     <vk-line
-      :config="{ points: [0, gridHeight - mainStore.samParams.MIN_CAPTURE_RANGE / scale, gridWidth, gridHeight - mainStore.samParams.MIN_CAPTURE_RANGE / scale], stroke: 'rgb(150, 249, 123)', dash: [2, 5], strokeWidth: 1.5 }" />
+      :config="{ points: [0, gridHeight - samSettings.samParams.MIN_CAPTURE_RANGE / scale, gridWidth, gridHeight - samSettings.samParams.MIN_CAPTURE_RANGE / scale], stroke: 'rgb(150, 249, 123)', dash: [2, 5], strokeWidth: 1.5 }" />
     <!-- Killzone circle -->
     <vk-line
-      :config="{ points: [0, gridHeight - mainStore.samParams.MISSILE_MAX_DISTANCE / scale, gridWidth, gridHeight - mainStore.samParams.MISSILE_MAX_DISTANCE / scale], stroke: 'red', strokeWidth: 0.5 }" />
+      :config="{ points: [0, gridHeight - samSettings.samParams.MISSILE_MAX_DISTANCE / scale, gridWidth, gridHeight - samSettings.samParams.MISSILE_MAX_DISTANCE / scale], stroke: 'red', strokeWidth: 0.5 }" />
     <!-- Azimut lines -->
     <vk-line :config="{
       points: [azimutLine.x , 0, azimutLine.x, gridHeight],
@@ -36,21 +36,21 @@
       height: 12
     }" v-for="azimutLine in azimutLines" />
     <vk-text
-      :config="{ x: 670, y: 0, text: 'UPDATE', align: 'center', width: 100, fontFamily: 'DS-DigitalB, sans-serif', fontSize: 14, fill: mainStore.isUpdated ? 'red' : 'white' }" />
+      :config="{ x: 670, y: 0, text: 'UPDATE', align: 'center', width: 100, fontFamily: 'DS-DigitalB, sans-serif', fontSize: 14, fill: radarObjects.isUpdated ? 'red' : 'white' }" />
 
   </vk-group>
 </template>
 
 <script setup lang="ts">
-import { useMainStore } from '@/store/main';
+import { useRadarObjects } from '@/store/sam/radarObjects';
+import { useSamSettings } from '@/store/sam/settings';
 import { computed } from 'vue';
 
 const props = defineProps<{ scale: number; gridWidth: number; gridHeight: number; }>();
-const mainStore = useMainStore();
+const samSettings = useSamSettings()
+const radarObjects = useRadarObjects()
 
-
-
-const countLines = computed(() => mainStore.samParams.MAX_DISTANCE / 10000);
+const countLines = computed(() => samSettings.samParams!.MAX_DISTANCE / 10000);
 const azimutLines = computed(() => {
   return Array(36).fill(0).map((_, i) => {
     const gap = props.gridWidth / 36;

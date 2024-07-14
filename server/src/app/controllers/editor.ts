@@ -31,9 +31,10 @@ export async function startMission(req: Request) {
 		if (mission) {
 			engineInstance.resetMission();
 			engineInstance.startMission(mission.tasks);
-			return new Response('ok', { status: 200 });
+			
+			return new Response(JSON.stringify({ ok: true }), { status: 200 });
 		}
-		return new Response('ok', { status: 404 });
+		return new Response(JSON.stringify({ ok: true }), { status: 404 });
 	} catch (e) {
 		return new Response(e.message, { status: 500 });
 	}
@@ -57,7 +58,7 @@ export async function saveMission(req: Request) {
 				}' WHERE id=${payload.id};`,
 			);
 		}
-		return new Response('ok', { status: 200 });
+		return new Response(JSON.stringify({ ok: true }), { status: 200 });
 	} catch (e) {
 		console.log(e.message);
 		return new Response(e.message, { status: 500 });

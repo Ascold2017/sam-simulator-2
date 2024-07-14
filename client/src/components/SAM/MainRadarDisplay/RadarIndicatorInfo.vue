@@ -22,11 +22,12 @@
 </template>
 
 <script setup lang="ts">
-import { useMainStore, type IRadarObject } from '@/store/main';
+import type { IRadarObject } from '@/model/sam.model';
+import { useTargets } from '@/store/sam/targets';
 import { computed } from 'vue';
 
 const props = defineProps<{ target: Partial<IRadarObject>; index: number; config: { x: number; y: number; } }>();
-const mainStore = useMainStore();
+    const targetsStore = useTargets()
 const indicatorTarget = computed(() => {
     return {
         rows: [
@@ -36,8 +37,8 @@ const indicatorTarget = computed(() => {
             `| V: ${props.target.velocity} m/s | RV: ${props.target.radialVelocity?.toFixed(1)}`,
             `| P: ${(props.target.param! / 1000).toFixed(1)} km`
         ],
-        isCurrent: mainStore.currentTargetId === props.target.id,
-        isSelected: mainStore.selectedTargetIds.includes(props.target.id!)
+        isCurrent: targetsStore.currentTargetId === props.target.id,
+        isSelected: targetsStore.selectedTargetIds.includes(props.target.id!)
     }
 });
 </script>

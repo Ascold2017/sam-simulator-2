@@ -10,15 +10,16 @@
             textAlign: 'center',
             width: 150
         }" />
-        <SAMButton label="SEEK" :x="0" :y="30" name="seekTarget" @click="mainStore.seekTarget" :value="false" />
-        <SAMButton label="SLCT" :x="65" :y="30" name="selectTarget" @click="mainStore.selectTarget" :value="false" />
-        <SAMButton label="UNSLCT" :x="130" :y="30" name="uselectTarget" @click="mainStore.unselectTarget" :value="false" />
-        <SAMButton label="RST" :x="195" :y="30" name="resetTargets" @click="mainStore.resetTargets" :value="false" />
+        <SAMButton label="SEEK" :x="0" :y="30" name="seekTarget" @click="targetsStore.seekTarget" :value="false" />
+        <SAMButton label="SLCT" :x="65" :y="30" name="selectTarget" @click="targetsStore.selectTarget" :value="false" />
+        <SAMButton label="UNSLCT" :x="130" :y="30" name="uselectTarget" @click="targetsStore.unselectTarget" :value="false" />
+        <SAMButton label="RST" :x="195" :y="30" name="resetTargets" @click="targetsStore.resetTargets" :value="false" />
     </vk-group>
 </template>
 
 <script setup lang="ts">
+import { useTargets } from '@/store/sam/targets';
 import SAMButton from '../SAMButton.vue';
-import { useMainStore } from "@/store/main";
-const mainStore = useMainStore();
+
+const targetsStore = useTargets()
 </script>

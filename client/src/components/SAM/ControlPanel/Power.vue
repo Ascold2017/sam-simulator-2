@@ -16,18 +16,19 @@
             y: 30,
             width: 20,
             height: 20,
-            fill: mainStore.isEnabled ? 'rgb(150, 249, 123)' : 'red',
+            fill: supplyStore.isEnabled ? 'rgb(150, 249, 123)' : 'red',
             shadowBlur: 5
         }" />
-        <SAMButton label="ON" :x="130" :y="0" name="powerOn" :value="!!mainStore.isEnabled"
-            @click="mainStore.setIsEnabled(true)" />
-        <SAMButton label="OFF" :x="195" :y="0" name="powerOff" :value="!mainStore.isEnabled"
-            @click="mainStore.setIsEnabled(false)" />
+        <SAMButton label="ON" :x="130" :y="0" name="powerOn" :value="!!supplyStore.isEnabled"
+            @click="supplyStore.setIsEnabled(true)" />
+        <SAMButton label="OFF" :x="195" :y="0" name="powerOff" :value="!supplyStore.isEnabled"
+            @click="supplyStore.setIsEnabled(false)" />
     </vk-group>
 </template>
 
 <script setup lang="ts">
+import { useSupplyStore } from '@/store/sam/supply';
 import SAMButton from '../SAMButton.vue';
-import { useMainStore } from "@/store/main";
-const mainStore = useMainStore();
+
+const supplyStore = useSupplyStore()
 </script>
