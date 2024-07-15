@@ -8,7 +8,7 @@
             height: 630,
             fill: 'black',
         }" />
-        <radar-grid v-if="isEnabled" :scale="scale" :gridHeight="gridHeight" :gridWidth="gridWidth" />
+        <radar-lines v-if="isEnabled" :scale="scale" :gridHeight="gridHeight" :gridWidth="gridWidth" />
         <!-- targets -->
         <vk-group>
             <RadarIndicatorTarget v-for="radarObject in radarObjects" :scale="scale" :gridHeight="gridHeight"
@@ -21,6 +21,7 @@
   
 <script setup lang="ts">
 import RadarGrid from "./RadarGrid.vue";
+import RadarLines from './RadarLines.vue'
 import RadarIndicatorTarget from './RadarIndicatorTarget.vue';
 import RadarIndicatorInfo from './RadarIndicatorInfo.vue';
 import { computed } from 'vue';
