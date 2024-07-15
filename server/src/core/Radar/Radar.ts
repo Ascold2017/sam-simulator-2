@@ -6,9 +6,11 @@ import samParams from '../../samParams.json' with { type: 'json' };
 import _ from 'lodash';
 import MissionLogger from '#src/core/MissionLogger.ts';
 
+type RadarObject = DetectedRadarObject | UndetectedRadarObject;
+
 interface IListener {
     name: string;
-    listener: () => void;
+    listener: (radarObjects: RadarObject[]) => void;
 }
 
 interface IRadar {
@@ -17,13 +19,16 @@ interface IRadar {
     engine: Engine;
     logger: MissionLogger;
 }
+
+
+
 export class Radar {
     public isEnabled = false;
     public name: string;
     public position: IPoint;
     private engine: Engine;
     private logger: MissionLogger;
-    private radarObjects: (DetectedRadarObject | UndetectedRadarObject)[] = [];
+    private radarObjects: RadarObject[] = [];
     private listeners = [] as IListener[];
     constructor({ name, engine, logger, position }: IRadar) {
         this.name = name;
@@ -51,7 +56,7 @@ export class Radar {
         return _.cloneDeep(this.radarObjects);
     }
 
-    public addUpdateListener(name: string, listener: () => void) {
+    public addUpdateListener(name: string, listener: (radarObjects: RadarObject[]) => void) {
         this.listeners.push({ name, listener });
     }
 
@@ -111,6 +116,6 @@ export class Radar {
             ...missiles.map((fo) => new DetectedRadarObject(fo)),
         ];
 
-        this.listeners.forEach((l) => l.listener());
+        this.listeners.forEach((l) => l.listener(this.radarObjects));
     }
 }

@@ -1,5 +1,5 @@
 import { engineInstance } from '#src/main.ts';
-import { db } from '#src/database/database.ts';
+import { db } from '../../database/index.ts';
 import MissionDTO, { MissionRow } from '../dto/MissionDTO.ts';
 import FlightObjectTypesDTO, {
 	FlightObjectTypesRow,
