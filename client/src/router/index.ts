@@ -13,6 +13,11 @@ export default createRouter({
             path: '/sam',
             name: 'sam',
             component: () => import('@/screens/SAM/index.vue')
+        },
+        {
+            path: '/editor',
+            name: 'editor',
+            component: () => import('@/screens/Editor/index.vue')
         }
     ]
 });

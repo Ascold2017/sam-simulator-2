@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { useMissionEditorStore } from '@/store/missionEditor';
-import {useEventListener} from '@/helpers/useEventListener';
+import { useEventListener } from '@/helpers/useEventListener';
 
 const missionEditorStore = useMissionEditorStore();
 

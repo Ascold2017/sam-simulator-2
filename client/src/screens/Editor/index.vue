@@ -17,12 +17,4 @@
 import EditorToolbar from './EditorToolbar.vue';
 import EditorMap from './EditorMap.vue';
 import EditorForm from './EditorForm.vue'
-import { useMainStore } from '@/store/main';
-import { useMissionEditorStore } from '@/store/missionEditor';
-import { onMounted, ref, inject, computed } from 'vue';
-
-const mainStore = useMainStore();
-const missionEditorStore = useMissionEditorStore();
-
-
 </script>

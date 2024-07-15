@@ -5,7 +5,7 @@
         mission.name }}</v-btn>
         <v-spacer />
         <v-divider vertical />
-      <v-btn variant="text">Mission editor</v-btn>
+      <v-btn variant="text" :to="{ name: 'editor' }">Mission editor</v-btn>
     </div>
   </v-card>
 </template>
