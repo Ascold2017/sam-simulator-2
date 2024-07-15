@@ -31,16 +31,16 @@ export class DatabaseClient {
         console.log(`Inserted ${flightObjectTypesInsertResult.insertedCount} documents into flightObjectTypes collection`);
     }
 
-    async findOne(collectionName: string, filter: any) {
+    async findOne<T>(collectionName: string, filter: any) {
         if (!this.db) return null
         const collection = this.db?.collection(collectionName);
-        return await collection.findOne(filter);
+        return await collection.findOne(filter) as Promise<T>;
     }
 
-    async findAll(collectionName: string, filter: any = {}) {
+    async findAll<T>(collectionName: string, filter: any = {}) {
         if (!this.db) return null
         const collection = this.db.collection(collectionName);
-        return await collection.find(filter);
+        return await collection.find(filter) as unknown as T[];
     }
 
     async insertOne(collectionName: string, data: any) {

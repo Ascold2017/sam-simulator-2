@@ -7,4 +7,6 @@ import gameService from '#src/app/services/game.ts';
 
 export const engineInstance = new Engine();
 
-gameService.startMission(1)
+setTimeout(() => {
+    gameService.startMission(1)
+}, 2000)

@@ -9,7 +9,7 @@ export interface IPoint {
 	v: number;
 }
 export interface IMission {
-	id: number;
+	id: string;
 	flightObjectTypeId: number;
 	points: IPoint[];
 	rcs: number;

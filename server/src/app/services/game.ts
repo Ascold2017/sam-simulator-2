@@ -5,6 +5,7 @@ import MissionLogger from '#src/core/MissionLogger.ts';
 import MissionDTO, { MissionRow } from '#src/app/dto/MissionDTO.ts';
 import { dbClient } from '../../database/index.ts';
 import { engineInstance } from '#src/main.ts';
+import { MissionEntity } from '#src/app/models/mission.model.ts';
 
 class GameService {
 
@@ -17,13 +18,14 @@ class GameService {
     private logger = new MissionLogger()
 
     public async startMission(missionId: number) {
-        const mission = await dbClient.findOne('missions', { missionId });
-        /*
+        const mission = await dbClient.findOne<MissionEntity>('missions', { id: missionId });
+        
 		if (mission) {
 			engineInstance.resetMission();
 			engineInstance.startMission(mission.tasks);
 			
-		}*/
+            mission.environment.forEach(environment => console.log(environment))
+		}
     }
 
     public getLogs() {
