@@ -1,5 +1,5 @@
 import type BaseFlightObject from './FlightObject/BaseFlightObject.ts';
-import Enemy from './FlightObject/Enemy.ts';
+import {Enemy} from './FlightObject/Enemy.ts';
 import LoopEngine from './LoopEngine/LoopEngine.ts';
 
 export interface IPoint {
@@ -16,7 +16,7 @@ export interface IMission {
 	delay: number;
 }
 
-export default class Engine extends LoopEngine {
+export class Engine extends LoopEngine {
 	private flightObjects: BaseFlightObject[] = [];
 	constructor() {
 		super();

@@ -1,8 +1,8 @@
 import type { IPoint } from '../Engine.ts';
-import type Engine from '../Engine.ts';
+import type { Engine } from '../Engine.ts';
 import BaseFlightObject from './BaseFlightObject.ts';
 
-export default class Enemy extends BaseFlightObject {
+export class Enemy extends BaseFlightObject {
 	private points: IPoint[] = [];
 	private currentPointIndex = 0;
 	readonly isUnion;

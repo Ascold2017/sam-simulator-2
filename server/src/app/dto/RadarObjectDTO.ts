@@ -1,6 +1,6 @@
-import DetectedRadarObject from '#src/core/SAM/RadarObject/DetectedRadarObject.ts';
-import SnowRadarObject from '#src/core/SAM/RadarObject/SnowRadarObject.ts';
-import UndetectedRadarObject from '#src/core/SAM/RadarObject/UndetectedRadarObject.ts';
+import DetectedRadarObject from '../../core/Radar/RadarObject/DetectedRadarObject.ts';
+import SnowRadarObject from '../../core/Radar/RadarObject/SnowRadarObject.ts';
+import UndetectedRadarObject from '../../core/Radar/RadarObject/UndetectedRadarObject.ts';
 
 export default class RadarObjectDTO {
 	public id: string;

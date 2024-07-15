@@ -1,7 +1,7 @@
 import type BaseFlightObject from '#engine/FlightObject/BaseFlightObject.ts';
 import BaseRadarObject from './BaseRadarObject.ts';
 
-export default class UndetectedRadarObject extends BaseRadarObject {
+export class UndetectedRadarObject extends BaseRadarObject {
 	public type = 'UNDETECTED_RADAR_OBJECT';
 	constructor(flightObject: BaseFlightObject) {
 		super({
