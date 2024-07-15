@@ -7,7 +7,6 @@ import type {
   IPoint,
   ITask,
 } from "@/model/editor.model";
-import { HttpClient } from "@/adapters/httpClient";
 import { editorHttpClient, samHttpClient } from "@/adapters/clients";
 
 const defaultMission: IMission = {

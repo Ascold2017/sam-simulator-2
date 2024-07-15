@@ -41,7 +41,7 @@ export class HttpClient {
         if (contentType && contentType.includes("application/json")) {
             return response.json() as Promise<TResponse>;
         } else if (contentType && contentType.includes("text/")) {
-            return response.text() as Promise<TResponse>;
+            return response.text() as unknown as Promise<TResponse>;
         } else {
             throw new Error(`Unsupported content type: ${contentType}`);
         }

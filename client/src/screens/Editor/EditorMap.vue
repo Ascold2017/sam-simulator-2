@@ -41,11 +41,12 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { ref } from 'vue';
-import { useMissionEditorStore, type ITask } from '@/store/missionEditor';
+import { useMissionEditorStore } from '@/store/missionEditor';
 import { computed } from 'vue';
 import mapImage from '@/assets/map.png';
 import type { KonvaEventObject } from 'konva/lib/Node';
 import type { Shape } from 'konva/lib/Shape';
+import type { ITask } from '@/model/editor.model';
 const img = ref<HTMLImageElement | null>(null);
 const canvasCenter = { x: 300, y: 300 };
 const scale = 333;
