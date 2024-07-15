@@ -8,6 +8,7 @@ import { PiniaUndo } from 'pinia-undo'
 
 import App from "./App.vue";
 import { createPinia } from "pinia";
+import router from "./router";
 
 
 const pinia = createPinia();
@@ -19,8 +20,10 @@ const vuetify = createVuetify({
     defaultTheme: "dark",
   },
 });
+
 const app = createApp(App);
 app.use(pinia);
+app.use(router);
 app.use(vuetify);
 app.use(VueKonva, { prefix: 'vk' })
 app.mount("#app");

@@ -1,6 +1,6 @@
 <template>
     <vk-group :config="{
-        x: 890,
+        x: 0,
         y: 0,
     }">
         <vk-rect :config="{

@@ -20,7 +20,7 @@
 </template>
   
 <script setup lang="ts">
-import RadarGrid from "@/components/SAM/MainRadarDisplay/RadarGrid.vue";
+import RadarGrid from "./RadarGrid.vue";
 import RadarIndicatorTarget from './RadarIndicatorTarget.vue';
 import RadarIndicatorInfo from './RadarIndicatorInfo.vue';
 import { computed } from 'vue';
