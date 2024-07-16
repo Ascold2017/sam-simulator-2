@@ -1,8 +1,7 @@
-import { Missile, Engine, Enemy, IPoint } from '#engine/index.ts';
+import { Enemy, Engine, IPoint, Missile } from '#engine/index.ts';
 import BaseRadarObject from './RadarObject/BaseRadarObject.ts';
 import { DetectedRadarObject } from './RadarObject/DetectedRadarObject.ts';
 import { UndetectedRadarObject } from './RadarObject/UndetectedRadarObject.ts';
-import samParams from '../../samParams.json' with { type: 'json' };
 import _ from 'lodash';
 import MissionLogger from '#src/core/MissionLogger.ts';
 
@@ -13,25 +12,36 @@ interface IListener {
     listener: (radarObjects: RadarObject[]) => void;
 }
 
+export interface IRadarParams {
+    maxDistance: number;
+    maxCaptureRange: number;
+    minCaptureRange: number;
+    maxDetectCount: number;
+    minElevation: number;
+    maxElevation: number;
+    radarHeight: number;
+}
+
 interface IRadar {
     position: IPoint;
     name: string;
     engine: Engine;
     logger: MissionLogger;
+    params: IRadarParams;
 }
-
-
 
 export class Radar {
     public isEnabled = false;
     public name: string;
+    public params: IRadarParams;
     public position: IPoint;
     private engine: Engine;
     private logger: MissionLogger;
     private radarObjects: RadarObject[] = [];
     private listeners = [] as IListener[];
-    constructor({ name, engine, logger, position }: IRadar) {
+    constructor({ name, engine, logger, position, params }: IRadar) {
         this.name = name;
+        this.params = params;
         this.position = position;
         this.engine = engine;
         this.logger = logger;
@@ -56,7 +66,10 @@ export class Radar {
         return _.cloneDeep(this.radarObjects);
     }
 
-    public addUpdateListener(name: string, listener: (radarObjects: RadarObject[]) => void) {
+    public addUpdateListener(
+        name: string,
+        listener: (radarObjects: RadarObject[]) => void,
+    ) {
         this.listeners.push({ name, listener });
     }
 
@@ -69,7 +82,7 @@ export class Radar {
             .filter((fo) =>
                 fo instanceof Enemy &&
                 BaseRadarObject.getDistance(fo.getCurrentPoint()) <
-                    Number(samParams['MAX_DISTANCE'])
+                    this.params.maxDistance
             )
             .sort(DetectedRadarObject.sortByVisibilityComparator);
 
@@ -77,10 +90,10 @@ export class Radar {
             const distance = BaseRadarObject.getDistance(
                 e.getCurrentPoint(),
             );
-            return distance < Number(samParams['MAX_CAPTURE_RANGE']) &&
-                distance > Number(samParams['MIN_CAPTURE_RANGE']);
+            return distance < this.params.maxCaptureRange &&
+                distance > this.params.minCaptureRange;
         })
-            .slice(0, Number(samParams['RADAR_MAX_DETECT_COUNT']) - 1);
+            .slice(0, this.params.maxDetectCount - 1);
 
         const undetected = allEnemies.filter((e) =>
             !detected.some((de) => de.id === e.id)
@@ -101,11 +114,11 @@ export class Radar {
         );
 
         const detectedRadarObjects = detectedEnemies.map((fo) =>
-            new DetectedRadarObject(fo)
+            new DetectedRadarObject(fo, this.params)
         ).filter((fo) => fo.isVisible);
 
         const undetectedRadarObjects = undetectedEnemies.map((fo) =>
-            new UndetectedRadarObject(fo)
+            new UndetectedRadarObject(fo, this.params)
         ).filter(
             (fo) => fo.isVisible,
         );
@@ -113,7 +126,7 @@ export class Radar {
         this.radarObjects = [
             ...detectedRadarObjects,
             ...undetectedRadarObjects,
-            ...missiles.map((fo) => new DetectedRadarObject(fo)),
+            ...missiles.map((fo) => new DetectedRadarObject(fo, this.params)),
         ];
 
         this.listeners.forEach((l) => l.listener(this.radarObjects));

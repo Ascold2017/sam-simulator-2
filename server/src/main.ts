@@ -13,7 +13,8 @@ export const engineInstance = new Engine();
 await dbClient.connect(dbUri!)
 await dbClient.initializeDatabase({
     missions: './src/initData/missions.json',
-    flightObjectType: './src/initData/flightObjectTypes.json'
+    flightObjectType: './src/initData/flightObjectTypes.json',
+    radars: './src/initData/radars.json'
 })
 
 gameService.startMission(1)

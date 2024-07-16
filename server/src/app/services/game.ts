@@ -21,6 +21,7 @@ class GameService {
         const mission = await dbClient.findOne<MissionEntity>('missions', {
             id: missionId,
         });
+        
 
         if (mission) {
             engineInstance.resetMission();

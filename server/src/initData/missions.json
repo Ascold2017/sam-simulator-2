@@ -4,18 +4,24 @@
         "name": "Test mission",
         "environment": [
             {
+                "id": 1,
                 "type": "radar",
                 "name": "Main",
+                "radarId": 1,
                 "position": { "x": 0, "y": 0, "z": 125 }
             },
             {
+                "id": 2,
                 "type": "sam",
                 "name": "SAM Position A",
+                "radarId": 2,
                 "position": { "x": 570, "y": 134, "z": 54 }
             },
             {
+                "id": 3,
                 "type": "sam",
                 "name": "SAM Position B",
+                "radarId": 3,
                 "position": { "x": -1300, "y": -200, "z": 38 }
             }
         ],

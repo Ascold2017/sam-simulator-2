@@ -7,8 +7,10 @@ export interface MissionIPoint {
 }
 
 export interface MissionEnvironmentEntity {
+    id: number;
     type: 'radar' | 'sam'
     name: string;
+    radarId: number;
     position: MissionIPoint
 }
 

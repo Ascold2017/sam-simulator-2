@@ -1,12 +1,13 @@
-import samParams from '../../../samParams.json' with { type: 'json' };
 import type { IPoint } from '#engine/Engine.ts';
 import Vector3D from '#src/core/Vector3D.ts';
+import { IRadarParams } from '#src/core/Radar/Radar.ts';
 
 interface BaseRadarObjectConstructor {
 	id: string;
 	currentPoint: IPoint;
 	currentRotation: number;
 	visibilityK: number;
+	radarParams: IRadarParams
 }
 export default class BaseRadarObject {
 	public id: string;
@@ -24,8 +25,10 @@ export default class BaseRadarObject {
 	public visibilityK: number;
 	public isVisible: boolean;
 	public hitPosition = { x: 0, y: 0 };
+	private radarParams: IRadarParams;
 
 	constructor(payload: BaseRadarObjectConstructor) {
+		this.radarParams = payload.radarParams;
 		this.id = payload.id;
 		const distance = BaseRadarObject.getDistance(payload.currentPoint);
 		this.distance = distance;
@@ -54,16 +57,16 @@ export default class BaseRadarObject {
 		this.visibilityK = payload.visibilityK > 1 ? 1 : payload.visibilityK;
 
 		const inAllowedElevation =
-			this.elevation > Number(samParams['MIN_ELEVATION']) &&
-			this.elevation < Number(samParams['MAX_ELEVATION']);
+			this.elevation > this.radarParams.minElevation &&
+			this.elevation < this.radarParams.maxElevation;
 		this.isVisible = this.isInVision(distance, payload.currentPoint.z) &&
 			inAllowedElevation &&
-			distance < Number(samParams['MAX_DISTANCE']);
-		this.hitPosition = this.getHitPosition();
+			distance < this.radarParams.maxDistance;
+		//this.hitPosition = this.getHitPosition();
 	}
 
 	protected isInVision(distance: number, height: number) {
-		return Math.sqrt(2 * 6371009 * Number(samParams['RADAR_HEIGHT'])) +
+		return Math.sqrt(2 * 6371009 * this.radarParams.radarHeight) +
 				Math.sqrt(2 * 6371009 * height) > distance;
 	}
 
@@ -76,8 +79,7 @@ export default class BaseRadarObject {
 	}
 
 	protected getTargetElevation(distance: number, height: number) {
-		const targetHeightOffset = height -
-			Number(samParams['RADAR_HEIGHT']);
+		const targetHeightOffset = height - this.radarParams.radarHeight;
 		// Vertical angle from SNR to target
 		return (targetHeightOffset / distance);
 	}
@@ -110,6 +112,7 @@ export default class BaseRadarObject {
 		return Math.abs(targetDistance * Math.tan(targetAngle));
 	}
 
+	/*
 	protected getHitPosition() {
 		const timeToHit = this.distance / (this.radialVelocity +
 			samParams.MISSILE_VELOCITY);
@@ -120,5 +123,5 @@ export default class BaseRadarObject {
 		};
 
 		return preemtiveVector;
-	}
+	}*/
 }
