@@ -1,72 +1,72 @@
-import { Database, MongoClient } from "https://deno.land/x/mongo/mod.ts";
+import { Client } from 'https://deno.land/x/postgres/mod.ts';
+import { config } from 'https://deno.land/x/dotenv/mod.ts';
+
+const env = config(); // Загружаем переменные из .env файла
 
 class DatabaseClient {
-    private client = new MongoClient();
-    // @ts-ignore
-    private db: Database;
+    private client: Client;
 
-    async connect(uri: string) {
-        try {
-            this.db =  await this.client.connect(uri);
-            console.log('Database connected')
-        } catch(e) {
-            console.log(e)
-        }
-       
+    constructor() {
+        this.client = new Client(env.DB_URI);
     }
 
-    async initializeDatabase(collections: { [key: string]: string }) {
-        if (!this.db) return;
-       
-        for (const [collectionName, jsonFilePath] of Object.entries(collections)) {
-            const collection = this.db.collection(collectionName);
-            const count = await collection.countDocuments();
-            
-            if (count === 0) {
-                console.log('Initialize database collection: ', collectionName)
-                const data = await Deno.readTextFile(jsonFilePath);
-                const documents = JSON.parse(data);
-                
-                if (Array.isArray(documents)) {
-                    await collection.insertMany(documents);
-                } else {
-                    await collection.insertOne(documents);
-                }
+    async connect() {
+        await this.client.connect();
+        console.log('Database connected')
+    }
+
+    async disconnect() {
+        await this.client.end();
+    }
+
+    async initializeDatabase() {
+        const initSql = await Deno.readTextFileSync('./src/database/init.sql');
+        await this.client.queryArray(initSql);
+        console.log('Database initialized')
+    }
+
+    async clearTables() {
+        // Очистка данных из всех таблиц, кроме таблицы migrations
+        const tablesToClear = ['migrations', 'Environment',  'SAM', 'Radar',  'MissionFlightTask', 'FlightObjectType', 'Mission'];
+        for (const table of tablesToClear) {
+            await this.client.queryArray(`DROP TABLE IF EXISTS ${table}`);
+        }
+        console.log('Database cleared')
+    }
+
+    async migrateData(migrationName: string, jsonData: any) {
+        const result = await this.client.queryArray(
+            `SELECT COUNT(*) FROM migrations WHERE migration_name = $1`,
+            [migrationName], // передаем параметр как массив
+        );
+        
+        // @ts-ignore
+        const count = parseInt(result.rows[0][0].toString(), 10);
+        
+        if (count > 0) {
+            console.log(`Migration "${migrationName}" has already been applied.`);
+            return;
+        }
+    
+        for (const table in jsonData) {
+            for (const row of jsonData[table]) {
+                const columns = Object.keys(row).join(", ");
+                const values = Object.values(row)
+                    .map((value: any) => `'${JSON.stringify(value).replace(/'/g, "''")}'`)
+                    .join(", ");
+                await this.client.queryArray(`INSERT INTO ${table} (${columns}) VALUES (${values})`);
             }
         }
-        
-    }
-
-    async findOne<T>(collectionName: string, filter: any) {
-        if (!this.db) return null
-        const collection = this.db?.collection(collectionName);
-        return await collection.findOne(filter) as Promise<T>;
-    }
-
-    async findAll<T>(collectionName: string, filter: any = {}) {
-        if (!this.db) return null
-        const collection = this.db.collection(collectionName);
-        return await collection.find(filter) as unknown as T[];
-    }
-
-    async insertOne(collectionName: string, data: any) {
-        if (!this.db) return null
-        const collection = this.db.collection(collectionName);
-        const { $oid } = await collection.insertOne(data);
-        return $oid;
-    }
-
-    async updateOne(collectionName: string, filter: any, update: any) {
-        if (!this.db) return null
-        const collection = this.db.collection(collectionName);
-        return await collection.updateOne(filter, update);
-    }
-
-    async deleteOne(collectionName: string, filter: any) {
-        if (!this.db) return null
-        const collection = this.db.collection(collectionName);
-        return await collection.deleteOne(filter);
+    
+        await this.client.queryArray(
+            `INSERT INTO migrations (migration_name) VALUES ($1)`,
+            [migrationName], // передаем параметр как массив
+        );
+    
+        console.log(`Migration "${migrationName}" has been successfully applied.`);
     }
 }
 
-export const dbClient = new DatabaseClient()
+export const dbClient = new DatabaseClient();
+
+

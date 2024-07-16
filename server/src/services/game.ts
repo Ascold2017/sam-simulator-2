@@ -3,7 +3,7 @@ import { Weapon } from '#src/core/Weapon/index.ts';
 import EventEmitter from 'https://deno.land/x/eventemitter@1.2.4/mod.ts';
 import MissionLogger from '#src/core/MissionLogger.ts';
 import MissionDTO, { MissionRow } from '#src/app/dto/MissionDTO.ts';
-import { dbClient } from '../../database/dbClient.ts';
+import { dbClient } from '../database/dbClient.ts';
 import { engineInstance } from '#src/main.ts';
 import { MissionEntity } from '#src/app/models/mission.model.ts';
 import { SAM } from '#src/core/SAM/index.ts';
