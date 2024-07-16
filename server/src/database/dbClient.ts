@@ -1,34 +1,40 @@
 import { Database, MongoClient } from "https://deno.land/x/mongo/mod.ts";
 
-export class DatabaseClient {
+class DatabaseClient {
     private client = new MongoClient();
     // @ts-ignore
     private db: Database;
-    constructor(dbUri: string) {
-        this.connect(dbUri)
-    }
 
     async connect(uri: string) {
         try {
             this.db =  await this.client.connect(uri);
+            console.log('Database connected')
         } catch(e) {
             console.log(e)
         }
        
     }
 
-    async initDatabaseFromJsonFile(data: any) {
-        console.log(data)
-        const { missions, flightObjectTypes } = data;
+    async initializeDatabase(collections: { [key: string]: string }) {
+        if (!this.db) return;
+       
+        for (const [collectionName, jsonFilePath] of Object.entries(collections)) {
+            const collection = this.db.collection(collectionName);
+            const count = await collection.countDocuments();
+            
+            if (count === 0) {
+                console.log('Initialize database collection: ', collectionName)
+                const data = await Deno.readTextFile(jsonFilePath);
+                const documents = JSON.parse(data);
+                
+                if (Array.isArray(documents)) {
+                    await collection.insertMany(documents);
+                } else {
+                    await collection.insertOne(documents);
+                }
+            }
+        }
         
-
-        const missionsCollection = this.db.collection("missions");
-        const missionsInsertResult = await missionsCollection.insertMany(missions);
-        console.log(`Inserted ${missionsInsertResult.insertedCount} documents into missions collection`);
-
-        const flightObjectTypesCollection = this.db.collection("flightObjectTypes");
-        const flightObjectTypesInsertResult = await flightObjectTypesCollection.insertMany(flightObjectTypes);
-        console.log(`Inserted ${flightObjectTypesInsertResult.insertedCount} documents into flightObjectTypes collection`);
     }
 
     async findOne<T>(collectionName: string, filter: any) {
@@ -62,3 +68,5 @@ export class DatabaseClient {
         return await collection.deleteOne(filter);
     }
 }
+
+export const dbClient = new DatabaseClient()
