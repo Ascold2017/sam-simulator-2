@@ -3,13 +3,9 @@ export interface MissionIPoint {
     x: number;
     y: number; 
     z: number;
+    v: number
 }
-export interface MissionIPoint2 {
-    x: number;
-    y: number; 
-    z: number;
-    v: number;
-}
+
 export interface MissionEnvironmentEntity {
     type: 'radar' | 'sam'
     name: string;
@@ -19,7 +15,7 @@ export interface MissionEnvironmentEntity {
 export interface MissionTask {
     id: string;
     flightObjectTypeId: number;
-    points: MissionIPoint2[];
+    points: MissionIPoint[];
     rcs: number;
     delay: number;
 }
