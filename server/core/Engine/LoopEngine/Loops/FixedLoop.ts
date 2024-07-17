@@ -13,6 +13,7 @@ export default class FixedLoop extends BaseLoop {
     if (this.time >= this.interval) {
       this.handler(this.time / 1000);
       this.time = 0;
+      this.notifyListeners(this.time / 1000)
     }
   }
 }

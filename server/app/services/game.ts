@@ -6,45 +6,66 @@ import { MissionTaskDTO } from "../dto/missionTask.dto";
 import { DI } from "../config/dataSource";
 import { engineInstance } from "../main";
 
+interface GameRadar {
+    id: number;
+    entity: Radar;
+}
 
+interface GameSAM {
+    id: number;
+    entity: SAM;
+}
 
 class GameService {
-    private radars: Radar[] = [];
-    private sams: SAM[] = [];
+    private radars: GameRadar[] = [];
+    private sams: GameSAM[] = [];
     private logger = new MissionLogger();
 
     public async startMission(missionId: number) {
         const mission = await DI.mission.findOneOrFail({
             where: { id: missionId },
             relations: [
-                'tasks',
-                'tasks.flightObjectType',
-                'environments',
-                'environments.radar',
-                'environments.weapon',
-            ]
-        })
-        
+                "tasks",
+                "tasks.flightObjectType",
+                "environments",
+                "environments.radar",
+                "environments.weapon",
+            ],
+        });
 
         if (mission) {
-            engineInstance.resetMission();
-            engineInstance.startMission(mission.tasks.map(task => new MissionTaskDTO(task)));
-
             
+            engineInstance.resetMission();
+            engineInstance.startMission(
+                mission.tasks.map((task) => new MissionTaskDTO(task)),
+            );
+
             mission.environments.forEach((environment) => {
-                if (environment.type === 'radar') {
-                    this.radars.push(
-                        new Radar(new EnvironmentRadarDTO(engineInstance, this.logger, environment)),
-                    );
+                if (environment.type === "radar") {
+                    this.radars.push({
+                        id: environment.id,
+                        entity: new Radar(
+                            new EnvironmentRadarDTO(
+                                engineInstance,
+                                this.logger,
+                                environment,
+                            ),
+                        ),
+                    });
                 }
-                if (environment.type === 'sam') {
-                    this.sams.push(
-                        new SAM(new EnvironmentSAMDTO(engineInstance, this.logger, environment)),
-                    );
+                if (environment.type === "sam") {
+                    this.sams.push({
+                        id: environment.id,
+                        entity: new SAM(
+                            new EnvironmentSAMDTO(
+                                engineInstance,
+                                this.logger,
+                                environment,
+                            ),
+                        ),
+                    });
                 }
             });
-
-            console.log(this.radars, this.sams)
         }
     }
 
@@ -57,6 +78,14 @@ class GameService {
         this.radars = [];
         this.sams = [];
         this.logger = new MissionLogger();
+    }
+
+    public setIsEnabledRadar(radarId: number, value: boolean) {
+        this.radars.find(r => r.id === radarId).entity.setIsEnabled(value);
+    }
+
+    public setIsEnabledSAM(radarId: number, value: boolean) {
+        this.sams.find(r => r.id === radarId).entity.radar.setIsEnabled(value);
     }
 }
 

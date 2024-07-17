@@ -12,5 +12,6 @@ export default class FPSLoop extends BaseLoop {
     this.lastTime = new Date().getTime();
     this.time += delta;
     this.handler(this.time / 1000);
+    this.notifyListeners(this.time / 1000)
   }
 }

@@ -7,6 +7,8 @@ export default class BaseLoop {
 	protected isStop = false;
 	protected acceleration = 1;
 	protected intrvl = null as null | NodeJS.Timeout;
+	private listeners: Array<(delta: number) => void> = [];
+
 	constructor(name: string, handler: (delta: number) => void) {
 		this.name = name;
 		this.handler = handler;
@@ -31,4 +33,16 @@ export default class BaseLoop {
 	public interrupt() {
 		this.intrvl && clearInterval(this.intrvl);
 	}
+
+	public addListener(listener: (delta: number) => void) {
+        this.listeners.push(listener);
+    }
+
+    public removeListener(listener: (delta: number) => void) {
+        this.listeners = this.listeners.filter(l => l !== listener);
+    }
+
+    protected notifyListeners(delta: number) {
+        this.listeners.forEach(listener => listener(delta));
+    }
 }

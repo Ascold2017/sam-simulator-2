@@ -22,4 +22,12 @@ export default class LoopEngine {
 		this.loops.get(name)?.interrupt();
 		this.loops.delete(name);
 	}
+
+	public subscribeLoop(name: string, cb: () => void) {
+		this.loops.get(name).addListener(cb)
+	}
+
+	public getLoops() {
+		return Array.from(this.loops).map(([name, loop]) => loop)
+	}
 }
