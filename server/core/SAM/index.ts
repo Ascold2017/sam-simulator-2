@@ -1,1 +1,1 @@
-export { SAM } from './SAM.ts'
+export { SAM } from './SAM'

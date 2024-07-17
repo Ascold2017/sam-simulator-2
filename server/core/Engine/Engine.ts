@@ -1,6 +1,6 @@
-import type BaseFlightObject from './FlightObject/BaseFlightObject.ts';
-import {Enemy} from './FlightObject/Enemy.ts';
-import LoopEngine from './LoopEngine/LoopEngine.ts';
+import type BaseFlightObject from './FlightObject/BaseFlightObject';
+import {Enemy} from './FlightObject/Enemy';
+import LoopEngine from './LoopEngine/LoopEngine';
 
 export interface IPoint {
 	x: number;
@@ -9,8 +9,7 @@ export interface IPoint {
 	v: number;
 }
 export interface IMission {
-	id: string;
-	flightObjectTypeId: number;
+	id: number;
 	points: IPoint[];
 	rcs: number;
 	delay: number;

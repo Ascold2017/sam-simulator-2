@@ -1,6 +1,7 @@
-import type BaseFlightObject from '#engine/FlightObject/BaseFlightObject.ts';
-import { IRadarParams } from '#src/core/Radar/Radar.ts';
-import BaseRadarObject from './BaseRadarObject.ts';
+import BaseFlightObject from "../../Engine/FlightObject/BaseFlightObject";
+import { IRadarParams } from "../Radar";
+import BaseRadarObject from "./BaseRadarObject";
+
 
 export class UndetectedRadarObject extends BaseRadarObject {
 	public type = 'UNDETECTED_RADAR_OBJECT';

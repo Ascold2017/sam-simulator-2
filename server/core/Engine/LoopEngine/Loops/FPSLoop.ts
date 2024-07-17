@@ -1,4 +1,4 @@
-import BaseLoop from "./BaseLoop.ts";
+import BaseLoop from "./BaseLoop";
 
 export default class FPSLoop extends BaseLoop {
   private fps = 60;

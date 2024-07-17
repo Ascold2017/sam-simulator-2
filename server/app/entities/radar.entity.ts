@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, OneToOne } from "typeorm";
 import { BaseEntity } from "./base.entity";
 import { Environment } from "./environment.entity";
-import { SAM } from "./sam.entity";
+import { Weapon } from "./weapon.entity";
 
 @Entity()
 export class Radar extends BaseEntity {
@@ -28,9 +28,6 @@ export class Radar extends BaseEntity {
   
   @Column({ type: 'double precision' })
   radarHeight: number;
-
-  @OneToOne(() => SAM, sam => sam.radar)
-  sam: SAM;
 
   @OneToOne(() => Environment, environment => environment.radar)
   environment: Environment;

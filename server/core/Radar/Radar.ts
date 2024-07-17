@@ -1,9 +1,10 @@
-import { Enemy, Engine, IPoint, Missile } from '#engine/index.ts';
-import BaseRadarObject from './RadarObject/BaseRadarObject.ts';
-import { DetectedRadarObject } from './RadarObject/DetectedRadarObject.ts';
-import { UndetectedRadarObject } from './RadarObject/UndetectedRadarObject.ts';
+
+import { IPoint, Engine, Enemy, Missile } from '../Engine';
+import MissionLogger from '../MissionLogger';
+import BaseRadarObject from './RadarObject/BaseRadarObject';
+import { DetectedRadarObject } from './RadarObject/DetectedRadarObject';
+import { UndetectedRadarObject } from './RadarObject/UndetectedRadarObject';
 import _ from 'lodash';
-import MissionLogger from '#src/core/MissionLogger.ts';
 
 type RadarObject = DetectedRadarObject | UndetectedRadarObject;
 

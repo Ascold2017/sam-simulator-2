@@ -1,10 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, ManyToOne } from "typeorm";
 import { BaseEntity } from "./base.entity";
 import { Environment } from "./environment.entity";
-import { Radar } from "./radar.entity";
 
 @Entity()
-export class SAM extends BaseEntity {
+export class Weapon extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -35,9 +34,6 @@ export class SAM extends BaseEntity {
   @Column({ type: 'double precision' })
   ammoMaxDeltaRotation: number;
 
-  @OneToOne(() => Radar, radar => radar.sam)
-  radar: Radar;
-
-  @OneToOne(() => Environment, environment => environment.sam)
+  @OneToOne(() => Environment, environment => environment.weapon)
   environment: Environment;
 }

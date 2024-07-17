@@ -1,6 +1,6 @@
-import type { IPoint } from '../Engine.ts';
-import type { Engine } from '../Engine.ts';
-import BaseFlightObject from './BaseFlightObject.ts';
+import type { IPoint } from '../Engine';
+import type { Engine } from '../Engine';
+import BaseFlightObject from './BaseFlightObject';
 
 export class Enemy extends BaseFlightObject {
 	private points: IPoint[] = [];

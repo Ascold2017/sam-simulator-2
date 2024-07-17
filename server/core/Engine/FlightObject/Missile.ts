@@ -1,12 +1,19 @@
-import samParams from '../../../samParams.json' with { type: 'json' };
+
 import type { Engine } from '../Engine.ts';
-import Vector3D from '#core/Vector3D.ts';
-import BaseFlightObject from './BaseFlightObject.ts';
+import Vector3D from '../../../core/Vector3D';
+import BaseFlightObject from './BaseFlightObject';
 import type { Enemy } from './Enemy.ts';
-import { IPoint } from '#src/core/Engine/Engine.ts';
+import { IPoint } from '../../Engine/Engine';
 
 type GuidanceMethod = '3P' | '1/2' | '1';
 
+export interface MissileParams {
+	maxDistance: number;
+	killRadius: number;
+	ammoVelocity: number;
+	minCaptureRange: number;
+	maxDeltaRotation: number;
+}
 export class Missile extends BaseFlightObject {
 	private readonly target: Enemy;
 	private readonly velocity;
@@ -14,17 +21,20 @@ export class Missile extends BaseFlightObject {
 	private readonly killRadius;
 	private traveledDistance = 0;
 	private method: GuidanceMethod;
+	private params: MissileParams;
 	constructor(
 		engine: Engine,
 		target: Enemy,
 		method: GuidanceMethod,
+		params: MissileParams
 	) {
 		const name = `Missile-${+new Date()}`;
 		super(engine, name, 1);
 		this.target = target;
-		this.maxDistance = Number(samParams['MISSILE_MAX_DISTANCE']);
-		this.killRadius = Number(samParams['MISSILE_KILL_RADIUS']);
-		this.velocity = Number(samParams['MISSILE_VELOCITY']);
+		this.params = params;
+		this.maxDistance = params.maxDistance;
+		this.killRadius =params.killRadius;
+		this.velocity = params.ammoVelocity;
 		this.method = method;
 	}
 
@@ -85,8 +95,8 @@ export class Missile extends BaseFlightObject {
 		);
 
 		if (
-			this.traveledDistance > samParams.MIN_CAPTURE_RANGE &&
-			deltaRotation > samParams.MISSILE_MAX_DELTA_ROTATION
+			this.traveledDistance > this.params.minCaptureRange &&
+			deltaRotation > this.params.maxDeltaRotation
 		) {
 			this.logger.log(
 				`[MISSILE] Overloaded. Method: ${this.method}. Target: ${this.target.id}`,

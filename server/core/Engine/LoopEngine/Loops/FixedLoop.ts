@@ -1,4 +1,4 @@
-import BaseLoop from "./BaseLoop.ts";
+import BaseLoop from "./BaseLoop";
 
 export default class FixedLoop extends BaseLoop {
   private interval = 1000;

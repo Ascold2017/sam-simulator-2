@@ -1,5 +1,5 @@
-import { Missile } from '#engine/index.ts';
-import { DetectedRadarObject } from '#src/core/Radar/index.ts';
+import { Missile } from "../Engine";
+import { DetectedRadarObject } from "../Radar";
 
 export class WeaponChannel {
 	public id: number;

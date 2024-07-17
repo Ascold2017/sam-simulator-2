@@ -1,7 +1,10 @@
 import "reflect-metadata";
 import express from "express";
 import { AppDataSource, DI } from "./config/dataSource";
+import { Engine } from "../core/Engine";
+import gameService from "./services/game";
 
+export const engineInstance = new Engine()
 //gameService.startMission(1)
 
 const port = process.env.PORT || 8000;
@@ -11,18 +14,10 @@ AppDataSource.initialize()
         return AppDataSource.runMigrations();
     })
     .then(async () => {
-
-        const data = await DI.mission.findOne({
-            where: { id: 1 },
-            relations: {
-                tasks: true,
-                environments: true
-            }
-        })
-
-        console.log(data)
         const app = express();
         app.use(express.json());
+
+        gameService.startMission(1)
 
         app.listen(port, () => {
             console.log(`Server is Fire at http://localhost:${port}`);

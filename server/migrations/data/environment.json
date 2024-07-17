@@ -3,23 +3,23 @@
       "name": "Main",
       "type": "radar",
       "radar": 1,
-      "sam": null,
+      "weapon": null,
       "position": { "x": 0, "y": 0, "z": 125 },
       "mission": 1
     },
     {
       "name": "SAM Position A",
       "type": "sam",
-      "radar": null,
-      "sam": 1,
+      "radar": 3,
+      "weapon": 1,
       "position": { "x": 570, "y": 134, "z": 54 },
       "mission": 1
     },
     {
       "name": "SAM Position B",
       "type": "sam",
-      "radar": null,
-      "sam": 2,
+      "radar": 4,
+      "weapon": 2,
       "position": { "x": -1300, "y": -200, "z": 38 },
       "mission": 1
     }

@@ -1,7 +1,6 @@
 [
     {
       "name": "P-300",
-      "radarId": 3,
       "type": "missile",
       "weaponMaxSelectedCount": 6,
       "weaponChannelsCount": 6,
@@ -13,7 +12,6 @@
     },
     {
       "name": "G-4",
-      "radarId": 2,
       "type": "gun",
       "weaponMaxSelectedCount": 1,
       "weaponChannelsCount": 1,

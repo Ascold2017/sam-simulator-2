@@ -1,6 +1,6 @@
-import type BaseLoop from './Loops/BaseLoop.ts';
-import FPSLoop from './Loops/FPSLoop.ts';
-import FixedLoop from './Loops/FixedLoop.ts';
+import type BaseLoop from './Loops/BaseLoop';
+import FPSLoop from './Loops/FPSLoop';
+import FixedLoop from './Loops/FixedLoop';
 
 export default class LoopEngine {
 	private loops: Map<string, BaseLoop> = new Map();

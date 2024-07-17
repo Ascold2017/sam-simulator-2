@@ -1,6 +1,6 @@
-import type { IPoint } from '#engine/Engine.ts';
-import Vector3D from '#src/core/Vector3D.ts';
-import { IRadarParams } from '#src/core/Radar/Radar.ts';
+import { IPoint } from "../../Engine";
+import { IRadarParams } from "../Radar";
+
 
 interface BaseRadarObjectConstructor {
 	id: string;

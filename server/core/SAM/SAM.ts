@@ -1,31 +1,40 @@
-import { Radar } from '#src/core/Radar/index.ts';
-import { Weapon } from '#src/core/Weapon/index.ts';
-import { Engine, IPoint } from '#engine/index.ts';
-import MissionLogger from '#src/core/MissionLogger.ts';
+import { IPoint, Engine } from "../Engine";
+import MissionLogger from "../MissionLogger";
+import { Radar } from "../Radar";
+import { IRadarParams } from "../Radar/Radar";
+import { Weapon } from "../Weapon";
+import { IWeaponParams } from "../Weapon/Weapon";
+
 
 interface ISAM {
     name: string,
     position: IPoint;
     engine: Engine,
     logger: MissionLogger
+    radarParams: IRadarParams
+    weaponParams: IWeaponParams
 }
 export class SAM {
     public name: string;
     public radar: Radar;
     public weapon: Weapon;
-    constructor({ name, engine, logger, position }: ISAM) {
+    public radarParams: IRadarParams
+    constructor({ name, engine, logger, position, radarParams, weaponParams }: ISAM) {
         this.name = name;
         this.radar = new Radar({
             name: 'Radar ' + this.name,
             engine: engine,
             logger,
-            position
+            position,
+            params: radarParams
+
         });
         this.weapon = new Weapon({
             name: 'Weapon ' + this.name,
             engine,
             radar: this.radar,
-            logger
+            logger,
+            params: weaponParams
         })
     }
 }

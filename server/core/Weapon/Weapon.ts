@@ -1,36 +1,42 @@
-import samParams from '../../samParams.json' with { type: 'json' };
-import _ from 'lodash';
-import { WeaponChannel } from './WeaponChannel.ts';
-import { Radar } from '#src/core/Radar/index.ts';
+import _ from "lodash";
+import { Engine, Missile, Enemy } from "../Engine";
+import MissionLogger from "../MissionLogger";
+import { Radar, DetectedRadarObject } from "../Radar";
+import { WeaponChannel } from "./WeaponChannel";
+import { MissileParams } from "../Engine/FlightObject/Missile";
 
-import { DetectedRadarObject } from '#src/core/Radar/index.ts';
 
-import { Missile, Engine, Enemy } from '#engine/index.ts';
-import MissionLogger from '#src/core/MissionLogger.ts';
+export interface IWeaponParams extends MissileParams {
+	ammoLeft: number;
+	weaponChannelCount: number;
+	weaponMaxSelectedCount: number;
+}
 
 interface IWeapon {
 	name: string;
 	engine: Engine;
 	radar: Radar;
 	logger: MissionLogger;
+	params: IWeaponParams
 }
 export class Weapon {
 	private name: string;
 	private selectedObjectIds: string[] = [];
 	private weaponChannels: Record<number, WeaponChannel> = {};
-	private ammoLeft = Number(samParams['MISSILES_COUNT']);
+	private ammoLeft;
 	private engine: Engine;
 	private radar: Radar;
 	private logger: MissionLogger;
+	private params: IWeaponParams;
 
-	constructor({ name, engine, radar, logger }: IWeapon) {
+	constructor({ name, engine, radar, logger, params }: IWeapon) {
 		this.name = name;
 		this.engine = engine;
 		this.radar = radar;
 		this.logger = logger;
-		const channelsCount = Number(
-			samParams['MISSILES_CHANNEL_COUNT'] || 0,
-		);
+		this.params = params;
+		this.ammoLeft = params.ammoLeft;
+		const channelsCount = params.weaponChannelCount || 0
 		for (let i = 0; i < channelsCount; i++) {
 			this.weaponChannels[i] = new WeaponChannel(i);
 		}
@@ -66,6 +72,7 @@ export class Weapon {
 				this.engine,
 				target.getFlightObject() as Enemy,
 				method,
+				this.params
 			);
 			this.ammoLeft--;
 
@@ -94,8 +101,7 @@ export class Weapon {
 		if (
 			radarObject &&
 			!this.selectedObjectIds.some((id) => id === targetId) &&
-			this.selectedObjectIds.length <
-				Number(samParams['RADAR_MAX_SELECTED_COUNT'])
+			this.selectedObjectIds.length < this.params.weaponMaxSelectedCount
 		) {
 			this.selectedObjectIds.push(radarObject.id);
 			this.logger.log(`[${this.name}] Target selected: ${targetId}`);

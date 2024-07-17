@@ -6,7 +6,7 @@ export default class BaseLoop {
 	protected time = 0;
 	protected isStop = false;
 	protected acceleration = 1;
-	protected intrvl = null as null | number;
+	protected intrvl = null as null | NodeJS.Timeout;
 	constructor(name: string, handler: (delta: number) => void) {
 		this.name = name;
 		this.handler = handler;

@@ -5,13 +5,13 @@ import { FlightObjectType } from '../app/entities/flightObjectType.entity';
 import { MissionFlightTask } from '../app/entities/flightTask.entity';
 import { Mission } from '../app/entities/mission.entity';
 import { Radar } from '../app/entities/radar.entity';
-import { SAM } from '../app/entities/sam.entity';
+import { Weapon } from '../app/entities/weapon.entity';
 
 export class InsertInitialData1629980000001 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await this.insertDataFromJson(queryRunner, 'mission.json', Mission);
     await this.insertDataFromJson(queryRunner, 'radar.json', Radar);
-    await this.insertDataFromJson(queryRunner, 'sam.json', SAM);
+    await this.insertDataFromJson(queryRunner, 'weapon.json', Weapon);
     await this.insertDataFromJson(queryRunner, 'flight_object_type.json', FlightObjectType);
     await this.insertDataFromJson(queryRunner, 'environment.json', Environment);
     await this.insertDataFromJson(queryRunner, 'mission_flight_task.json', MissionFlightTask);
