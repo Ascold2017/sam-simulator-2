@@ -1,6 +1,6 @@
 [
     {
-      "missionId": 1,
+      "mission": 1,
       "name": "----Flight object 1----",
       "flightObjectTypeId": 1,
       "points": [
@@ -10,7 +10,7 @@
       "delay": 0
     },
     {
-      "missionId": 1,
+      "mission": 1,
       "name": "----Flight object 2----",
       "flightObjectTypeId": 3,
       "points": [
@@ -20,7 +20,7 @@
       "delay": 0
     },
     {
-      "missionId": 1,
+      "mission": 1,
       "name": "----Flight object 3----",
       "flightObjectTypeId": 8,
       "points": [
@@ -30,7 +30,7 @@
       "delay": 0
     },
     {
-      "missionId": 1,
+      "mission": 1,
       "name": "----Flight object 4----",
       "flightObjectTypeId": 4,
       "points": [
@@ -41,7 +41,7 @@
       "delay": 0
     },
     {
-      "missionId": 1,
+      "mission": 1,
       "name": "----Flight object 5----",
       "flightObjectTypeId": 4,
       "points": [

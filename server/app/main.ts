@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import express from "express";
-import { AppDataSource } from "./config/dataSource";
+import { AppDataSource, DI } from "./config/dataSource";
 
 //gameService.startMission(1)
 
@@ -10,7 +10,17 @@ AppDataSource.initialize()
         console.log("Migrations: ", AppDataSource.migrations);
         return AppDataSource.runMigrations();
     })
-    .then(() => {
+    .then(async () => {
+
+        const data = await DI.mission.findOne({
+            where: { id: 1 },
+            relations: {
+                tasks: true,
+                environments: true
+            }
+        })
+
+        console.log(data)
         const app = express();
         app.use(express.json());
 
