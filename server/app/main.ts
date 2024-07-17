@@ -17,7 +17,9 @@ AppDataSource.initialize()
         const app = express();
         app.use(express.json());
 
-        gameService.startMission(1)
+        const data = await gameService.startMission(1)
+        gameService.setIsEnabledRadar(1, false)
+        gameService.onRadarUpdate(console.log)
 
         app.listen(port, () => {
             console.log(`Server is Fire at http://localhost:${port}`);

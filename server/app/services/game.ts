@@ -1,25 +1,42 @@
 import MissionLogger from "../../core/MissionLogger";
 import { Radar } from "../../core/Radar";
-import { SAM } from "../../core/SAM";
-import { EnvironmentRadarDTO, EnvironmentSAMDTO } from "../dto/environment.dto";
+import { EnvironmentRadarDTO, EnvironmentWeaponDTO } from "../dto/environment.dto";
 import { MissionTaskDTO } from "../dto/missionTask.dto";
 import { DI } from "../config/dataSource";
 import { engineInstance } from "../main";
+import { Environment } from "../entities/environment.entity";
+import { RadarDTO } from "../dto/radar.dto";
+import EventEmitter from "events";
+import { Weapon } from "../../core/Weapon";
+import { WeaponDTO } from "../dto/weapon.dto";
+import BaseRadarObject from "../../core/Radar/RadarObject/BaseRadarObject";
+import { RadarObject } from "../../core/Radar/Radar";
+import { TypedEventEmitter } from "../helpers/TypedEventEmitter";
 
 interface GameRadar {
     id: number;
     entity: Radar;
 }
 
-interface GameSAM {
+interface GameWeapon {
     id: number;
-    entity: SAM;
+    entity: Weapon;
+}
+
+interface RadarUpdatePayload {
+    radarId: number;
+    radarName: string;
+    radarObjects: RadarObject[]
+}
+interface EventsMap {
+    radarUpdate: RadarUpdatePayload
 }
 
 class GameService {
     private radars: GameRadar[] = [];
-    private sams: GameSAM[] = [];
+    private weapons: GameWeapon[] = [];
     private logger = new MissionLogger();
+    private eventBus = new TypedEventEmitter<EventsMap>();
 
     public async startMission(missionId: number) {
         const mission = await DI.mission.findOneOrFail({
@@ -40,32 +57,13 @@ class GameService {
                 mission.tasks.map((task) => new MissionTaskDTO(task)),
             );
 
-            mission.environments.forEach((environment) => {
-                if (environment.type === "radar") {
-                    this.radars.push({
-                        id: environment.id,
-                        entity: new Radar(
-                            new EnvironmentRadarDTO(
-                                engineInstance,
-                                this.logger,
-                                environment,
-                            ),
-                        ),
-                    });
-                }
-                if (environment.type === "sam") {
-                    this.sams.push({
-                        id: environment.id,
-                        entity: new SAM(
-                            new EnvironmentSAMDTO(
-                                engineInstance,
-                                this.logger,
-                                environment,
-                            ),
-                        ),
-                    });
-                }
-            });
+            this.initMissionRadars(mission.environments.filter(env => env.type === 'radar'));
+            this.initMissionSAMs(mission.environments.filter(env => env.type === 'sam'))
+
+            return {
+                radars: this.radars.map(r => new RadarDTO(r.entity, r.id)),
+                weapons: this.weapons.map(s => new WeaponDTO(s.entity, s.id))
+            }
         }
     }
 
@@ -73,10 +71,10 @@ class GameService {
         return this.logger.getLogs();
     }
 
-    public stop() {
+    public stopMission() {
         engineInstance.resetMission();
         this.radars = [];
-        this.sams = [];
+        this.weapons = [];
         this.logger = new MissionLogger();
     }
 
@@ -84,9 +82,72 @@ class GameService {
         this.radars.find(r => r.id === radarId).entity.setIsEnabled(value);
     }
 
-    public setIsEnabledSAM(radarId: number, value: boolean) {
-        this.sams.find(r => r.id === radarId).entity.radar.setIsEnabled(value);
+    private initMissionRadars(environments: Environment[]) {
+        environments.forEach(env => {
+            const radarEntity = new Radar(
+                new EnvironmentRadarDTO(
+                    engineInstance,
+                    this.logger,
+                    env,
+                ),
+            );
+            radarEntity.addUpdateListener(env.name, (radarObjects) => {
+                this.eventBus.emit('radarUpdate', {
+                    radarId: env.id,
+                    radarName: radarEntity.name,
+                    radarObjects
+                });
+            });
+            this.radars.push({
+                id: env.id,
+                entity: radarEntity,
+            });
+        })
     }
+
+    private initMissionSAMs(environments: Environment[]) {
+        environments.forEach(env => {
+            const radarEntity = new Radar(
+                new EnvironmentRadarDTO(
+                    engineInstance,
+                    this.logger,
+                    env,
+                ),
+            )
+            radarEntity.addUpdateListener(env.name, (radarObjects) => {
+                this.eventBus.emit('radarUpdate', {
+                    radarId: env.id,
+                    radarName: radarEntity.name,
+                    radarObjects
+                });
+            });
+
+            this.radars.push({
+                id: env.id,
+                entity: radarEntity,
+            });
+
+            const weaponEntity = new Weapon(
+                new EnvironmentWeaponDTO(
+                    engineInstance,
+                    this.logger,
+                    env,
+                    radarEntity,
+                ),
+            );
+
+            this.weapons.push({
+                id: env.id,
+                entity: weaponEntity,
+            });
+        })
+        
+    }
+
+    public onRadarUpdate(cb: (payload: RadarUpdatePayload) => void) {
+        this.eventBus.on('radarUpdate', cb)
+    }
+    
 }
 
 const gameService = new GameService();

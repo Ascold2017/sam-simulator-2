@@ -6,7 +6,7 @@ import { DetectedRadarObject } from './RadarObject/DetectedRadarObject';
 import { UndetectedRadarObject } from './RadarObject/UndetectedRadarObject';
 import _ from 'lodash';
 
-type RadarObject = DetectedRadarObject | UndetectedRadarObject;
+export type RadarObject = DetectedRadarObject | UndetectedRadarObject;
 
 interface IListener {
     name: string;
