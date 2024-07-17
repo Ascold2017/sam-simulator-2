@@ -1,0 +1,27 @@
+[
+    {
+      "name": "P-300",
+      "radarId": 3,
+      "type": "missile",
+      "weaponMaxSelectedCount": 6,
+      "weaponChannelsCount": 6,
+      "weaponAmmoCount": 16,
+      "weaponVelocity": 800,
+      "weaponMaxDistance": 75000,
+      "ammoKillRadius": 10,
+      "ammoMaxDeltaRotation": 0.5
+    },
+    {
+      "name": "G-4",
+      "radarId": 2,
+      "type": "gun",
+      "weaponMaxSelectedCount": 1,
+      "weaponChannelsCount": 1,
+      "weaponAmmoCount": 2000,
+      "weaponVelocity": 990,
+      "weaponMaxDistance": 4000,
+      "ammoKillRadius": 0.5,
+      "ammoMaxDeltaRotation": 0
+    }
+  ]
+  

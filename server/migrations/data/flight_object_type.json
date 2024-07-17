@@ -1,0 +1,57 @@
+[
+    {
+      "name": "Su-25",
+      "rcs": 10,
+      "maxVelocity": 208,
+      "altitude": 200
+    },
+    {
+      "name": "Su-34/35",
+      "rcs": 1,
+      "maxVelocity": 600,
+      "altitude": 1000
+    },
+    {
+      "name": "MIG-29",
+      "rcs": 4,
+      "maxVelocity": 600,
+      "altitude": 500
+    },
+    {
+      "name": "Bird",
+      "rcs": 0.01,
+      "maxVelocity": 13.9,
+      "altitude": 100
+    },
+    {
+      "name": "X-101",
+      "rcs": 0.01,
+      "maxVelocity": 200,
+      "altitude": 35
+    },
+    {
+      "name": "P-800 Onix",
+      "rcs": 0.3,
+      "maxVelocity": 680,
+      "altitude": 12
+    },
+    {
+      "name": "X-555",
+      "rcs": 0.5,
+      "maxVelocity": 200,
+      "altitude": 40
+    },
+    {
+      "name": "SSM Tochka-U",
+      "rcs": 1.5,
+      "maxVelocity": 1100,
+      "altitude": 26000
+    },
+    {
+      "name": "SSM Iskander",
+      "rcs": 0.15,
+      "maxVelocity": 2100,
+      "altitude": 80000
+    }
+  ]
+  

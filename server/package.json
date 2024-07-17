@@ -8,8 +8,8 @@
     "dev": "ts-node-dev app/main.ts",
     "format": "prettier . --write",
     "schema:sync": "typeorm-ts-node-commonjs schema:sync -d ./app/config/data-source.ts",
-    "migration:up": "npm run schema:sync && typeorm-ts-node-commonjs migration:run -d ./app/config/data-source.ts",
-    "migration:drop": "typeorm-ts-node-commonjs schema:drop -d ./app/config/data-source.ts"
+    "migration:up": "npm run schema:sync && typeorm-ts-node-commonjs migration:run -d ./app/config/dataSource.ts",
+    "migration:drop": "typeorm-ts-node-commonjs schema:drop -d ./app/config/dataSource.ts"
   },
   "keywords": [],
   "author": "",

@@ -6,12 +6,12 @@ export class FlightObjectType extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ type: 'double precision' })
   rcs: number;
 
-  @Column()
+  @Column({ type: 'double precision' })
   maxVelocity: number;
   
-  @Column()
+  @Column({ type: 'double precision' })
   altitude: number;
 }

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn, OneToOne } from "typeorm";
 import { BaseEntity } from "./base.entity";
 import { Mission } from "./mission.entity";
 import { Radar } from "./radar.entity";
@@ -12,15 +12,15 @@ export class Environment extends BaseEntity {
   @Column()
   type: 'radar' | 'sam';
 
-  @ManyToOne(() => Radar, radar => radar.environments, { nullable: true })
-  radar: Radar;
-
-  @ManyToOne(() => SAM, sam => sam.environments, { nullable: true })
-  sam: SAM;
-
   @Column('jsonb')
   position: { x: number; y: number; z: number };
 
   @ManyToOne(() => Mission, mission => mission.environments)
   mission: Mission;
+
+  @OneToOne(() => Radar, radar => radar.environment, { nullable: true })
+  radar: Radar;
+
+  @OneToOne(() => SAM, sam => sam.environment, { nullable: true })
+  sam: SAM;
 }
