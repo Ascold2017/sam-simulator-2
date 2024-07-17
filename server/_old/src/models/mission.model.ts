@@ -1,9 +1,9 @@
-export interface MissionEntity {
+export interface Mission {
     id: number;
     name: string;
 }
 
-export interface EnvironmentEntity {
+export interface Environment{
     id: number;
     name: string;
     type: 'radar' | 'sam';
@@ -11,7 +11,7 @@ export interface EnvironmentEntity {
     position: { x: number; y: number; z: number };
 }
 
-export interface RadarEntity {
+export interface Radar {
     id: number;
     name: string;
     maxDistance: number;
@@ -23,7 +23,7 @@ export interface RadarEntity {
     radarHeight: number;
 }
 
-export interface SAMEntity {
+export interface SAM {
     id: number;
     name: string;
     radarId: number;
