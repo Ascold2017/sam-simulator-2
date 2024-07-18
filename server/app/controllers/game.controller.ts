@@ -61,7 +61,7 @@ export class GameController {
         gameService.setIsEnabledRadar(radarId, value);
         socket.emit("enableRadar", {
             radarId,
-            value: !value,
+            value,
         });
     }
 }
