@@ -1,4 +1,5 @@
 import { Radar, RadarObject, Weapon } from "../../core";
+import { RadarObjectDTO } from "../dto/radarObject.dto";
 
 export interface GameRadar {
     id: number;
@@ -13,7 +14,7 @@ export interface GameWeapon {
 export interface RadarUpdatePayload {
     radarId: number;
     radarName: string;
-    radarObjects: RadarObject[];
+    radarObjects: RadarObjectDTO[];
 }
 
 export interface EventsMap {

@@ -1,28 +1,18 @@
 import "reflect-metadata";
-import express from "express";
-import { AppDataSource, DI } from "./config/dataSource";
+import http from 'http';
+import { AppDataSource } from "./config/dataSource";
 import { Engine } from "../core";
-import gameService from "./services/game";
+import { setupSocketServer } from "./websocket/websocketServer";
 
 export const engineInstance = new Engine()
-//gameService.startMission(1)
+const server = http.createServer();
+const port = process.env.PORT || 3000;
 
-const port = process.env.PORT || 8000;
-AppDataSource.initialize()
-    .then(() => {
-        console.log("Migrations: ", AppDataSource.migrations);
-        return AppDataSource.runMigrations();
-    })
-    .then(async () => {
-        const app = express();
-        app.use(express.json());
-
-        const data = await gameService.loadMission(1)
-        gameService.setIsEnabledRadar(1, false)
-        gameService.onRadarUpdate(console.log)
-
-        app.listen(port, () => {
-            console.log(`Server is Fire at http://localhost:${port}`);
-        });
-    })
-    .catch(console.error);
+(async () => {
+    await AppDataSource.initialize()
+    await AppDataSource.runMigrations();
+    setupSocketServer(server);
+    server.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    });
+})();

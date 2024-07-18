@@ -16,6 +16,7 @@ import {
     GameWeapon,
     RadarUpdatePayload,
 } from "../types/game-service";
+import { RadarObjectDTO } from "../dto/radarObject.dto";
 
 class GameService {
     private environments: Environment[] = [];
@@ -92,7 +93,7 @@ class GameService {
                 this.eventBus.emit("radarUpdate", {
                     radarId: env.id,
                     radarName: radarEntity.name,
-                    radarObjects,
+                    radarObjects: radarObjects.map(ro => new RadarObjectDTO(ro)),
                 });
             });
             this.radars.push({
@@ -115,7 +116,7 @@ class GameService {
                 this.eventBus.emit("radarUpdate", {
                     radarId: env.id,
                     radarName: radarEntity.name,
-                    radarObjects,
+                    radarObjects: radarObjects.map(ro => new RadarObjectDTO(ro)),
                 });
             });
 
@@ -142,6 +143,10 @@ class GameService {
 
     public onRadarUpdate(cb: (payload: RadarUpdatePayload) => void) {
         this.eventBus.on("radarUpdate", cb);
+    }
+
+    public offRadarUpdate(cb: (payload: RadarUpdatePayload) => void) {
+        this.eventBus.off('radrUpdate', cb)
     }
 }
 
