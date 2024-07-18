@@ -1,6 +1,5 @@
-
-import MissionLogger from '../../MissionLogger';
-import type { Engine, IPoint } from '../Engine';
+import { MissionLogger } from "../../MissionLogger";
+import type { Engine, IPoint } from "../Engine";
 
 export default class BaseFlightObject {
 	readonly id: string;

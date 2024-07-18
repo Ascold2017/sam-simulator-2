@@ -1,10 +1,9 @@
-
-import { IPoint, Engine, Enemy, Missile } from '../Engine';
-import MissionLogger from '../MissionLogger';
-import BaseRadarObject from './RadarObject/BaseRadarObject';
-import { DetectedRadarObject } from './RadarObject/DetectedRadarObject';
-import { UndetectedRadarObject } from './RadarObject/UndetectedRadarObject';
-import _ from 'lodash';
+import { Enemy, Engine, IPoint, Missile } from "../Engine";
+import { MissionLogger } from "../MissionLogger";
+import BaseRadarObject from "./RadarObject/BaseRadarObject";
+import { DetectedRadarObject } from "./RadarObject/DetectedRadarObject";
+import { UndetectedRadarObject } from "./RadarObject/UndetectedRadarObject";
+import _ from "lodash";
 
 export type RadarObject = DetectedRadarObject | UndetectedRadarObject;
 
@@ -47,7 +46,7 @@ export class Radar {
         this.engine = engine;
         this.logger = logger;
         this.engine.addFPSLoop(
-            'updateRadar:' + name,
+            "updateRadar:" + name,
             () => this.updateRadar(),
             40,
         );
@@ -55,7 +54,7 @@ export class Radar {
 
     public setIsEnabled(value: boolean) {
         this.logger.log(
-            `Radar <${this.name}> ${value ? 'enabled' : 'disabled'}`,
+            `Radar <${this.name}> ${value ? "enabled" : "disabled"}`,
         );
         this.isEnabled = value;
     }

@@ -2,7 +2,7 @@ interface IMissionLoggerEvent {
 	time: number;
 	message: string;
 }
-export default class MissionLogger {
+export class MissionLogger {
 	private events: IMissionLoggerEvent[] = [];
 	static instance: MissionLogger;
 	constructor() {

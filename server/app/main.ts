@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import express from "express";
 import { AppDataSource, DI } from "./config/dataSource";
-import { Engine } from "../core/Engine";
+import { Engine } from "../core";
 import gameService from "./services/game";
 
 export const engineInstance = new Engine()

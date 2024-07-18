@@ -1,2 +1,2 @@
-export { Weapon } from './Weapon'
+export { Weapon, IWeaponParams } from './Weapon'
 export { WeaponChannel } from './WeaponChannel'

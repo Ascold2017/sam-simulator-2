@@ -1,7 +1,4 @@
-import { Engine, IPoint } from "../../core/Engine";
-import MissionLogger from "../../core/MissionLogger";
-import { IRadarParams, Radar } from "../../core/Radar/Radar";
-import { IWeaponParams } from "../../core/Weapon/Weapon";
+import { Engine, IPoint, MissionLogger, IRadarParams, Radar, IWeaponParams } from "../../core";
 import { Environment } from "../entities/environment.entity";
 
 
@@ -101,13 +98,15 @@ export class EnvironmentSAMResponseDTO {
         this.id = environment.id;
         this.name = environment.name;
         this.position = environment.position;
-        this.radar.maxDistance = environment.radar.maxDistance;
-        this.radar.maxCaptureRange = environment.radar.maxCaptureRange;
-        this.radar.minCaptureRange = environment.radar.minCaptureRange;
-        this.radar.maxDetectCount = environment.radar.maxDetectCount;
-        this.radar.minElevation = environment.radar.minElevation;
-        this.radar.maxElevation = environment.radar.maxElevation;
-        this.radar.radarHeight = environment.radar.radarHeight;
+        this.radar = {
+            maxDistance: environment.radar.maxDistance,
+            maxCaptureRange: environment.radar.maxCaptureRange,
+            minCaptureRange: environment.radar.minCaptureRange,
+            maxDetectCount: environment.radar.maxDetectCount,
+            minElevation: environment.radar.minElevation,
+            maxElevation: environment.radar.maxElevation,
+            radarHeight: environment.radar.radarHeight
+        }
 
         this.weapon = {
             type: environment.weapon.type,

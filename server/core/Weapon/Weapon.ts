@@ -1,10 +1,9 @@
 import _ from "lodash";
-import { Engine, Missile, Enemy } from "../Engine";
-import MissionLogger from "../MissionLogger";
-import { Radar, DetectedRadarObject } from "../Radar";
+import { Enemy, Engine, Missile } from "../Engine";
+import { MissionLogger } from "../MissionLogger";
+import { DetectedRadarObject, Radar } from "../Radar";
 import { WeaponChannel } from "./WeaponChannel";
 import { MissileParams } from "../Engine/FlightObject/Missile";
-
 
 export interface IWeaponParams extends MissileParams {
 	ammoLeft: number;
@@ -17,7 +16,7 @@ interface IWeapon {
 	engine: Engine;
 	radar: Radar;
 	logger: MissionLogger;
-	params: IWeaponParams
+	params: IWeaponParams;
 }
 export class Weapon {
 	private name: string;
@@ -36,7 +35,7 @@ export class Weapon {
 		this.logger = logger;
 		this.params = params;
 		this.ammoLeft = params.ammoLeft;
-		const channelsCount = params.weaponChannelCount || 0
+		const channelsCount = params.weaponChannelCount || 0;
 		for (let i = 0; i < channelsCount; i++) {
 			this.weaponChannels[i] = new WeaponChannel(i);
 		}
@@ -57,7 +56,7 @@ export class Weapon {
 	public launchWeapon(
 		targetId: string,
 		channelId: number,
-		method: '3P' | '1/2',
+		method: "3P" | "1/2",
 	) {
 		const target = this.radar.getRadarObjects().find((dfo) =>
 			dfo.id === targetId && dfo instanceof DetectedRadarObject &&
@@ -72,7 +71,7 @@ export class Weapon {
 				this.engine,
 				target.getFlightObject() as Enemy,
 				method,
-				this.params
+				this.params,
 			);
 			this.ammoLeft--;
 
