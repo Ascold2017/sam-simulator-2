@@ -2,8 +2,6 @@ import { Server, Socket } from "socket.io";
 import gameService from "../services/game";
 import { z } from "zod";
 import _ from 'lodash'
-import { RadarObject } from "../../core";
-import { RadarObjectDTO } from "../dto/radarObject.dto";
 import { RadarUpdatePayload } from "../types/game-service";
 
 // Схемы валидации
