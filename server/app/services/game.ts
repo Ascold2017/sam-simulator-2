@@ -35,7 +35,7 @@ class GameService {
     private logger = new MissionLogger();
     private eventBus = new TypedEventEmitter<EventsMap>();
 
-    public async startMission(missionId: number) {
+    public async loadMission(missionId: number) {
         const mission = await DI.mission.findOneOrFail({
             where: { id: missionId },
             relations: [

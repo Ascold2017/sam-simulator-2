@@ -17,7 +17,7 @@ AppDataSource.initialize()
         const app = express();
         app.use(express.json());
 
-        const data = await gameService.startMission(1)
+        const data = await gameService.loadMission(1)
         gameService.setIsEnabledRadar(1, false)
         gameService.onRadarUpdate(console.log)
 
