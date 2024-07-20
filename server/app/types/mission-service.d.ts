@@ -13,7 +13,9 @@ export interface MissionFlightTaskPayload {
     flightObjectTypeId: number;
 }
 export interface CreateMissionPayload {
-    name: string, 
+    name: string;
+    lat: number;
+    lon: number;
     environments: EnvironmentPayload[], 
     tasks: MissionFlightTaskPayload[] 
 }

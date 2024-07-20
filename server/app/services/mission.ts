@@ -5,6 +5,7 @@ import { Environment } from "../entities/environment.entity";
 import { MissionFlightTask } from "../entities/flightTask.entity";
 import { Mission } from "../entities/mission.entity";
 import { CreateMissionPayload } from "../types/mission-service";
+import { generateMap } from "../helpers/mapGenerator";
 
 export class MissionService {
     async getMissions() {
@@ -27,8 +28,11 @@ export class MissionService {
             const missionFlightTaskRepository = queryRunner.manager
                 .getRepository(MissionFlightTask);
 
+            const { map256, map1024 } = await generateMap(missionData.lat, missionData.lon)
             const mission = missionRepository.create({
                 name: missionData.name,
+                map1024,
+                map256
             });
             await missionRepository.save(mission);
 
@@ -81,8 +85,11 @@ export class MissionService {
             if (!mission) {
                 throw new Error(`Mission with id ${missionId} not found`);
             }
-
+            const { map256, map1024 } = await generateMap(missionData.lat, missionData.lon)
+    
             mission.name = missionData.name;
+            mission.map1024 = map1024;
+            mission.map256 = map256;
 
             await environmentRepository.remove(mission.environments);
             await missionFlightTaskRepository.remove(mission.tasks);

@@ -8,6 +8,12 @@ export class Mission extends BaseEntity {
   @Column()
   name: string;
 
+  @Column('text', { nullable: true })
+  map256?: string;
+
+  @Column('text', { nullable: true })
+  map1024?: string;
+
   @OneToMany(() => Environment, environment => environment.mission)
   environments: Environment[];
 
