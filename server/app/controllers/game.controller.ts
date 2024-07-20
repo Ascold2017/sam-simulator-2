@@ -1,18 +1,8 @@
 import { Server, Socket } from "socket.io";
 import gameService from "../services/game";
-import { z } from "zod";
 import _ from 'lodash'
 import { RadarUpdatePayload } from "../types/game-service";
-
-// Схемы валидации
-const loadMissionSchema = z.object({
-    id: z.number(),
-});
-
-const enableRadarSchema = z.object({
-    id: z.number(),
-    value: z.boolean(),
-});
+import { loadMissionSchema, enableRadarSchema } from "../validators/game.validators";
 
 export class GameController {
 

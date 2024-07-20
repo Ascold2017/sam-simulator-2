@@ -23,6 +23,7 @@ export const AppDataSource = new DataSource({
 
 
 export const DI = {
+    ads: AppDataSource,
     em: AppDataSource.manager,
     mission: AppDataSource.getRepository(Mission),
     environment: AppDataSource.getRepository(Environment),
