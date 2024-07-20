@@ -1,6 +1,6 @@
-import { ref, watch, onUnmounted } from 'vue';
+import { ref, watch, onUnmounted, onMounted, type Ref } from 'vue';
 
-export function useImage(src: string) {
+export function useImage(src: Ref<string>) {
   const image = ref<HTMLImageElement | null>(null);
   const error = ref<string | null>(null);
   const isLoading = ref<boolean>(true);
@@ -29,12 +29,15 @@ export function useImage(src: string) {
     }
   };
 
+  
+
+
   watch(
-    () => src,
-    (newSrc) => {
-      updateImage(newSrc);
-    },
-    { immediate: true }
+    src,
+    (v) => {
+      console.log(v)
+      v && updateImage(v);
+    }
   );
 
   onUnmounted(() => {

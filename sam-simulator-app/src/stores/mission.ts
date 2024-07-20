@@ -10,7 +10,7 @@ export const useMissionStore = defineStore('mission', () => {
     const selectedMission = ref<Mission>({ id: 0, name: '', map1024: '', map256: '' })
 
     socketClient.listenToEvent<LoadMissionResponse>('loadMission', (data) => {
-       selectedMission.value = data.mission;
+       selectedMission.value = { ...data.mission };
     })
 
     async function getMissions() {

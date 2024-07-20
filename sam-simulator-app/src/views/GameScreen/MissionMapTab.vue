@@ -15,16 +15,18 @@
 <script setup lang="ts">
 import { useMissionStore } from '@/stores/mission';
 import { useImage } from '@/utils/useImage';
+import { storeToRefs } from 'pinia';
 import { ref, onMounted, watch, computed } from 'vue';
 
 const missionStore = useMissionStore()
+const { selectedMission } = storeToRefs(missionStore)
 
 const stageConfig = {
     width: 500,
     height: 500,
 };
 
-const { image, error, isLoading } = useImage(missionStore.selectedMission.map1024);
+const { image, error, isLoading } = useImage(computed(() => selectedMission.value.map1024));
 
 // Настройки изображения
 const imageConfig = computed(() => ({
