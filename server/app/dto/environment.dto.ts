@@ -120,3 +120,20 @@ export class EnvironmentSAMResponseDTO {
         }
     }
 }
+
+export class EnvironmentDTO {
+    public id: number;
+    public name: string;
+    public type: 'radar' | 'sam'
+    public position: { x: number; y: number; z: number };
+    public radarId: number | null;
+    public weaponId: number | null;
+    constructor(environment: Environment) {
+        this.id = environment.id;
+        this.name = environment.name;
+        this.type = environment.type;
+        this.position = environment.position;
+        this.radarId = environment.radar?.id || null;
+        this.weaponId = environment.weapon?.id || null;
+    }
+}

@@ -1,6 +1,6 @@
-import { QueryRunner } from "typeorm";
+import { QueryRunner, Repository } from "typeorm";
 import { DI } from "../config/dataSource";
-import { MissionDTO } from "../dto/mission.dto";
+import { MissionDTO, MissionFullDTO } from "../dto/mission.dto";
 import { Environment } from "../entities/environment.entity";
 import { MissionFlightTask } from "../entities/flightTask.entity";
 import { Mission } from "../entities/mission.entity";
@@ -13,6 +13,13 @@ export class MissionService {
 
         return missions.map((m) => new MissionDTO(m));
     }
+
+    async getMissionById(id: number) {
+        const mission = await DI.mission.findOne({ where: { id }, relations: ['environments', 'tasks', 'tasks.flightObjectType'] });
+
+        return new MissionFullDTO(mission)
+    }
+
 
     async createMission(missionData: CreateMissionPayload) {
         const queryRunner = DI.ads.createQueryRunner();
@@ -28,11 +35,14 @@ export class MissionService {
             const missionFlightTaskRepository = queryRunner.manager
                 .getRepository(MissionFlightTask);
 
-            const { map256, map1024 } = await generateMap(missionData.lat, missionData.lon)
+            const { map256, map1024 } = await generateMap(
+                missionData.lat,
+                missionData.lon,
+            );
             const mission = missionRepository.create({
                 name: missionData.name,
                 map1024,
-                map256
+                map256,
             });
             await missionRepository.save(mission);
 
@@ -55,7 +65,7 @@ export class MissionService {
 
             await queryRunner.commitTransaction();
 
-            return new MissionDTO(mission);
+            return new MissionFullDTO(mission);
         } catch (error) {
             await queryRunner.rollbackTransaction();
             throw new Error(`Failed to create mission: ${error.message}`);
@@ -85,33 +95,28 @@ export class MissionService {
             if (!mission) {
                 throw new Error(`Mission with id ${missionId} not found`);
             }
-            const { map256, map1024 } = await generateMap(missionData.lat, missionData.lon)
-    
+            const { map256, map1024 } = await generateMap(
+                missionData.lat,
+                missionData.lon,
+            );
+
             mission.name = missionData.name;
             mission.map1024 = map1024;
             mission.map256 = map256;
 
-            await environmentRepository.remove(mission.environments);
-            await missionFlightTaskRepository.remove(mission.tasks);
-
-            const updatedEnvironments = await this.createEnvironments(
-                missionData.environments,
-                mission,
-                queryRunner,
-            );
-            const updatedTasks = await this.createTasks(
-                missionData.tasks,
-                mission,
-                queryRunner,
-            );
+            await this.removeEnvironmentsAndTasks(mission, environmentRepository, missionFlightTaskRepository);
+            const updatedEnvironments = await this.createEnvironments(missionData.environments, mission, queryRunner);
+            const updatedTasks = await this.createTasks(missionData.tasks, mission, queryRunner);
 
             mission.environments = updatedEnvironments;
             mission.tasks = updatedTasks;
 
             await missionRepository.save(mission);
+            await environmentRepository.save(updatedEnvironments);
+            await missionFlightTaskRepository.save(updatedTasks);
             await queryRunner.commitTransaction();
 
-            return new MissionDTO(mission);
+            return new MissionFullDTO(mission);
         } catch (error) {
             await queryRunner.rollbackTransaction();
             throw new Error(`Failed to update mission: ${error.message}`);
@@ -131,7 +136,7 @@ export class MissionService {
 
         return await Promise.all(
             environments.map(async (envData) => {
-                const environment = environmentRepository.create(envData);
+                const environment = environmentRepository.create({ ...envData, mission });
                 if (envData.radarId) {
                     const radar = await DI.radar.findOne({
                         where: { id: envData.radarId },
@@ -144,7 +149,6 @@ export class MissionService {
                     });
                     if (weapon) environment.weapon = weapon;
                 }
-                environment.mission = mission;
                 return environment;
             }),
         );
@@ -178,6 +182,12 @@ export class MissionService {
             }),
         );
     }
+
+    private async removeEnvironmentsAndTasks(mission: Mission, environmentRepository: Repository<Environment>, missionFlightTaskRepository: Repository<MissionFlightTask>) {
+        await environmentRepository.remove(mission.environments);
+        await missionFlightTaskRepository.remove(mission.tasks);
+    }
+
 
     async deleteMission(missionId: number) {
         const queryRunner = DI.ads.createQueryRunner();

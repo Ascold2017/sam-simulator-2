@@ -10,6 +10,11 @@ class MissionController {
         res.json(data);
     }
 
+    async getMissionById(req: Request, res: Response) {
+        const data = await missionService.getMissionById(+req.params.id)
+        res.json(data)
+    }
+
     async postMission(req: Request, res: Response) {
         try {
             const result = createMissionSchema.safeParse(req.body);
