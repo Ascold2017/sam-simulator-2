@@ -7,7 +7,7 @@ import { ref } from "vue";
 export const useMissionStore = defineStore('mission', () => {
 
     const missions = ref<Mission[]>([])
-    const selectedMission = ref<Mission>({ id: 0, name: '' })
+    const selectedMission = ref<Mission>({ id: 0, name: '', map1024: '', map256: '' })
 
     socketClient.listenToEvent<LoadMissionResponse>('loadMission', (data) => {
        selectedMission.value = data.mission;
