@@ -13,17 +13,18 @@
 </template>
 
 <script setup lang="ts">
+import { useMissionStore } from '@/stores/mission';
 import { useImage } from '@/utils/useImage';
 import { ref, onMounted, watch, computed } from 'vue';
 
-const imageUrl = ref('https://via.placeholder.com/500');
+const missionStore = useMissionStore()
 
 const stageConfig = {
     width: 500,
     height: 500,
 };
 
-const { image, error, isLoading } = useImage(imageUrl.value);
+const { image, error, isLoading } = useImage(missionStore.selectedMission.map1024);
 
 // Настройки изображения
 const imageConfig = computed(() => ({

@@ -7,7 +7,7 @@
         <ul class="start-screen__mission-list">
           <li v-for="mission in missionStore.missions" :key="mission.id" @click="launchMission(mission.id)"
             class="start-screen__mission-item">
-            <img src="https://via.placeholder.com/150" alt="Mission Image" class="start-screen__mission-image"/>
+            <img v-if="mission.map256" :src="mission.map256" alt="Mission Image" class="start-screen__mission-image"/>
             <span class="start-screen__mission-name">{{ mission.name }}</span>
           </li>
         </ul>
