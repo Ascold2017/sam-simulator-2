@@ -29,13 +29,9 @@ export function useImage(src: Ref<string>) {
     }
   };
 
-  
-
-
   watch(
     src,
     (v) => {
-      console.log(v)
       v && updateImage(v);
     }
   );
