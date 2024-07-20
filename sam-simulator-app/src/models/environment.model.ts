@@ -1,9 +1,4 @@
 
-export interface EnvironmentResponse {
-    radars: EnvironmentRadar[]
-    sams: EnvironmentSAM[]
-}
-
 export interface EnvironmentRadar {
     id: number;
     name: string;

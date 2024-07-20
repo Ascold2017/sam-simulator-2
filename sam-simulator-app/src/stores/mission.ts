@@ -1,12 +1,17 @@
 import { httpClient } from "@/adapters/httpClient";
 import { socketClient } from "@/adapters/socketClient";
-import type { Mission } from "@/models/mission.model";
+import type { LoadMissionResponse, Mission } from "@/models/mission.model";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
 export const useMissionStore = defineStore('mission', () => {
 
     const missions = ref<Mission[]>([])
+    const selectedMission = ref<Mission>({ id: 0, name: '' })
+
+    socketClient.listenToEvent<LoadMissionResponse>('loadMission', (data) => {
+       selectedMission.value = data.mission;
+    })
 
     async function getMissions() {
         const data = await httpClient.request<undefined, Mission[]>({ url: '/missions', method: 'GET' })
@@ -19,6 +24,7 @@ export const useMissionStore = defineStore('mission', () => {
 
     return {
         missions,
+        selectedMission,
         getMissions,
         launchMission
     }

@@ -39,11 +39,16 @@ export class GameController {
             return;
         }
         const missionId = result.data.id;
-        await gameService.loadMission(missionId);
-        const environments = gameService.getEnvironments();
+        const mission = await gameService.loadMission(missionId);
+        const { radars, sams } = gameService.getEnvironments();
 
-        socket.emit("loadMission", environments);
-        socket.broadcast.emit("loadMission", environments);
+        const payload = {
+            mission,
+            radars,
+            sams
+        }
+        socket.emit("loadMission", payload);
+        socket.broadcast.emit("loadMission", payload);
     }
 
     handleRadarEnabled(socket: Socket, data: any) {

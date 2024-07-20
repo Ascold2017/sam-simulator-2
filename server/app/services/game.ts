@@ -17,6 +17,7 @@ import {
     RadarUpdatePayload,
 } from "../types/game-service";
 import { RadarObjectDTO } from "../dto/radarObject.dto";
+import { MissionDTO } from "../dto/mission.dto";
 
 class GameService {
     private environments: Environment[] = [];
@@ -50,6 +51,7 @@ class GameService {
                 mission.environments.filter((env) => env.type === "sam"),
             );
             this.environments = mission.environments;
+            return new MissionDTO(mission);
         }
     }
 

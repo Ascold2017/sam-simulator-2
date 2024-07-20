@@ -39,39 +39,26 @@ const activeTab = ref<string>('map');
 }
 
 .game-screen__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  background: rgba(0, 0, 0, 0.6);
-  /* Темный фон для контраста */
+  @apply flex justify-between items-center p-4 bg-black bg-opacity-60;
 }
 
 .game-screen__actions {
-  display: flex;
-  align-items: center;
+  @apply flex items-center gap-4;
 }
 
 .game-screen__connection-button {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  margin-right: 16px;
-  cursor: pointer;
+  @apply bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer;
 }
 
 .game-screen__connection-button:hover {
-  background: #0056b3;
+  @apply bg-blue-700;
 }
 
 .game-screen__dropdown {
-  margin-left: 16px;
+  /* Добавьте стили при необходимости */
 }
 
 .game-screen__main-content {
-  flex: 1;
-  padding: 16px;
+  @apply flex-1 p-4;
 }
 </style>
