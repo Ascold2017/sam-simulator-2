@@ -18,18 +18,21 @@
 
 <script setup lang="ts">
 import Tabs from '@/components/Tabs.vue'
-import MissionMapTab from './MissionMapTab.vue'
+import MissionMapTab from './MissionMap/MapContent.vue'
 import MissionLogsDropdown from './MissionLogsDropdown.vue'
 import { useEnvironmentStore } from '@/stores/environment';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const environmentStore = useEnvironmentStore();
 
-const tabs = [
-  { id: 'map', label: 'Карта миссии' },
-  { id: 'radar', label: 'Радар 1' },
-  { id: 'sam', label: 'ЗРК-1' }
-];
+const tabs = computed(() => {
+  return [
+    { id: 'map', label: 'Карта миссии' },
+    ...environmentStore.radars.map(r => ({ id: r.id, label: r.name })),
+    ...environmentStore.sams.map(r => ({ id: r.id, label: r.name }))
+  ]
+});
+
 const activeTab = ref<string>('map');
 </script>
 

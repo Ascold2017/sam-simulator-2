@@ -14,8 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import RadarMarker from './MissionMapRadarMarker.vue'
-import SAMMarker from './MissionMapSAMMarker.vue'
+import RadarMarker from './RadarMarker.vue'
+import SAMMarker from './MapSAMMarker.vue'
 import { useEnvironmentStore } from '@/stores/environment';
 import { useMissionStore } from '@/stores/mission';
 import { useImage } from '@/utils/useImage';
