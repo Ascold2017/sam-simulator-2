@@ -4,7 +4,7 @@
             <div class="mission-map-tab__inner-shadow"></div>
             <v-stage ref="stage" :config="stageConfig" class="mission-map-tab__stage">
                 <v-layer>
-                    <v-image :config="imageConfig" />
+                    <v-image :config="imageConfig" v-if="image"/>
                     <RadarMarker v-for="radar in radars" :key="radar.id" :radar="radar" :scale="scale" :canvasSize="canvasSize" />
                     <SAMMarker v-for="sam in sams" :key="sam.id" :sam="sam" :scale="scale" :canvasSize="canvasSize" />
                 </v-layer>

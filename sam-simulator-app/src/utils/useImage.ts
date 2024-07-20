@@ -29,6 +29,10 @@ export function useImage(src: Ref<string>) {
     }
   };
 
+  onMounted(() => {
+    src.value && updateImage(src.value)
+  })
+
   watch(
     src,
     (v) => {
@@ -40,7 +44,11 @@ export function useImage(src: Ref<string>) {
     // Очистка ресурса изображения, если нужно
     if (img) {
       img.src = '';
+      
     }
+    image.value = null;
+    error.value = null;
+    isLoading.value = false;
   });
 
   return { image, error, isLoading };

@@ -19,7 +19,7 @@ const props = defineProps<{
 
 const groupConfig = computed(() => ({
   x: props.sam.position.x * props.scale + props.canvasSize / 2,
-  y: props.sam.position.y * props.scale + props.canvasSize / 2,
+  y: -props.sam.position.y * props.scale + props.canvasSize / 2,
 }))
 
 const samConfig = computed(() => ({

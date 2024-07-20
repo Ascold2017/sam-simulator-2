@@ -18,7 +18,7 @@ const props = defineProps<{
 
 const groupConfig = computed(() => ({
   x: props.radar.position.x * props.scale + props.canvasSize / 2,
-  y: props.radar.position.y * props.scale + props.canvasSize / 2,
+  y: -props.radar.position.y * props.scale + props.canvasSize / 2,
 }))
 const radarConfig = computed(() => ({
   x: 0,
