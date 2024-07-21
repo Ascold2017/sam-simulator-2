@@ -53,16 +53,14 @@ const imageConfig = computed(() => ({
 }
 
 .mission-map-tab__card {
-    @apply bg-black p-6 rounded-lg shadow-lg relative;
+    @apply bg-neutral-900 p-6 rounded-lg relative;
+   
 }
 
 .mission-map-tab__inner-shadow {
-    @apply absolute inset-4 pointer-events-none rounded-lg;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
+    @apply absolute pointer-events-none rounded-lg;
+    box-shadow: inset 0 0 5px white;
     z-index: 1;
-    /* Помещаем тень под содержимое канваса */
-
-
 }
 
 .mission-map-tab__stage {

@@ -10,6 +10,12 @@
 
     <main class="game-screen__main-content">
       <MissionMapTab v-if="activeTab === 'map'" />
+      <component 
+        v-for="radar in gameStore.radars" 
+        :key="radar.id" 
+        :is="activeTab === radar.id.toString() ? MissionRadar : null" 
+        :radar="radar" 
+      />
     </main>
   </div>
 
@@ -19,6 +25,7 @@
 <script setup lang="ts">
 import Tabs from '@/components/Tabs.vue'
 import MissionMapTab from './MissionMap/MapContent.vue'
+import MissionRadar from './MissionRadar/RadarContent.vue'
 import MissionLogsDropdown from './MissionLogsDropdown.vue'
 import { computed, onMounted, ref } from 'vue';
 import { useGameStore } from '@/stores/game';
