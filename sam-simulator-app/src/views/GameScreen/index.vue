@@ -16,6 +16,12 @@
         :is="activeTab === radar.id.toString() ? MissionRadar : null" 
         :radar="radar" 
       />
+      <component 
+        v-for="sam in gameStore.sams" 
+        :key="sam.id" 
+        :is="activeTab === sam.id.toString() ? MissionSAM : null" 
+        :sam="sam" 
+      />
     </main>
   </div>
 
@@ -26,6 +32,7 @@
 import Tabs from '@/components/Tabs.vue'
 import MissionMapTab from './MissionMap/MapContent.vue'
 import MissionRadar from './MissionRadar/RadarContent.vue'
+import MissionSAM from './MissionSAM/SAMContent.vue'
 import MissionLogsDropdown from './MissionLogsDropdown.vue'
 import { computed, onMounted, ref } from 'vue';
 import { useGameStore } from '@/stores/game';

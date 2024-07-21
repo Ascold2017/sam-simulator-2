@@ -4,7 +4,7 @@
       <v-stage :config="stageConfig">
         <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" />
         <v-layer>
-          <RadarTargetMarker :position="{ x: 86734, y: 134500 }" :azimuth="240" :is-selected="false" :is-detected="true"
+          <RadarTargetMarker :position="{ x: 46734, y: 34500 }" :azimuth="240" :is-selected="false" :is-detected="true"
             :is-missile="false" :canvas-size="canvasSize" :scale="scale" />
         </v-layer>
       </v-stage>
