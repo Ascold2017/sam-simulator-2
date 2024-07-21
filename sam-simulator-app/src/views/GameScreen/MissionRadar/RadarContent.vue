@@ -4,14 +4,15 @@
       <v-stage :config="stageConfig">
         <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" />
         <v-layer>
-          <RadarTargetMarker :position="{ x: 46734, y: 34500 }" :azimuth="240" :is-selected="false" :is-detected="true"
-            :is-missile="false" :canvas-size="canvasSize" :scale="scale" />
+          <RadarTargetMarker v-for="target in radarTargets" :position="target.position" :azimuth="target.azimuth"
+            :is-selected="target.isSelected" :is-detected="target.isDetected" :is-missile="target.isMissile"
+            :canvas-size="canvasSize" :scale="scale" />
         </v-layer>
       </v-stage>
     </div>
     <div class="mission-radar__button-bar">
-      <button class="mission-radar__action-button">ВКЛ</button>
-      <button class="mission-radar__action-button">ВЫКЛ</button>
+      <button class="mission-radar__action-button" @click="setRadarEnabled(true)">ON</button>
+      <button class="mission-radar__action-button" @click="setRadarEnabled(false)">OFF</button>
     </div>
   </div>
 </template>
@@ -21,10 +22,13 @@ import type { EnvironmentRadar } from '@shared/models/game.model'
 import RadarWireframe from './RadarWireFrame.vue';
 import RadarTargetMarker from './RadarTargetMarker.vue'
 import { computed } from 'vue';
+import { useGameStore } from '@/stores/game';
 
 const props = defineProps<{
   radar: EnvironmentRadar;
 }>();
+
+const gameStore = useGameStore()
 
 const stageConfig = {
   width: 500,
@@ -37,6 +41,26 @@ const scale = computed(() => {
   const size = 500 - padding * 2; // Размер канваса с учетом отступов
   return size / (props.radar.maxDistance * 2); // Масштаб на основе максимальной дистанции радара
 });
+
+const radarTargets = computed(() => {
+  if (!gameStore.radarObjectsByRadarIds[props.radar.id]) return []
+  return gameStore.radarObjectsByRadarIds[props.radar.id].map(ro => ({
+    id: ro.id,
+    isDetected: ro.type === "DETECTED_RADAR_OBJECT",
+    isSelected: false,
+    isMissile: ro.isMissile,
+    azimuth: ro.azimuth * (180 / Math.PI),
+    position: {
+      x: ro.x,
+      y: ro.y
+    },
+
+  }))
+})
+
+function setRadarEnabled(value: boolean) {
+  gameStore.setEnableRadar(props.radar.id, value)
+}
 </script>
 
 <style scoped>

@@ -1,14 +1,20 @@
-
-import { io, Socket } from 'socket.io-client';
+import { io, Socket } from "socket.io-client";
 
 class SocketClient {
   private socket: Socket;
 
   constructor(url: string) {
     this.socket = io(url, {
-        path: '/socket/game',
-        transports: ['websocket'], // Указываем, что используем только WebSocket
+      path: "/socket/game",
+      transports: ["websocket"], // Указываем, что используем только WebSocket
     });
+
+
+    window.addEventListener("beforeunload", () => this.disconnect());
+  }
+
+  private disconnect() {
+    this.socket.disconnect();
   }
 
   send<T>(eventName: string, payload: T): void {
@@ -22,4 +28,6 @@ class SocketClient {
   }
 }
 
-export const socketClient = new SocketClient(import.meta.env.VITE_APP_SOCKET_URL)
+export const socketClient = new SocketClient(
+  import.meta.env.VITE_APP_SOCKET_URL,
+);

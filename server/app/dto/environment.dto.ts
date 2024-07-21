@@ -75,6 +75,7 @@ export class EnvironmentSAMResponseDTO {
     name: string;
     position: { x: number; y: number; z: number }
     radar: {
+        id: number;
         maxDistance: number;
         maxCaptureRange: number;
         minCaptureRange: number;
@@ -84,6 +85,7 @@ export class EnvironmentSAMResponseDTO {
         radarHeight: number;
     }
     weapon: {
+        id: number;
         type: 'missile' | 'gun';
         weaponMaxSelectedCount: number;
         weaponChannelsCount: number;
@@ -99,6 +101,7 @@ export class EnvironmentSAMResponseDTO {
         this.name = environment.name;
         this.position = environment.position;
         this.radar = {
+            id: environment.radar.id,
             maxDistance: environment.radar.maxDistance,
             maxCaptureRange: environment.radar.maxCaptureRange,
             minCaptureRange: environment.radar.minCaptureRange,
@@ -109,6 +112,7 @@ export class EnvironmentSAMResponseDTO {
         }
 
         this.weapon = {
+            id: environment.weapon.id,
             type: environment.weapon.type,
             weaponMaxSelectedCount: environment.weapon.weaponMaxSelectedCount,
             weaponChannelsCount: environment.weapon.weaponChannelsCount,

@@ -14,11 +14,11 @@ import {
     EventsMap,
     GameRadar,
     GameWeapon,
-    RadarUpdatePayload,
 } from "../types/game-service";
 import { RadarObjectDTO } from "../dto/radarObject.dto";
 import { Mission } from "../entities/mission.entity";
 import { MissionDTO } from "../dto/mission.dto";
+import { RadarUpdateResponse } from "@shared/models/game.model";
 
 class GameService {
     private currentMission: Mission | null = null;
@@ -41,6 +41,7 @@ class GameService {
 
         if (mission) {
             this.currentMission = mission;
+            this.logger = new MissionLogger();
             engineInstance.resetMission();
             engineInstance.startMission(
                 mission.tasks.map((task) => new MissionTaskDTO(task)),
@@ -52,7 +53,7 @@ class GameService {
             this.initMissionSAMs(
                 mission.environments.filter((env) => env.type === "sam"),
             );
-            this.logger = new MissionLogger();
+           
             return true;
         }
     }
@@ -86,6 +87,14 @@ class GameService {
         this.radars.find((r) => r.id === radarId)?.entity.setIsEnabled(value);
     }
 
+    public onRadarUpdate(cb: (payload: RadarUpdateResponse) => void) {
+        this.eventBus.on("radarUpdate", cb);
+    }
+
+    public offRadarUpdate(cb: (payload: RadarUpdateResponse) => void) {
+        this.eventBus.off('radarUpdate', cb)
+    }
+
     private initMissionRadars(environments: Environment[]) {
         environments.forEach((env) => {
             const radarEntity = new Radar(
@@ -98,7 +107,6 @@ class GameService {
             radarEntity.addUpdateListener(env.name, (radarObjects) => {
                 this.eventBus.emit("radarUpdate", {
                     radarId: env.id,
-                    radarName: radarEntity.name,
                     radarObjects: radarObjects.map(ro => new RadarObjectDTO(ro)),
                 });
             });
@@ -121,7 +129,6 @@ class GameService {
             radarEntity.addUpdateListener(env.name, (radarObjects) => {
                 this.eventBus.emit("radarUpdate", {
                     radarId: env.id,
-                    radarName: radarEntity.name,
                     radarObjects: radarObjects.map(ro => new RadarObjectDTO(ro)),
                 });
             });
@@ -147,13 +154,7 @@ class GameService {
         });
     }
 
-    public onRadarUpdate(cb: (payload: RadarUpdatePayload) => void) {
-        this.eventBus.on("radarUpdate", cb);
-    }
-
-    public offRadarUpdate(cb: (payload: RadarUpdatePayload) => void) {
-        this.eventBus.off('radarUpdate', cb)
-    }
+    
 }
 
 const gameService = new GameService();

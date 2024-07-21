@@ -18,6 +18,7 @@ export interface EnvironmentSAM {
     name: string;
     position: { x: number; y: number; z: number };
     radar: {
+        id: number;
         maxDistance: number;
         maxCaptureRange: number;
         minCaptureRange: number;
@@ -27,6 +28,7 @@ export interface EnvironmentSAM {
         radarHeight: number;
     };
     weapon: {
+        id: number;
         type: "missile" | "gun";
         weaponMaxSelectedCount: number;
         weaponChannelsCount: number;
@@ -47,4 +49,27 @@ export interface GetCurrentMissionResponse {
 export interface PostRadarEnabledPayload {
     radarId: number;
     value: boolean;
+}
+
+export interface RadarObjectResponse {
+    id: string;
+    distance: number;
+    azimuth: number;
+    elevation: number;
+    radialVelocity: number;
+    velocity: number;
+    height: number;
+    param: number;
+    x: number;
+    y: number;
+    rotation: number;
+    size: number;
+    visibilityK: number;
+    isMissile: boolean;
+    type: string;
+}
+
+export interface RadarUpdateResponse {
+    radarId: number;
+    radarObjects: RadarObjectResponse[];
 }

@@ -11,8 +11,10 @@ export const setupSocketServer = (httpServer: any) => {
     });
 
     io.on('connection', (socket) => {
-        gameController.registerSocketHandlers(socket);
+        gameController.registerSocketHandlers(socket, io);
     });
+
+    
 
     return io;
 };

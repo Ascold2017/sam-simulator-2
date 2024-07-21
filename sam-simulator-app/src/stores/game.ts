@@ -4,7 +4,8 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import type { Mission } from '@shared/models/missions.model'
-import type { GetCurrentMissionResponse, EnvironmentRadar, EnvironmentSAM } from '@shared/models/game.model'
+import type { GetCurrentMissionResponse, EnvironmentRadar, EnvironmentSAM, RadarUpdateResponse, RadarObjectResponse, PostRadarEnabledPayload } from '@shared/models/game.model'
+import { socketClient } from "@/adapters/socketClient";
 
 export const useGameStore = defineStore("game", () => {
     const router = useRouter();
@@ -18,6 +19,15 @@ export const useGameStore = defineStore("game", () => {
     });
     const radars = ref<EnvironmentRadar[]>([]);
     const sams = ref<EnvironmentSAM[]>([]);
+    const radarObjectsByRadarIds = ref<Record<number, RadarObjectResponse[]>>({})
+
+    socketClient.listenToEvent<RadarUpdateResponse>('radarUpdates', (data) => {
+        console.log(data);
+        radarObjectsByRadarIds.value = {
+            ...radarObjectsByRadarIds.value,
+            [data.radarId]: data.radarObjects
+        }
+    })
 
     async function launchMission(missionId: number) {
         try {
@@ -49,12 +59,29 @@ export const useGameStore = defineStore("game", () => {
         
     }
 
+    async function setEnableRadar(radarId: number, value: boolean) {
+        try {
+            await httpClient.request<PostRadarEnabledPayload, undefined>({
+                url: "/game/radar-enabled",
+                method: "POST",
+                payload: {
+                    radarId,
+                    value
+                }
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     return {
+        radarObjectsByRadarIds,
         currentMission,
         isLoadingMission,
         radars,
         sams,
         launchMission,
-        getCurrentMission
+        getCurrentMission,
+        setEnableRadar
     };
 });
