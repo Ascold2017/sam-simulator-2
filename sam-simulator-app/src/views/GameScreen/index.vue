@@ -20,20 +20,24 @@
 import Tabs from '@/components/Tabs.vue'
 import MissionMapTab from './MissionMap/MapContent.vue'
 import MissionLogsDropdown from './MissionLogsDropdown.vue'
-import { useEnvironmentStore } from '@/stores/environment';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { useGameStore } from '@/stores/game';
 
-const environmentStore = useEnvironmentStore();
+const gameStore = useGameStore()
 
 const tabs = computed(() => {
   return [
     { id: 'map', label: 'Карта миссии' },
-    ...environmentStore.radars.map(r => ({ id: r.id, label: r.name })),
-    ...environmentStore.sams.map(r => ({ id: r.id, label: r.name }))
+    ...gameStore.radars.map(r => ({ id: r.id.toString(), label: r.name })),
+    ...gameStore.sams.map(r => ({ id: r.id.toString(), label: r.name }))
   ]
 });
 
 const activeTab = ref<string>('map');
+
+onMounted(() => {
+  gameStore.getCurrentMission()
+})
 </script>
 
 <style scoped>

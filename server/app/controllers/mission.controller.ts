@@ -2,17 +2,18 @@ import { Request, Response } from "express";
 import { missionService } from "../services/mission";
 import { createMissionSchema } from "../validators/mission.validators";
 import { CreateMissionPayload } from "../types/mission-service";
+import { GetMissionResponse, GetMissionsResponse } from "@shared/models/missions.model";
 
 class MissionController {
     async getMissions(req: Request, res: Response) {
         const data = await missionService.getMissions();
 
-        res.json(data);
+        res.json(data as GetMissionsResponse);
     }
 
     async getMissionById(req: Request, res: Response) {
         const data = await missionService.getMissionById(+req.params.id)
-        res.json(data)
+        res.json(data as GetMissionResponse)
     }
 
     async postMission(req: Request, res: Response) {

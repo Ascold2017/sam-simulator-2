@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import { useEnvironmentStore } from './stores/environment';
-import { useMissionStore } from './stores/mission';
-// Initialization
-useMissionStore()
-useEnvironmentStore();
+import { RouterView } from 'vue-router'
 </script>
 
 <template>

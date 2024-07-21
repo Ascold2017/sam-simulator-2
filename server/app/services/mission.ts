@@ -16,7 +16,7 @@ export class MissionService {
 
     async getMissionById(id: number) {
         const mission = await DI.mission.findOne({ where: { id }, relations: ['environments', 'tasks', 'tasks.flightObjectType'] });
-
+        if (!mission) return null;
         return new MissionFullDTO(mission)
     }
 

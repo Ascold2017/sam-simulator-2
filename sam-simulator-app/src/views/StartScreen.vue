@@ -5,7 +5,7 @@
       <div class="start-screen__content">
         <h2 class="start-screen__subtitle">Миссии</h2>
         <ul class="start-screen__mission-list">
-          <li v-for="mission in missionStore.missions" :key="mission.id" @click="launchMission(mission.id)"
+          <li v-for="mission in missionsStore.missions" :key="mission.id" @click="gameStore.launchMission(mission.id)"
             class="start-screen__mission-item">
             <img v-if="mission.map256" :src="mission.map256" alt="Mission Image" class="start-screen__mission-image"/>
             <span class="start-screen__mission-name">{{ mission.name }}</span>
@@ -21,22 +21,16 @@
 </template>
 
 <script setup lang="ts">
-import { useMissionStore } from '@/stores/mission';
+import { useGameStore } from '@/stores/game';
+import { useMissionsStore } from '@/stores/missions';
 import { onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 
-const router = useRouter()
-const missionStore = useMissionStore()
+const missionsStore = useMissionsStore()
+const gameStore = useGameStore()
 
 onMounted(() => {
-  missionStore.getMissions();
+  missionsStore.getMissions();
 })
-
-
-function launchMission(missionId: number) {
-  missionStore.launchMission(missionId)
-  router.push({ name: 'game' })
-}
 </script>
 
 <style scoped>

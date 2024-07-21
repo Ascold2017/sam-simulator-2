@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { GameController } from "../controllers/game.controller";
+import { gameController } from "../controllers/game.controller";
 
 export const setupSocketServer = (httpServer: any) => {
     const io = new Server(httpServer, {
@@ -10,18 +10,8 @@ export const setupSocketServer = (httpServer: any) => {
         }
     });
 
-    const gameController = new GameController();
-
     io.on('connection', (socket) => {
-        console.log('a user connected');
-
-        gameController.registerHandlers(io, socket);
-        
-        GameController.emitRadarUpdates(socket)
-
-        socket.on('disconnect', () => {
-            console.log('user disconnected');
-        });
+        gameController.registerSocketHandlers(socket);
     });
 
     return io;

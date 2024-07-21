@@ -1,60 +1,53 @@
 import { Server, Socket } from "socket.io";
+import { Request, Response } from "express";
 import gameService from "../services/game";
 import _ from 'lodash'
 import { RadarUpdatePayload } from "../types/game-service";
-import { loadMissionSchema, enableRadarSchema } from "../validators/game.validators";
+import { enableRadarSchema } from "../validators/game.validators";
+import type { GetCurrentMissionResponse, PostRadarEnabledPayload } from '@shared/models/game.model'
 
-export class GameController {
-
-    static emitRadarUpdates(socket: Socket) {
-        const radarUpdateListener = (radarUpdate: RadarUpdatePayload) =>  {
-            socket.emit("radarUpdates", radarUpdate); 
-        }
-        gameService.onRadarUpdate(radarUpdateListener);
+class GameController {
+    registerSocketHandlers(socket: Socket) {
 
         socket.on("disconnect", () => {
             gameService.offRadarUpdate(radarUpdateListener);
         });
+
+        const radarUpdateListener = (radarUpdate: RadarUpdatePayload) =>  {
+            socket.emit("radarUpdates", radarUpdate); 
+        }
+        gameService.onRadarUpdate(radarUpdateListener);
     }
 
-    public registerHandlers(io: Server, socket: Socket) {
-        socket.on("loadMission", (data) => this.handleLoadMission(socket, data));
-        socket.on("enableRadar", (data) => this.handleRadarEnabled(socket, data));
+    async postLauchMission(req: Request, res: Response) {
+        await gameService.launchMission(+req.params.id);
+        res.json({ ok: true })
     }
 
-    async handleLoadMission(socket: Socket, data: any) {
-        const result = loadMissionSchema.safeParse(data);
-        if (!result.success) {
-            socket.emit("error", "Invalid data for loadMission");
+    async getCurrentMission(req: Request, res: Response) {
+        const data = gameService.getCurrentMission();
+        if (!data) {
+            res.status(400).json({ error: 'Mission not launched' })
             return;
         }
-        const missionId = result.data.id;
-        const mission = await gameService.loadMission(missionId);
-        const { radars, sams } = gameService.getEnvironments();
-
-        const payload = {
-            mission,
-            radars,
-            sams
-        }
-        socket.emit("loadMission", payload);
-        socket.broadcast.emit("loadMission", payload);
+        
+        res.json(data as GetCurrentMissionResponse)
     }
 
-    handleRadarEnabled(socket: Socket, data: any) {
-        const result = enableRadarSchema.safeParse(data);
+    async postRadarEnabled(req: Request, res: Response) {
+        const result = enableRadarSchema.safeParse(req.body as PostRadarEnabledPayload);
         if (!result.success) {
-            socket.emit("error", "Invalid data for enableRadar");
+            res.status(400).json({ error: "Invalid data for enableRadar" })
             return;
         }
 
-        const radarId = result.data.id;
+        const radarId = result.data.radarId;
         const value = result.data.value;
 
         gameService.setIsEnabledRadar(radarId, value);
-        socket.emit("enableRadar", {
-            radarId,
-            value,
-        });
+        res.json({ ok: true })
     }
 }
+
+
+export const gameController = new GameController();

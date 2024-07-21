@@ -1,10 +1,7 @@
 import { z } from "zod";
 
-export const loadMissionSchema = z.object({
-    id: z.number(),
-});
 
 export const enableRadarSchema = z.object({
-    id: z.number(),
+    radarId: z.number(),
     value: z.boolean(),
 });

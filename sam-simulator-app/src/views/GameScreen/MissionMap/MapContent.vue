@@ -16,17 +16,13 @@
 <script setup lang="ts">
 import RadarMarker from './RadarMarker.vue'
 import SAMMarker from './MapSAMMarker.vue'
-import { useEnvironmentStore } from '@/stores/environment';
-import { useMissionStore } from '@/stores/mission';
 import { useImage } from '@/utils/useImage';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import { useGameStore } from '@/stores/game';
 
-const missionStore = useMissionStore()
-const { selectedMission } = storeToRefs(missionStore)
-
-const environmentStore = useEnvironmentStore();
-const { radars, sams } = storeToRefs(environmentStore);
+const gameStore = useGameStore()
+const { currentMission, radars, sams } = storeToRefs(gameStore)
 
 const canvasSize = 500
 const scale = canvasSize / 2000000; // 500 пикселей на 1000 километров (1 км = 2 пикселя)
@@ -36,7 +32,7 @@ const stageConfig = {
     height: canvasSize,
 };
 
-const { image } = useImage(computed(() => selectedMission.value.map1024));
+const { image } = useImage(computed(() => currentMission.value.map1024));
 
 // Настройки изображения
 const imageConfig = computed(() => ({

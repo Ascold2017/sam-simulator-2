@@ -1,16 +1,21 @@
 {
-    "compilerOptions": {
-      "outDir": "./dist",
-      "lib": ["es5", "es6"],
-      "target": "ES6",
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "esModuleInterop": true,
-      "sourceMap": true,
-      "resolveJsonModule": true
-    },
-    "exclude": ["node_modules", "./_old"]
-  }
-  
+  "compilerOptions": {
+    "outDir": "./dist",
+    "lib": ["es5", "es6"],
+    "target": "ES6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "rootDir": "../",
+    "paths": {
+      "@shared/*": ["../shared/*"]
+    }
+  },
+  "include": ["./**/*", "../shared/**/*.ts"],
+  "exclude": ["node_modules", "./_old"]
+}
