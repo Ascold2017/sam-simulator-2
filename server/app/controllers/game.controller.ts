@@ -26,8 +26,12 @@ class GameController {
     }
 
     async postLauchMission(req: Request, res: Response) {
-        await gameService.launchMission(+req.params.id);
-        res.json({ ok: true });
+        try {
+            await gameService.launchMission(+req.params.id);
+            res.json({ ok: true });
+        } catch (e) {
+            res.status(400).json({ error: e.message });
+        }
     }
 
     async getCurrentMission(req: Request, res: Response) {
@@ -39,7 +43,7 @@ class GameController {
 
         res.json(data as GetCurrentMissionResponse);
     }
-    
+
     async postRadarEnabled(req: Request, res: Response) {
         const result = enableRadarSchema.safeParse(
             req.body as PostRadarEnabledPayload,
