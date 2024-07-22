@@ -43,8 +43,8 @@ const scale = computed(() => {
 });
 
 const radarTargets = computed(() => {
-  if (!gameStore.radarObjectsByRadarIds[props.radar.id]) return []
-  return gameStore.radarObjectsByRadarIds[props.radar.id].map(ro => ({
+  if (!gameStore.radarObjectsByRadarIds[props.radar.gameId]) return []
+  return gameStore.radarObjectsByRadarIds[props.radar.gameId].map(ro => ({
     id: ro.id,
     isDetected: ro.type === "DETECTED_RADAR_OBJECT",
     isSelected: false,
@@ -59,7 +59,7 @@ const radarTargets = computed(() => {
 })
 
 function setRadarEnabled(value: boolean) {
-  gameStore.setEnableRadar(props.radar.id, value)
+  gameStore.setEnableRadar(props.radar.gameId, value)
 }
 </script>
 

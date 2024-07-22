@@ -2,6 +2,7 @@ import type { Mission } from "./missions.model";
 
 export interface EnvironmentRadar {
     id: number;
+    gameId: string;
     name: string;
     position: { x: number; y: number; z: number };
     maxDistance: number;
@@ -18,7 +19,7 @@ export interface EnvironmentSAM {
     name: string;
     position: { x: number; y: number; z: number };
     radar: {
-        id: number;
+        gameId: string;
         maxDistance: number;
         maxCaptureRange: number;
         minCaptureRange: number;
@@ -28,7 +29,7 @@ export interface EnvironmentSAM {
         radarHeight: number;
     };
     weapon: {
-        id: number;
+        gameId: string;
         type: "missile" | "gun";
         weaponMaxSelectedCount: number;
         weaponChannelsCount: number;
@@ -47,7 +48,7 @@ export interface GetCurrentMissionResponse {
 }
 
 export interface PostRadarEnabledPayload {
-    radarId: number;
+    radarGameId: string;
     value: boolean;
 }
 
@@ -70,6 +71,6 @@ export interface RadarObjectResponse {
 }
 
 export interface RadarUpdateResponse {
-    radarId: number;
+    radarId: string;
     radarObjects: RadarObjectResponse[];
 }

@@ -19,10 +19,9 @@ export const useGameStore = defineStore("game", () => {
     });
     const radars = ref<EnvironmentRadar[]>([]);
     const sams = ref<EnvironmentSAM[]>([]);
-    const radarObjectsByRadarIds = ref<Record<number, RadarObjectResponse[]>>({})
+    const radarObjectsByRadarIds = ref<Record<string, RadarObjectResponse[]>>({})
 
     socketClient.listenToEvent<RadarUpdateResponse>('radarUpdates', (data) => {
-        console.log(data);
         radarObjectsByRadarIds.value = {
             ...radarObjectsByRadarIds.value,
             [data.radarId]: data.radarObjects
@@ -59,16 +58,18 @@ export const useGameStore = defineStore("game", () => {
         
     }
 
-    async function setEnableRadar(radarId: number, value: boolean) {
+    async function setEnableRadar(radarGameId: string, value: boolean) {
         try {
             await httpClient.request<PostRadarEnabledPayload, undefined>({
                 url: "/game/radar-enabled",
                 method: "POST",
                 payload: {
-                    radarId,
+                    radarGameId,
                     value
                 }
             });
+
+            radarObjectsByRadarIds.value[radarGameId] = []
         } catch (e) {
             console.error(e);
         }

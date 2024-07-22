@@ -12,6 +12,8 @@ export interface IWeaponParams extends MissileParams {
 }
 
 interface IWeapon {
+	id: string;
+	entityId: number;
 	name: string;
 	engine: Engine;
 	radar: Radar;
@@ -19,7 +21,9 @@ interface IWeapon {
 	params: IWeaponParams;
 }
 export class Weapon {
-	private name: string;
+	public id: string;
+	public entityId: number;
+	public name: string;
 	private selectedObjectIds: string[] = [];
 	private weaponChannels: Record<number, WeaponChannel> = {};
 	private ammoLeft;
@@ -28,7 +32,9 @@ export class Weapon {
 	private logger: MissionLogger;
 	private params: IWeaponParams;
 
-	constructor({ name, engine, radar, logger, params }: IWeapon) {
+	constructor({ id, entityId, name, engine, radar, logger, params }: IWeapon) {
+		this.id = id;
+		this.entityId = entityId;
 		this.name = name;
 		this.engine = engine;
 		this.radar = radar;

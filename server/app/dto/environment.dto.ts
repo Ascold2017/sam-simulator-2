@@ -1,6 +1,6 @@
 import { Engine, IPoint, MissionLogger, IRadarParams, Radar, IWeaponParams } from "../../core";
 import { Environment } from "../entities/environment.entity";
-
+import { v4 as uuidv4 } from 'uuid'
 
 export class EnvironmentRadarConstructorDTO {
     engine: Engine;
@@ -8,6 +8,8 @@ export class EnvironmentRadarConstructorDTO {
     position: IPoint;
     params: IRadarParams;
     name: string;
+    id: string;
+    entityId: number;
 
     constructor(engine: Engine, logger: MissionLogger, environment: Environment) {
         this.engine = engine;
@@ -15,6 +17,8 @@ export class EnvironmentRadarConstructorDTO {
         this.name = environment.name;
         this.params = environment.radar;
         this.position = { ...environment.position, v: 0 };
+        this.id = uuidv4();
+        this.entityId = environment.id;
     }
 }
 
@@ -25,6 +29,8 @@ export class EnvironmentWeaponConstructorDTO {
     radar: Radar;
     params: IWeaponParams;
     name: string;
+    id: string;
+    entityId: number;
 
     constructor(engine: Engine, logger: MissionLogger, environment: Environment, radar: Radar) {
         this.engine = engine;
@@ -42,11 +48,14 @@ export class EnvironmentWeaponConstructorDTO {
             killRadius: environment.weapon.ammoKillRadius,
             minCaptureRange: environment.radar.minCaptureRange
         }
+        this.id = uuidv4();
+        this.entityId = environment.id
     }
 }
 
 export class EnvironmentRadarResponseDTO {
     id: number;
+    gameId: string;
     name: string;
     position: { x: number; y: number; z: number }
     maxDistance: number;
@@ -56,8 +65,9 @@ export class EnvironmentRadarResponseDTO {
     minElevation: number;
     maxElevation: number;
     radarHeight: number;
-    constructor(environment: Environment) {
+    constructor(environment: Environment, radarGameId: string) {
         this.id = environment.id;
+        this.gameId = radarGameId;
         this.name = environment.name;
         this.position = environment.position;
         this.maxDistance = environment.radar.maxDistance;
@@ -75,7 +85,7 @@ export class EnvironmentSAMResponseDTO {
     name: string;
     position: { x: number; y: number; z: number }
     radar: {
-        id: number;
+        gameId: string;
         maxDistance: number;
         maxCaptureRange: number;
         minCaptureRange: number;
@@ -85,7 +95,7 @@ export class EnvironmentSAMResponseDTO {
         radarHeight: number;
     }
     weapon: {
-        id: number;
+        gameId: string;
         type: 'missile' | 'gun';
         weaponMaxSelectedCount: number;
         weaponChannelsCount: number;
@@ -96,12 +106,12 @@ export class EnvironmentSAMResponseDTO {
         ammoMaxDeltaRotation: number;
     }
    
-    constructor(environment: Environment) {
+    constructor(environment: Environment, radarGameId: string, weaponGameId: string) {
         this.id = environment.id;
         this.name = environment.name;
         this.position = environment.position;
         this.radar = {
-            id: environment.radar.id,
+            gameId: radarGameId,
             maxDistance: environment.radar.maxDistance,
             maxCaptureRange: environment.radar.maxCaptureRange,
             minCaptureRange: environment.radar.minCaptureRange,
@@ -112,7 +122,7 @@ export class EnvironmentSAMResponseDTO {
         }
 
         this.weapon = {
-            id: environment.weapon.id,
+            gameId: weaponGameId,
             type: environment.weapon.type,
             weaponMaxSelectedCount: environment.weapon.weaponMaxSelectedCount,
             weaponChannelsCount: environment.weapon.weaponChannelsCount,

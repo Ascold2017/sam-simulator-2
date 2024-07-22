@@ -2,6 +2,6 @@ import { z } from "zod";
 
 
 export const enableRadarSchema = z.object({
-    radarId: z.number(),
+    radarGameId: z.string(),
     value: z.boolean(),
 });

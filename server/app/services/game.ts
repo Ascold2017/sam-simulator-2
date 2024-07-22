@@ -11,9 +11,7 @@ import { Environment } from "../entities/environment.entity";
 import { MissionLogger, Radar, Weapon } from "../../core";
 import { TypedEventEmitter } from "../helpers/TypedEventEmitter";
 import {
-    EventsMap,
-    GameRadar,
-    GameWeapon,
+    EventsMap
 } from "../types/game-service";
 import { RadarObjectDTO } from "../dto/radarObject.dto";
 import { Mission } from "../entities/mission.entity";
@@ -22,8 +20,8 @@ import { RadarUpdateResponse } from "@shared/models/game.model";
 
 class GameService {
     private currentMission: Mission | null = null;
-    private radars: GameRadar[] = [];
-    private weapons: GameWeapon[] = [];
+    private radars: Radar[] = [];
+    private weapons: Weapon[] = [];
     private logger: MissionLogger | null = null;
     private eventBus = new TypedEventEmitter<EventsMap>();
 
@@ -63,10 +61,17 @@ class GameService {
         return {
             mission: new MissionDTO(this.currentMission),
             radars: this.currentMission.environments.filter((env) => env.type === "radar").map(
-                (env) => new EnvironmentRadarResponseDTO(env)
+                (env) => {
+                    const radar = this.radars.find(r => r.entityId === env.id);
+                    return new EnvironmentRadarResponseDTO(env, radar?.id);
+                }
             ),
             sams: this.currentMission.environments.filter((env) => env.type === "sam").map(
-                (env) => new EnvironmentSAMResponseDTO(env)
+                (env) => {
+                    const radar = this.radars.find(r => r.entityId === env.id);
+                    const weapon = this.weapons.find(w => w.entityId === env.id);
+                    return new EnvironmentSAMResponseDTO(env, radar?.id, weapon?.id);
+                }
             ),
         };
     }
@@ -83,8 +88,8 @@ class GameService {
         this.logger = null;
     }
 
-    public setIsEnabledRadar(radarId: number, value: boolean) {
-        this.radars.find((r) => r.id === radarId)?.entity.setIsEnabled(value);
+    public setIsEnabledRadar(radarGameId: string, value: boolean) {
+        this.radars.find((r) => r.id === radarGameId)?.setIsEnabled(value);
     }
 
     public onRadarUpdate(cb: (payload: RadarUpdateResponse) => void) {
@@ -101,19 +106,16 @@ class GameService {
                 new EnvironmentRadarConstructorDTO(
                     engineInstance,
                     this.logger!,
-                    env,
+                    env
                 ),
             );
             radarEntity.addUpdateListener(env.name, (radarObjects) => {
                 this.eventBus.emit("radarUpdate", {
-                    radarId: env.id,
+                    radarId: radarEntity.id,
                     radarObjects: radarObjects.map(ro => new RadarObjectDTO(ro)),
                 });
             });
-            this.radars.push({
-                id: env.id,
-                entity: radarEntity,
-            });
+            this.radars.push(radarEntity);
         });
     }
 
@@ -123,20 +125,17 @@ class GameService {
                 new EnvironmentRadarConstructorDTO(
                     engineInstance,
                     this.logger!,
-                    env,
+                    env
                 ),
             );
             radarEntity.addUpdateListener(env.name, (radarObjects) => {
                 this.eventBus.emit("radarUpdate", {
-                    radarId: env.id,
+                    radarId: radarEntity.id,
                     radarObjects: radarObjects.map(ro => new RadarObjectDTO(ro)),
                 });
             });
 
-            this.radars.push({
-                id: env.id,
-                entity: radarEntity,
-            });
+            this.radars.push(radarEntity);
 
             const weaponEntity = new Weapon(
                 new EnvironmentWeaponConstructorDTO(
@@ -147,13 +146,9 @@ class GameService {
                 ),
             );
 
-            this.weapons.push({
-                id: env.id,
-                entity: weaponEntity,
-            });
+            this.weapons.push(weaponEntity);
         });
     }
-
     
 }
 

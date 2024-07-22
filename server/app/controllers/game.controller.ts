@@ -49,10 +49,10 @@ class GameController {
             return;
         }
 
-        const radarId = result.data.radarId;
+        const radarGameId = result.data.radarGameId;
         const value = result.data.value;
 
-        gameService.setIsEnabledRadar(radarId, value);
+        gameService.setIsEnabledRadar(radarGameId, value);
         res.json({ ok: true });
     }
 }

@@ -23,6 +23,8 @@ export interface IRadarParams {
 }
 
 interface IRadar {
+    id: string;
+    entityId: number;
     position: IPoint;
     name: string;
     engine: Engine;
@@ -32,6 +34,8 @@ interface IRadar {
 
 export class Radar {
     public isEnabled = false;
+    public id: string;
+    public entityId: number;
     public name: string;
     public params: IRadarParams;
     public position: IPoint;
@@ -39,7 +43,9 @@ export class Radar {
     private logger: MissionLogger;
     private radarObjects: RadarObject[] = [];
     private listeners = [] as IListener[];
-    constructor({ name, engine, logger, position, params }: IRadar) {
+    constructor({ id, name, engine, logger, position, params, entityId }: IRadar) {
+        this.id = id;
+        this.entityId = entityId;
         this.name = name;
         this.params = params;
         this.position = position;
