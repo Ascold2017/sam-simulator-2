@@ -54,7 +54,7 @@ const radarTargets = computed(() => {
       isDetected: ro.type === "DETECTED_RADAR_OBJECT",
       isSelected: false,
       isMissile: ro.isMissile,
-      rotation: ro.rotation * (180 / Math.PI) + 90,
+      rotation: ro.rotation * (180 / Math.PI),
       position: {
         x: ro.x,
         y: ro.y
