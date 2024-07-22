@@ -10,7 +10,7 @@ import { computed } from 'vue';
 
 const props = defineProps<{
     position: { x: number; y: number };
-    azimuth: number;
+    rotation: number;
     isSelected: boolean;
     isDetected: boolean;
     isMissile: boolean;
@@ -26,7 +26,7 @@ const radius = computed(() => (props.isMissile ? 2.5 : 5));
 const markerColor = computed(() => (props.isSelected ? 'red' : 'rgb(150, 249, 123)'));
 
 const nosePoints = computed(() => {
-    const angle = (props.azimuth - 90) * (Math.PI / 180);
+    const angle = props.rotation;
     const x = Math.cos(angle) * radius.value;
     const y = Math.sin(angle) * radius.value;
     const noseX = Math.cos(angle) * (radius.value + 10);

@@ -4,7 +4,7 @@
       <v-stage :config="stageConfig">
         <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" />
         <v-layer>
-          <RadarTargetMarker v-for="target in radarTargets" :position="target.position" :azimuth="target.azimuth"
+          <RadarTargetMarker v-for="target in radarTargets" :position="target.position" :rotation="target.rotation"
             :is-selected="target.isSelected" :is-detected="target.isDetected" :is-missile="target.isMissile"
             :canvas-size="canvasSize" :scale="scale" />
         </v-layer>
@@ -49,7 +49,7 @@ const radarTargets = computed(() => {
     isDetected: ro.type === "DETECTED_RADAR_OBJECT",
     isSelected: false,
     isMissile: ro.isMissile,
-    azimuth: ro.azimuth * (180 / Math.PI),
+    rotation: ro.rotation * (180 / Math.PI) + 90,
     position: {
       x: ro.x,
       y: ro.y
