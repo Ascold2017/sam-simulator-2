@@ -8,6 +8,7 @@ interface BaseRadarObjectConstructor {
 	currentRotation: number;
 	visibilityK: number;
 	radarParams: IRadarParams
+	radarPosition: IPoint;
 }
 export default class BaseRadarObject {
 	public id: string;
@@ -26,11 +27,13 @@ export default class BaseRadarObject {
 	public isVisible: boolean;
 	public hitPosition = { x: 0, y: 0 };
 	private radarParams: IRadarParams;
+	private radarPosition: IPoint
 
 	constructor(payload: BaseRadarObjectConstructor) {
 		this.radarParams = payload.radarParams;
+		this.radarPosition = payload.radarPosition;
 		this.id = payload.id;
-		const distance = BaseRadarObject.getDistance(payload.currentPoint);
+		const distance = BaseRadarObject.getDistance(this.radarPosition, payload.currentPoint);
 		this.distance = distance;
 		const azimuth = this.getAzimuth(payload.currentPoint);
 		this.azimuth = azimuth < 0 ? 2 * Math.PI + azimuth : azimuth;
@@ -70,12 +73,16 @@ export default class BaseRadarObject {
 				Math.sqrt(2 * 6371009 * height) > distance;
 	}
 
-	public static getDistance(currentPoint: IPoint) {
-		return Math.hypot(currentPoint.x, currentPoint.y);
+	public static getDistance(radarPoint: IPoint, currentPoint: IPoint) {
+		const dx = currentPoint.x - radarPoint.x;
+        const dy = currentPoint.y - radarPoint.y;
+        return Math.hypot(dx, dy);
 	}
 
 	protected getAzimuth(currentPoint: IPoint) {
-		return Math.atan2(currentPoint.y, currentPoint.x);
+		const dx = currentPoint.x - this.radarPosition.x;
+        const dy = currentPoint.y - this.radarPosition.y;
+        return Math.atan2(dy, dx);
 	}
 
 	protected getTargetElevation(distance: number, height: number) {

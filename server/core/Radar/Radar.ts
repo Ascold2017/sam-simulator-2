@@ -87,13 +87,14 @@ export class Radar {
         const allEnemies = this.engine.getFlightObjects()
             .filter((fo) =>
                 fo instanceof Enemy &&
-                BaseRadarObject.getDistance(fo.getCurrentPoint()) <
+                BaseRadarObject.getDistance(this.position, fo.getCurrentPoint()) <
                     this.params.maxDistance
             )
             .sort(DetectedRadarObject.sortByVisibilityComparator);
 
         const detected = allEnemies.filter((e) => {
             const distance = BaseRadarObject.getDistance(
+                this.position,
                 e.getCurrentPoint(),
             );
             return distance < this.params.maxCaptureRange &&
@@ -120,11 +121,11 @@ export class Radar {
         );
 
         const detectedRadarObjects = detectedEnemies.map((fo) =>
-            new DetectedRadarObject(fo, this.params)
+            new DetectedRadarObject(fo, this.params, this.position)
         ).filter((fo) => fo.isVisible);
 
         const undetectedRadarObjects = undetectedEnemies.map((fo) =>
-            new UndetectedRadarObject(fo, this.params)
+            new UndetectedRadarObject(fo, this.params, this.position)
         ).filter(
             (fo) => fo.isVisible,
         );
@@ -132,7 +133,7 @@ export class Radar {
         this.radarObjects = [
             ...detectedRadarObjects,
             ...undetectedRadarObjects,
-            ...missiles.map((fo) => new DetectedRadarObject(fo, this.params)),
+            ...missiles.map((fo) => new DetectedRadarObject(fo, this.params, this.position)),
         ];
 
         this.listeners.forEach((l) => l.listener(this.radarObjects));
