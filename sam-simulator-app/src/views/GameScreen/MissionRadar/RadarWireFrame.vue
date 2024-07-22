@@ -1,6 +1,6 @@
 <template>
     <v-layer>
-        <v-text :text="radarDistanceLabel" :x="canvasSize - 75" :y="padding" :fill="'rgb(150, 249, 123)'"/>
+        <v-text :text="radarDistanceLabel" :x="canvasSize - 75" :y="padding" :fill="'rgb(150, 249, 123)'" />
         <v-circle v-for="range in radarRanges" :key="range" :radius="range * scale" :x="center" :y="center"
             :stroke="'gray'" :strokeWidth="0.5" />
         <v-line v-for="azimuth in azimuths" :key="azimuth.value" :points="azimuth.points" :stroke="'rgb(150, 249, 123)'"
@@ -34,11 +34,16 @@ const center = computed(() => props.canvasSize / 2);
 
 const radarRanges = computed(() => {
     let step: number;
-    if (props.radar.maxDistance <= 100000) {
+    if (props.radar.maxDistance <= 50000) {
         step = 5000;
-    } else if (props.radar.maxDistance <= 200000) {
+    }
+    else if (props.radar.maxDistance <= 100000) {
         step = 10000;
-    } else {
+    }
+    else if (props.radar.maxDistance <= 200000) {
+        step = 25000;
+    }
+    else {
         step = 50000;
     }
 
