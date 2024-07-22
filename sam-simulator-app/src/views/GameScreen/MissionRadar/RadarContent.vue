@@ -4,9 +4,13 @@
       <v-stage :config="stageConfig">
         <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" />
         <v-layer>
-          <RadarTargetMarker v-for="target in radarTargets" :position="target.position" :rotation="target.rotation"
-            :is-selected="target.isSelected" :is-detected="target.isDetected" :is-missile="target.isMissile"
-            :canvas-size="canvasSize" :scale="scale" />
+          <RadarTargetMarker
+            v-for="radarTarget in radarTargets"
+            :target="radarTarget.target"
+            :radar="radarTarget.radar"
+            :canvas-size="canvasSize"
+            :scale="scale"
+          />
         </v-layer>
       </v-stage>
     </div>
@@ -21,7 +25,7 @@
 import type { EnvironmentRadar } from '@shared/models/game.model'
 import RadarWireframe from './RadarWireFrame.vue';
 import RadarTargetMarker from './RadarTargetMarker.vue'
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useGameStore } from '@/stores/game';
 
 const props = defineProps<{
@@ -46,15 +50,16 @@ const radarTargets = computed(() => {
   if (!gameStore.radarObjectsByRadarIds[props.radar.gameId]) return []
   return gameStore.radarObjectsByRadarIds[props.radar.gameId].map(ro => ({
     id: ro.id,
-    isDetected: ro.type === "DETECTED_RADAR_OBJECT",
-    isSelected: false,
-    isMissile: ro.isMissile,
-    rotation: ro.rotation * (180 / Math.PI) + 90,
-    position: {
-      x: ro.x,
-      y: ro.y
+    target: {
+      isDetected: ro.type === "DETECTED_RADAR_OBJECT",
+      isSelected: false,
+      isMissile: ro.isMissile,
+      rotation: ro.rotation * (180 / Math.PI) + 90,
+      position: {
+        x: ro.x,
+        y: ro.y
+      },
     },
-
   }))
 })
 

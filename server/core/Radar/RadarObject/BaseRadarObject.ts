@@ -53,8 +53,8 @@ export default class BaseRadarObject {
 			distance,
 			payload.currentRotation,
 		);
-		this.x = payload.currentPoint.x;
-		this.y = payload.currentPoint.y;
+		this.x = payload.currentPoint.x - this.radarPosition.x;
+        this.y = payload.currentPoint.y - this.radarPosition.y;
 		this.rotation = payload.currentRotation;
 		this.size = 2 * Math.sqrt(payload.visibilityK / Math.PI);
 		this.visibilityK = payload.visibilityK > 1 ? 1 : payload.visibilityK;
