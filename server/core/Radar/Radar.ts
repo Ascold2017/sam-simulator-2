@@ -136,11 +136,23 @@ export class Radar {
             (fo) => fo.isVisible,
         );
 
-        this.radarObjects = [
+        const allRadarObjects = [
             ...detectedRadarObjects,
             ...undetectedRadarObjects,
             ...missiles.map((fo) => new DetectedRadarObject(fo, this.params, this.position)),
-        ].filter((fo) => this.isWithinCursorAngle(fo.x, fo.y));
+        ];
+
+        const newRadarObjects = this.radarObjects.filter((ro) => !this.isWithinCursorAngle(ro.x, ro.y));
+
+        allRadarObjects.forEach((ro) => {
+            if (this.isWithinCursorAngle(ro.x, ro.y)) {
+                if (!newRadarObjects.some((obj) => obj.id === ro.id)) {
+                    newRadarObjects.push(ro);
+                }
+            }
+        });
+
+        this.radarObjects = newRadarObjects;
 
         this.listeners.forEach((l) => l.listener(this.radarObjects, this.cursorAngle));
     }
@@ -161,9 +173,7 @@ export class Radar {
     }
 
     private calculateAngleToPoint(x: number, y: number): number {
-        const dx = x - this.position.x;
-        const dy = y - this.position.y;
-        let angle = Math.atan2(dy, dx) * (180 / Math.PI);
+        let angle = Math.atan2(x, y) * (180 / Math.PI);
         if (angle < 0) {
             angle += 360;
         }
