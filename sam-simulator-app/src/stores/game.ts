@@ -4,8 +4,8 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import type { Mission } from '@shared/models/missions.model'
-import type { GetCurrentMissionResponse, EnvironmentRadar, EnvironmentSAM, RadarUpdateResponse, RadarObjectResponse, PostRadarEnabledPayload } from '@shared/models/game.model'
 import { socketClient } from "@/adapters/socketClient";
+import type { EnvironmentRadar, EnvironmentSAM, RadarObjectResponse, RadarUpdateResponse, RadarEnabledResponse, GetCurrentMissionResponse, PostRadarEnabledPayload } from "@shared/models/game.model";
 
 export const useGameStore = defineStore("game", () => {
     const router = useRouter();
@@ -26,6 +26,25 @@ export const useGameStore = defineStore("game", () => {
             ...radarObjectsByRadarIds.value,
             [data.radarId]: data.radarObjects
         }
+    })
+    socketClient.listenToEvent<RadarEnabledResponse>('radarEnabled', (data) => {
+
+        if (!data.radarEnabled) {
+            radarObjectsByRadarIds.value[data.radarId] = []
+        }
+
+        radars.value = radars.value.map(radar => {
+            if (radar.gameId === data.radarId) {
+                radar.isEnabled = data.radarEnabled;
+            }
+            return radar;
+        })
+        sams.value = sams.value.map(sam => {
+            if (sam.radar.gameId === data.radarId) {
+                sam.radar.isEnabled = data.radarEnabled;
+            }
+            return sam;
+        })
     })
 
     async function launchMission(missionId: number) {
@@ -68,14 +87,6 @@ export const useGameStore = defineStore("game", () => {
                     value
                 }
             });
-
-            radarObjectsByRadarIds.value[radarGameId] = []
-            radars.value = radars.value.map(radar => {
-                if (radar.gameId === radarGameId) {
-                    radar.isEnabled = value;
-                }
-                return radar;
-            })
         } catch (e) {
             console.error(e);
         }

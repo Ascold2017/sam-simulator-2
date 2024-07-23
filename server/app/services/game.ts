@@ -14,7 +14,7 @@ import { EventsMap } from "../types/game-service";
 import { RadarObjectDTO } from "../dto/radarObject.dto";
 import { Mission } from "../entities/mission.entity";
 import { MissionDTO } from "../dto/mission.dto";
-import { RadarUpdateResponse } from "@shared/models/game.model";
+import { RadarEnabledResponse, RadarUpdateResponse } from "@shared/models/game.model";
 import _ from "lodash";
 
 class GameService {
@@ -101,14 +101,26 @@ class GameService {
 
     public setIsEnabledRadar(radarGameId: string, value: boolean) {
         this.radars.find((r) => r.id === radarGameId)?.setIsEnabled(value);
+        this.eventBus.emit('radarEnabled', {
+            radarId: radarGameId,
+            radarEnabled: value
+        })
     }
 
     public onRadarUpdate(cb: (payload: RadarUpdateResponse) => void) {
         this.eventBus.on("radarUpdate", cb);
     }
 
+    public onRadarEnabled(cb: (payload: RadarEnabledResponse) => void) {
+        this.eventBus.on('radarEnabled', cb)
+    }
+
     public offRadarUpdate(cb: (payload: RadarUpdateResponse) => void) {
         this.eventBus.off("radarUpdate", cb);
+    }
+
+    public offRadarEnabled(cb: (payload: RadarEnabledResponse) => void) {
+        this.eventBus.off("radarEnabled", cb);
     }
 
     private initMissionRadars(environments: Environment[]) {

@@ -78,3 +78,8 @@ export interface RadarUpdateResponse {
     radarId: string;
     radarObjects: RadarObjectResponse[];
 }
+
+export interface RadarEnabledResponse {
+    radarId: string;
+    radarEnabled: boolean;
+}

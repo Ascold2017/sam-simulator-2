@@ -6,6 +6,7 @@ import { enableRadarSchema } from "../validators/game.validators";
 import type {
     GetCurrentMissionResponse,
     PostRadarEnabledPayload,
+    RadarEnabledResponse,
     RadarUpdateResponse,
 } from "@shared/models/game.model";
 
@@ -13,6 +14,7 @@ class GameController {
     registerSocketHandlers(socket: Socket, io: Server) {
         socket.on("disconnect", () => {
             gameService.offRadarUpdate(radarUpdateListener);
+            gameService.offRadarEnabled(radarEnabledListener)
             if (io.engine.clientsCount === 0) {
                 console.log("All users disconnected.");
                 // Вставьте сюда ваш код для обработки ситуации, когда все клиенты отключились.
@@ -22,7 +24,11 @@ class GameController {
         const radarUpdateListener = (radarUpdate: RadarUpdateResponse) => {
             socket.emit("radarUpdates", radarUpdate);
         };
+        const radarEnabledListener = (radarEnabled: RadarEnabledResponse) => {
+            socket.emit('radarEnabled', radarEnabled)
+        }
         gameService.onRadarUpdate(radarUpdateListener);
+        gameService.onRadarEnabled(radarEnabledListener)
     }
 
     async postLauchMission(req: Request, res: Response) {
