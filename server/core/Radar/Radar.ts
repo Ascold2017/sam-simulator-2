@@ -9,7 +9,7 @@ export type RadarObject = DetectedRadarObject | UndetectedRadarObject;
 
 interface IListener {
     name: string;
-    listener: (radarObjects: RadarObject[]) => void;
+    listener: (radarObjects: RadarObject[], cursorAngle: number) => void;
 }
 
 export interface IRadarParams {
@@ -20,6 +20,7 @@ export interface IRadarParams {
     minElevation: number;
     maxElevation: number;
     radarHeight: number;
+    updateTime: number;
 }
 
 interface IRadar {
@@ -43,6 +44,9 @@ export class Radar {
     private logger: MissionLogger;
     private radarObjects: RadarObject[] = [];
     private listeners = [] as IListener[];
+    private cursorAngle = 0; // текущий угол курсора в градусах
+    private lastUpdateTime = Date.now(); // время последнего обновления
+
     constructor({ id, name, engine, logger, position, params, entityId }: IRadar) {
         this.id = id;
         this.entityId = entityId;
@@ -74,7 +78,7 @@ export class Radar {
 
     public addUpdateListener(
         name: string,
-        listener: (radarObjects: RadarObject[]) => void,
+        listener: IListener['listener'],
     ) {
         this.listeners.push({ name, listener });
     }
@@ -114,6 +118,8 @@ export class Radar {
             this.radarObjects = [];
             return;
         }
+        this.updateCursorAngle();
+
         const [detectedEnemies, undetectedEnemies] = this.getEnemies();
 
         const missiles = this.engine.getFlightObjects().filter((fo) =>
@@ -134,8 +140,33 @@ export class Radar {
             ...detectedRadarObjects,
             ...undetectedRadarObjects,
             ...missiles.map((fo) => new DetectedRadarObject(fo, this.params, this.position)),
-        ];
+        ].filter((fo) => this.isWithinCursorAngle(fo.x, fo.y));
 
-        this.listeners.forEach((l) => l.listener(this.radarObjects));
+        this.listeners.forEach((l) => l.listener(this.radarObjects, this.cursorAngle));
+    }
+
+    private updateCursorAngle() {
+        const now = Date.now();
+        const elapsedTime = (now - this.lastUpdateTime) / 1000; // время в секундах
+        this.lastUpdateTime = now;
+
+        const fullRotationTime = this.params.updateTime;
+        const angleIncrement = (360 / fullRotationTime) * elapsedTime;
+        this.cursorAngle = (this.cursorAngle + angleIncrement) % 360;
+    }
+
+    private isWithinCursorAngle(x: number, y: number): boolean {
+        const angleToPoint = this.calculateAngleToPoint(x, y);
+        return Math.abs(this.cursorAngle - angleToPoint) < (360 / 40);
+    }
+
+    private calculateAngleToPoint(x: number, y: number): number {
+        const dx = x - this.position.x;
+        const dy = y - this.position.y;
+        let angle = Math.atan2(dy, dx) * (180 / Math.PI);
+        if (angle < 0) {
+            angle += 360;
+        }
+        return angle;
     }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="panel">
     <div class="panel-display">
-      <RadarDisplay :radarObjects="radarObjects" :radar="sam.radar" />
+      <RadarDisplay :radarObjects="radarObjects" :radar="sam.radar" :cursor-angle="cursorAngle" />
       <SAMTargets :radarObjects="radarObjects" />
     </div>
     <div class="panel-buttons">
@@ -24,6 +24,7 @@ const props = defineProps<{
 const gameStore = useGameStore()
 
 const radarObjects = computed(() => gameStore.radarObjectsByRadarIds[props.sam.radar.gameId] || [])
+const cursorAngle = computed(() => gameStore.cursorAnglesByRadarIds[props.sam.radar.gameId] || 0)
 
 function setRadarEnabled(value: boolean) {
   gameStore.setEnableRadar(props.sam.radar.gameId, value)

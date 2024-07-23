@@ -77,6 +77,7 @@ export interface RadarObjectResponse {
 export interface RadarUpdateResponse {
     radarId: string;
     radarObjects: RadarObjectResponse[];
+    cursorAngle: number
 }
 
 export interface RadarEnabledResponse {

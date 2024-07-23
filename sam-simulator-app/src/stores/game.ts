@@ -20,11 +20,16 @@ export const useGameStore = defineStore("game", () => {
     const radars = ref<EnvironmentRadar[]>([]);
     const sams = ref<EnvironmentSAM[]>([]);
     const radarObjectsByRadarIds = ref<Record<string, RadarObjectResponse[]>>({})
+    const cursorAnglesByRadarIds = ref<Record<string, number>>({})
 
     socketClient.listenToEvent<RadarUpdateResponse>('radarUpdates', (data) => {
         radarObjectsByRadarIds.value = {
             ...radarObjectsByRadarIds.value,
             [data.radarId]: data.radarObjects
+        }
+        cursorAnglesByRadarIds.value = {
+            ...cursorAnglesByRadarIds.value,
+            [data.radarId]: data.cursorAngle
         }
     })
     socketClient.listenToEvent<RadarEnabledResponse>('radarEnabled', (data) => {
@@ -93,6 +98,7 @@ export const useGameStore = defineStore("game", () => {
     }
 
     return {
+        cursorAnglesByRadarIds,
         radarObjectsByRadarIds,
         currentMission,
         isLoadingMission,

@@ -133,15 +133,13 @@ class GameService {
                 ),
             );
 
-            const debouncedEmit = _.throttle((radarObjects) => {
-                this.eventBus.emit("radarUpdate", {
-                    radarId: radarEntity.id,
-                    radarObjects: radarObjects.map((ro) =>
-                        new RadarObjectDTO(ro)
-                    ),
-                });
-            }, env.radar.updateTime * 1000);
-            radarEntity.addUpdateListener(env.name, (radarObjects) => debouncedEmit(radarObjects));
+            radarEntity.addUpdateListener(env.name, (radarObjects, cursorAngle) => this.eventBus.emit("radarUpdate", {
+                radarId: radarEntity.id,
+                radarObjects: radarObjects.map((ro) =>
+                    new RadarObjectDTO(ro)
+                ),
+                cursorAngle
+            }));
             this.radars.push(radarEntity);
         });
     }
@@ -155,15 +153,13 @@ class GameService {
                     env,
                 ),
             );
-            const debouncedEmit = _.throttle((radarObjects) => {
-                this.eventBus.emit("radarUpdate", {
-                    radarId: radarEntity.id,
-                    radarObjects: radarObjects.map((ro) =>
-                        new RadarObjectDTO(ro)
-                    ),
-                });
-            }, env.radar.updateTime * 1000);
-            radarEntity.addUpdateListener(env.name, (radarObjects) => debouncedEmit(radarObjects));
+            radarEntity.addUpdateListener(env.name, (radarObjects, cursorAngle) => this.eventBus.emit("radarUpdate", {
+                radarId: radarEntity.id,
+                radarObjects: radarObjects.map((ro) =>
+                    new RadarObjectDTO(ro)
+                ),
+                cursorAngle
+            }));
 
             this.radars.push(radarEntity);
 

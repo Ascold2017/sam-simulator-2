@@ -1,8 +1,7 @@
 <template>
   <v-stage :config="stageConfig">
     <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" />
-    <RadarScanner :canvasSize="canvasSize" :padding="padding" :update-time="radar.updateTime"
-      :is-enabled="radar.isEnabled" />
+    <RadarScanner :canvasSize="canvasSize" :padding="padding" :cursorAngle="cursorAngle" />
     <v-layer>
       <RadarTargetMarker v-for="(radarTarget, i) in radarTargets" :target="radarTarget.target" :canvas-size="canvasSize"
         :scale="scale" :index="i" />
@@ -20,6 +19,7 @@ import { computed } from 'vue';
 const props = defineProps<{
   radar: EnvironmentRadar
   radarObjects: RadarObjectResponse[];
+  cursorAngle: number;
 }>()
 const stageConfig = {
   width: 500,
