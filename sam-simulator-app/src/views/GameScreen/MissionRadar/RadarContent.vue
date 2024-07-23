@@ -7,7 +7,6 @@
           <RadarTargetMarker
             v-for="radarTarget in radarTargets"
             :target="radarTarget.target"
-            :radar="radarTarget.radar"
             :canvas-size="canvasSize"
             :scale="scale"
           />
