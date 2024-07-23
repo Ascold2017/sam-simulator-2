@@ -1,27 +1,25 @@
 <template>
-    <v-stage :config="stageConfig">
-        <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" />
-        <v-layer>
-          <RadarTargetMarker
-            v-for="(radarTarget, i) in radarTargets"
-            :target="radarTarget.target"
-            :canvas-size="canvasSize"
-            :scale="scale"
-            :index="i"
-          />
-        </v-layer>
-      </v-stage>
+  <v-stage :config="stageConfig">
+    <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" />
+    <RadarScanner :canvasSize="canvasSize" :padding="padding" :update-time="radar.updateTime"
+      :is-enabled="radar.isEnabled" />
+    <v-layer>
+      <RadarTargetMarker v-for="(radarTarget, i) in radarTargets" :target="radarTarget.target" :canvas-size="canvasSize"
+        :scale="scale" :index="i" />
+    </v-layer>
+  </v-stage>
 </template>
 
 <script setup lang="ts">
+import RadarScanner from './RadarScanner.vue'
 import RadarWireframe from './RadarWireFrame.vue';
 import RadarTargetMarker from './RadarTargetMarker.vue'
 import type { EnvironmentRadar, RadarObjectResponse } from '@shared/models/game.model'
 import { computed } from 'vue';
 
 const props = defineProps<{
-    radar: EnvironmentRadar
-    radarObjects: RadarObjectResponse[];
+  radar: EnvironmentRadar
+  radarObjects: RadarObjectResponse[];
 }>()
 const stageConfig = {
   width: 500,

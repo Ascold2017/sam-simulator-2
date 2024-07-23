@@ -24,3 +24,30 @@
 .action-button--active {
     @apply bg-neutral-800 shadow-inner;
 }
+
+@font-face {
+    font-family: DS-Digital;
+    font-weight: 400;
+    font-style: normal;
+    src: url(/fonts/DS-DIGI.TTF) format('truetype');
+
+}
+
+@font-face {
+    font-family: DS-DigitalB;
+    font-weight: 400;
+    font-style: normal;
+    src: url(/fonts/DS-DIGIB.TTF) format('truetype');
+}
+
+html,
+body {
+    min-height: 100vh;
+    line-height: 1.6;
+    font-family: 'Russo One', sans-serif !important;
+
+    font-size: 15px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
