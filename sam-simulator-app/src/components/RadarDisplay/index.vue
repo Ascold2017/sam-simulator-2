@@ -3,10 +3,11 @@
         <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" />
         <v-layer>
           <RadarTargetMarker
-            v-for="radarTarget in radarTargets"
+            v-for="(radarTarget, i) in radarTargets"
             :target="radarTarget.target"
             :canvas-size="canvasSize"
             :scale="scale"
+            :index="i"
           />
         </v-layer>
       </v-stage>

@@ -2,6 +2,7 @@
     <v-group :x="scaledX" :y="scaledY">
         <v-circle :radius="radius" :stroke="markerColor" strokeWidth="1" fill="none" />
         <v-line v-if="target.isDetected" :points="nosePoints" :stroke="markerColor" strokeWidth="1" />
+        <v-text  v-if="target.isDetected" :text="(index + 1).toString()" fill="rgb(150, 249, 123)" x="8" y="-4" />
     </v-group>
 </template>
 
@@ -9,6 +10,7 @@
 import { computed } from 'vue';
 
 const props = defineProps<{
+    index: number;
     target: {
         position: { x: number; y: number },
         rotation: number;
