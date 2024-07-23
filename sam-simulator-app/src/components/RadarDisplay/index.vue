@@ -1,6 +1,6 @@
 <template>
     <v-stage :config="stageConfig">
-        <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" :is-enabled="isEnabled"/>
+        <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" />
         <v-layer>
           <RadarTargetMarker
             v-for="(radarTarget, i) in radarTargets"
@@ -22,7 +22,6 @@ import { computed } from 'vue';
 const props = defineProps<{
     radar: EnvironmentRadar
     radarObjects: RadarObjectResponse[];
-    isEnabled: boolean;
 }>()
 const stageConfig = {
   width: 500,

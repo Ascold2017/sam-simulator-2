@@ -1,7 +1,6 @@
 <template>
-    <div class="mission-map-tab">
-        <div class="mission-map-tab__card">
-            <div class="mission-map-tab__inner-shadow"></div>
+    <div class="panel">
+        <div class="panel-display">
             <v-stage ref="stage" :config="stageConfig" class="mission-map-tab__stage">
                 <v-layer>
                     <v-image :config="imageConfig" v-if="image"/>
@@ -43,27 +42,4 @@ const imageConfig = computed(() => ({
     height: canvasSize,
     cornerRadius: 8
 }));
-
-
 </script>
-
-<style scoped>
-.mission-map-tab {
-    @apply flex flex-col items-center justify-center;
-}
-
-.mission-map-tab__card {
-    @apply bg-neutral-900 p-6 rounded-lg relative;
-   
-}
-
-.mission-map-tab__inner-shadow {
-    @apply absolute pointer-events-none rounded-lg;
-    box-shadow: inset 0 0 5px white;
-    z-index: 1;
-}
-
-.mission-map-tab__stage {
-    @apply relative rounded-lg;
-}
-</style>

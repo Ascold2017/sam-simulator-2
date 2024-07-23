@@ -64,7 +64,7 @@ class GameService {
                     const radar = this.radars.find((r) =>
                         r.entityId === env.id
                     );
-                    return new EnvironmentRadarResponseDTO(env, radar?.id);
+                    return new EnvironmentRadarResponseDTO(env, radar);
                 },
             ),
             sams: this.currentMission.environments.filter((env) =>
@@ -79,8 +79,8 @@ class GameService {
                     );
                     return new EnvironmentSAMResponseDTO(
                         env,
-                        radar?.id,
-                        weapon?.id,
+                        radar,
+                        weapon,
                     );
                 },
             ),

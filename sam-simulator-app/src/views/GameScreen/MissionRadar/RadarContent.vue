@@ -1,11 +1,12 @@
 <template>
-  <div class="mission-radar">
-    <div class="mission-radar__display-container">
-      <RadarDisplay :radar="radar" :radar-objects="radarObjects" :is-enabled="radarEnabled"/>
+  <div class="panel">
+    <div class="panel-display">
+      <RadarDisplay :radar="radar" :radar-objects="radarObjects" />
     </div>
-    <div class="mission-radar__button-bar">
-      <button class="mission-radar__action-button" @click="setRadarEnabled(true)">ON</button>
-      <button class="mission-radar__action-button" @click="setRadarEnabled(false)">OFF</button>
+    <div class="panel-buttons">
+      <button class="action-button" :class="{ 'action-button--active': radar.isEnabled }" @click="setRadarEnabled(true)">ON</button>
+      <button class="action-button" :class="{ 'action-button--active': !radar.isEnabled }" @click="setRadarEnabled(false)">OFF</button>
+
     </div>
   </div>
 </template>
@@ -23,7 +24,6 @@ const props = defineProps<{
 const gameStore = useGameStore()
 
 const radarObjects = computed(() =>gameStore.radarObjectsByRadarIds[props.radar.gameId] || [])
-const radarEnabled = computed(() => gameStore.radarsEnabled[props.radar.gameId] || false)
 
 function setRadarEnabled(value: boolean) {
   gameStore.setEnableRadar(props.radar.gameId, value)
@@ -44,10 +44,5 @@ function setRadarEnabled(value: boolean) {
 
 .mission-radar__button-bar {
   @apply flex flex-col ml-4 space-y-2;
-}
-
-.mission-radar__action-button {
-  @apply w-12 h-12 bg-neutral-700 text-white border-none cursor-pointer;
-  @apply shadow-sm shadow-neutral-400 hover:bg-neutral-600;
 }
 </style>

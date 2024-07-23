@@ -1,4 +1,4 @@
-import { Engine, IPoint, MissionLogger, IRadarParams, Radar, IWeaponParams } from "../../core";
+import { Engine, IPoint, MissionLogger, IRadarParams, Radar, IWeaponParams, Weapon } from "../../core";
 import { Environment } from "../entities/environment.entity";
 import { v4 as uuidv4 } from 'uuid'
 
@@ -56,6 +56,7 @@ export class EnvironmentWeaponConstructorDTO {
 export class EnvironmentRadarResponseDTO {
     id: number;
     gameId: string;
+    isEnabled: boolean;
     name: string;
     position: { x: number; y: number; z: number }
     maxDistance: number;
@@ -66,9 +67,10 @@ export class EnvironmentRadarResponseDTO {
     maxElevation: number;
     radarHeight: number;
     updateTime: number;
-    constructor(environment: Environment, radarGameId: string) {
+    constructor(environment: Environment, radar: Radar) {
         this.id = environment.id;
-        this.gameId = radarGameId;
+        this.gameId = radar.id;
+        this.isEnabled = radar.isEnabled;
         this.name = environment.name;
         this.position = environment.position;
         this.maxDistance = environment.radar.maxDistance;
@@ -87,6 +89,7 @@ export class EnvironmentSAMResponseDTO {
     name: string;
     position: { x: number; y: number; z: number }
     radar: {
+        isEnabled: boolean;
         gameId: string;
         maxDistance: number;
         maxCaptureRange: number;
@@ -109,12 +112,13 @@ export class EnvironmentSAMResponseDTO {
         ammoMaxDeltaRotation: number;
     }
    
-    constructor(environment: Environment, radarGameId: string, weaponGameId: string) {
+    constructor(environment: Environment, radar: Radar, weapon: Weapon) {
         this.id = environment.id;
         this.name = environment.name;
         this.position = environment.position;
         this.radar = {
-            gameId: radarGameId,
+            isEnabled: radar.isEnabled,
+            gameId: radar.id,
             maxDistance: environment.radar.maxDistance,
             maxCaptureRange: environment.radar.maxCaptureRange,
             minCaptureRange: environment.radar.minCaptureRange,
@@ -126,7 +130,7 @@ export class EnvironmentSAMResponseDTO {
         }
 
         this.weapon = {
-            gameId: weaponGameId,
+            gameId: weapon.id,
             type: environment.weapon.type,
             weaponMaxSelectedCount: environment.weapon.weaponMaxSelectedCount,
             weaponChannelsCount: environment.weapon.weaponChannelsCount,

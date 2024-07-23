@@ -2,6 +2,7 @@ import type { Mission } from "./missions.model";
 
 export interface EnvironmentRadar {
     id: number;
+    isEnabled: boolean;
     gameId: string;
     name: string;
     position: { x: number; y: number; z: number };
@@ -20,6 +21,7 @@ export interface EnvironmentSAM {
     name: string;
     position: { x: number; y: number; z: number };
     radar: {
+        isEnabled: boolean;
         gameId: string;
         maxDistance: number;
         maxCaptureRange: number;

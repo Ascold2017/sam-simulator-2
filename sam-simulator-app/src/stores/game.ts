@@ -19,7 +19,6 @@ export const useGameStore = defineStore("game", () => {
     });
     const radars = ref<EnvironmentRadar[]>([]);
     const sams = ref<EnvironmentSAM[]>([]);
-    const radarsEnabled = ref<Record<string, boolean>>({})
     const radarObjectsByRadarIds = ref<Record<string, RadarObjectResponse[]>>({})
 
     socketClient.listenToEvent<RadarUpdateResponse>('radarUpdates', (data) => {
@@ -71,17 +70,18 @@ export const useGameStore = defineStore("game", () => {
             });
 
             radarObjectsByRadarIds.value[radarGameId] = []
-            radarsEnabled.value = {
-                ...radarsEnabled.value,
-                [radarGameId]: value
-            }
+            radars.value = radars.value.map(radar => {
+                if (radar.gameId === radarGameId) {
+                    radar.isEnabled = value;
+                }
+                return radar;
+            })
         } catch (e) {
             console.error(e);
         }
     }
 
     return {
-        radarsEnabled,
         radarObjectsByRadarIds,
         currentMission,
         isLoadingMission,
