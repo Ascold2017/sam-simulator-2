@@ -65,6 +65,7 @@ export class EnvironmentRadarResponseDTO {
     minElevation: number;
     maxElevation: number;
     radarHeight: number;
+    updateTime: number;
     constructor(environment: Environment, radarGameId: string) {
         this.id = environment.id;
         this.gameId = radarGameId;
@@ -77,6 +78,7 @@ export class EnvironmentRadarResponseDTO {
         this.minElevation = environment.radar.minElevation;
         this.maxElevation = environment.radar.maxElevation;
         this.radarHeight = environment.radar.radarHeight;
+        this.updateTime = environment.radar.updateTime;
     }
 }
 
@@ -93,6 +95,7 @@ export class EnvironmentSAMResponseDTO {
         minElevation: number;
         maxElevation: number;
         radarHeight: number;
+        updateTime: number;
     }
     weapon: {
         gameId: string;
@@ -118,7 +121,8 @@ export class EnvironmentSAMResponseDTO {
             maxDetectCount: environment.radar.maxDetectCount,
             minElevation: environment.radar.minElevation,
             maxElevation: environment.radar.maxElevation,
-            radarHeight: environment.radar.radarHeight
+            radarHeight: environment.radar.radarHeight,
+            updateTime: environment.radar.updateTime
         }
 
         this.weapon = {

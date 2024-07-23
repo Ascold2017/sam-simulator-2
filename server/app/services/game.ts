@@ -15,6 +15,7 @@ import { RadarObjectDTO } from "../dto/radarObject.dto";
 import { Mission } from "../entities/mission.entity";
 import { MissionDTO } from "../dto/mission.dto";
 import { RadarUpdateResponse } from "@shared/models/game.model";
+import _ from "lodash";
 
 class GameService {
     private currentMission: Mission | null = null;
@@ -119,14 +120,16 @@ class GameService {
                     env,
                 ),
             );
-            radarEntity.addUpdateListener(env.name, (radarObjects) => {
+
+            const debouncedEmit = _.throttle((radarObjects) => {
                 this.eventBus.emit("radarUpdate", {
                     radarId: radarEntity.id,
                     radarObjects: radarObjects.map((ro) =>
                         new RadarObjectDTO(ro)
                     ),
                 });
-            });
+            }, env.radar.updateTime * 1000);
+            radarEntity.addUpdateListener(env.name, (radarObjects) => debouncedEmit(radarObjects));
             this.radars.push(radarEntity);
         });
     }
@@ -140,14 +143,15 @@ class GameService {
                     env,
                 ),
             );
-            radarEntity.addUpdateListener(env.name, (radarObjects) => {
+            const debouncedEmit = _.throttle((radarObjects) => {
                 this.eventBus.emit("radarUpdate", {
                     radarId: radarEntity.id,
                     radarObjects: radarObjects.map((ro) =>
                         new RadarObjectDTO(ro)
                     ),
                 });
-            });
+            }, env.radar.updateTime * 1000);
+            radarEntity.addUpdateListener(env.name, (radarObjects) => debouncedEmit(radarObjects));
 
             this.radars.push(radarEntity);
 

@@ -7,7 +7,8 @@
       "maxDetectCount": 256,
       "minElevation": -2,
       "maxElevation": 60,
-      "radarHeight": 3
+      "radarHeight": 3,
+      "updateTime": 18
     },
     {
       "name": "T-25",
@@ -17,7 +18,8 @@
       "maxDetectCount": 8,
       "minElevation": -2,
       "maxElevation": 60,
-      "radarHeight": 2
+      "radarHeight": 2,
+      "updateTime": 3
     },
     {
       "name": "T-80",
@@ -27,7 +29,8 @@
       "maxDetectCount": 16,
       "minElevation": -2,
       "maxElevation": 60,
-      "radarHeight": 4
+      "radarHeight": 4,
+      "updateTime": 6
     },
     {
       "name": "T-200",
@@ -37,7 +40,8 @@
       "maxDetectCount": 32,
       "minElevation": -2,
       "maxElevation": 60,
-      "radarHeight": 10
+      "radarHeight": 10,
+      "updateTime": 12
     }
   ]
   

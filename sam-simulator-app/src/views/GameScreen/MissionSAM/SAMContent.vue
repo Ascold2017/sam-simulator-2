@@ -1,7 +1,7 @@
 <template>
   <div class="mission-sam">
     <div class="mission-sam__display-container">
-      <RadarDisplay :radarObjects="radarObjects" :radar="sam.radar" />
+      <RadarDisplay :radarObjects="radarObjects" :radar="sam.radar" :is-enabled="radarEnabled" />
       <SAMTargets :radarObjects="radarObjects" />
     </div>
     <div class="mission-sam__button-bar">
@@ -24,6 +24,7 @@ const props = defineProps<{
 const gameStore = useGameStore()
 
 const radarObjects = computed(() => gameStore.radarObjectsByRadarIds[props.sam.radar.gameId] || [])
+const radarEnabled = computed(() => gameStore.radarsEnabled[props.sam.radar.gameId] || false)
 
 function setRadarEnabled(value: boolean) {
   gameStore.setEnableRadar(props.sam.radar.gameId, value)

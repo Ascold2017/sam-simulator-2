@@ -12,6 +12,7 @@ export interface EnvironmentRadar {
     minElevation: number;
     maxElevation: number;
     radarHeight: number;
+    updateTime: number;
 }
 
 export interface EnvironmentSAM {
@@ -27,6 +28,7 @@ export interface EnvironmentSAM {
         minElevation: number;
         maxElevation: number;
         radarHeight: number;
+        updateTime: number;
     };
     weapon: {
         gameId: string;

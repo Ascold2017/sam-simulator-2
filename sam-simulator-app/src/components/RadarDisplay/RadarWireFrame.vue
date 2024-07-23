@@ -1,5 +1,6 @@
 <template>
     <v-layer>
+        <RadarUpdate :update-time="radar.updateTime" :is-enabled="isEnabled"/>
         <v-text :text="radarDistanceLabel" :x="canvasSize - 75" :y="padding" :fill="'rgb(150, 249, 123)'" />
         <v-circle v-for="range in radarRanges" :key="range" :radius="range * scale" :x="center" :y="center"
             :stroke="'gray'" :strokeWidth="0.5" />
@@ -15,12 +16,14 @@
 <script setup lang="ts">
 import type { EnvironmentRadar } from '@shared/models/game.model'
 import { computed } from 'vue';
+import RadarUpdate from './RadarUpdate.vue';
 
 const props = defineProps<{
     radar: EnvironmentRadar;
     canvasSize: number;
     padding: number;
     scale: number;
+    isEnabled: boolean;
 }>();
 
 

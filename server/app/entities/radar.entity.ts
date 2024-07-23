@@ -1,12 +1,14 @@
 import { Column, Entity, OneToMany, OneToOne } from "typeorm";
 import { BaseEntity } from "./base.entity";
 import { Environment } from "./environment.entity";
-import { Weapon } from "./weapon.entity";
 
 @Entity()
 export class Radar extends BaseEntity {
   @Column()
   name: string;
+
+  @Column()
+  updateTime: number;
 
   @Column()
   maxDistance: number;

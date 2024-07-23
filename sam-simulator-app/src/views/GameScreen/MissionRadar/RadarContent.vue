@@ -1,7 +1,7 @@
 <template>
   <div class="mission-radar">
     <div class="mission-radar__display-container">
-      <RadarDisplay :radar="radar" :radar-objects="radarObjects"/>
+      <RadarDisplay :radar="radar" :radar-objects="radarObjects" :is-enabled="radarEnabled"/>
     </div>
     <div class="mission-radar__button-bar">
       <button class="mission-radar__action-button" @click="setRadarEnabled(true)">ON</button>
@@ -23,6 +23,7 @@ const props = defineProps<{
 const gameStore = useGameStore()
 
 const radarObjects = computed(() =>gameStore.radarObjectsByRadarIds[props.radar.gameId] || [])
+const radarEnabled = computed(() => gameStore.radarsEnabled[props.radar.gameId] || false)
 
 function setRadarEnabled(value: boolean) {
   gameStore.setEnableRadar(props.radar.gameId, value)
