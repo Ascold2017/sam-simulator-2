@@ -8,8 +8,8 @@
 </template>
 
 <script setup lang="ts">
+import type { EnvironmentSAM } from '@shared/models/game.model';
 import { computed } from 'vue';
-import type { EnvironmentSAM } from '@/models/environment.model';
 
 const props = defineProps<{
   sam: EnvironmentSAM;

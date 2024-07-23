@@ -7,8 +7,8 @@
 </template>
 
 <script setup lang="ts">
+import type { EnvironmentRadar } from '@shared/models/game.model';
 import { computed } from 'vue';
-import type { EnvironmentRadar } from '@/models/environment.model';
 
 const props = defineProps<{
   radar: EnvironmentRadar;

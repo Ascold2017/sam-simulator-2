@@ -1,17 +1,7 @@
 <template>
   <div class="mission-radar">
     <div class="mission-radar__display-container">
-      <v-stage :config="stageConfig">
-        <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" />
-        <v-layer>
-          <RadarTargetMarker
-            v-for="radarTarget in radarTargets"
-            :target="radarTarget.target"
-            :canvas-size="canvasSize"
-            :scale="scale"
-          />
-        </v-layer>
-      </v-stage>
+      <RadarDisplay :radar="radar" :radar-objects="radarObjects"/>
     </div>
     <div class="mission-radar__button-bar">
       <button class="mission-radar__action-button" @click="setRadarEnabled(true)">ON</button>
@@ -22,8 +12,7 @@
 
 <script setup lang="ts">
 import type { EnvironmentRadar } from '@shared/models/game.model'
-import RadarWireframe from './RadarWireFrame.vue';
-import RadarTargetMarker from './RadarTargetMarker.vue'
+import RadarDisplay from '@/components/RadarDisplay/index.vue'
 import { computed, watch } from 'vue';
 import { useGameStore } from '@/stores/game';
 
@@ -33,34 +22,7 @@ const props = defineProps<{
 
 const gameStore = useGameStore()
 
-const stageConfig = {
-  width: 500,
-  height: 500,
-};
-
-const padding = 20; // Отступ от краев для размещения надписей азимутов
-const canvasSize = 500
-const scale = computed(() => {
-  const size = 500 - padding * 2; // Размер канваса с учетом отступов
-  return size / (props.radar.maxDistance * 2); // Масштаб на основе максимальной дистанции радара
-});
-
-const radarTargets = computed(() => {
-  if (!gameStore.radarObjectsByRadarIds[props.radar.gameId]) return []
-  return gameStore.radarObjectsByRadarIds[props.radar.gameId].map(ro => ({
-    id: ro.id,
-    target: {
-      isDetected: ro.type === "DETECTED_RADAR_OBJECT",
-      isSelected: false,
-      isMissile: ro.isMissile,
-      rotation: ro.rotation * (180 / Math.PI),
-      position: {
-        x: ro.x,
-        y: ro.y
-      },
-    },
-  }))
-})
+const radarObjects = computed(() =>gameStore.radarObjectsByRadarIds[props.radar.gameId] || [])
 
 function setRadarEnabled(value: boolean) {
   gameStore.setEnableRadar(props.radar.gameId, value)
