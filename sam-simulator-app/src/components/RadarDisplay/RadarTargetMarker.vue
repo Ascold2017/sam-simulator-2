@@ -30,7 +30,7 @@ const radius = computed(() => (props.target.isMissile ? 2.5 : 5));
 const markerColor = computed(() => (props.target.isSelected ? 'red' : 'rgb(150, 249, 123)'));
 
 const nosePoints = computed(() => {
-    const angleRad = (props.target.rotation - 90) * (Math.PI / 180);
+    const angleRad = (props.target.rotation) * (Math.PI / 180);
     const noseX = Math.cos(angleRad) * (radius.value + 10);
     const noseY = Math.sin(angleRad) * (radius.value + 10);
     return [0, 0, noseX, noseY];
