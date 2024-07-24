@@ -24,7 +24,7 @@ const props = defineProps<{
 const center = computed(() => props.canvasSize / 2);
 
 const scaledX = computed(() => center.value + props.target.position.x * props.scale);
-const scaledY = computed(() => center.value - props.target.position.y * props.scale);
+const scaledY = computed(() => center.value + props.target.position.y * props.scale);
 
 const radius = computed(() => (props.target.isMissile ? 2.5 : 5));
 const markerColor = computed(() => (props.target.isSelected ? 'red' : 'rgb(150, 249, 123)'));
