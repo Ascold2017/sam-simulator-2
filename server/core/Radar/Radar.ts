@@ -2,6 +2,7 @@ import { Enemy, Engine, IPoint, Missile } from "../Engine";
 import { MissionLogger } from "../MissionLogger";
 import BaseRadarObject from "./RadarObject/BaseRadarObject";
 import { DetectedRadarObject } from "./RadarObject/DetectedRadarObject";
+import SnowRadarObject from "./RadarObject/SnowRadarObject";
 import { UndetectedRadarObject } from "./RadarObject/UndetectedRadarObject";
 import _ from "lodash";
 
@@ -47,7 +48,9 @@ export class Radar {
     private cursorAngle = 0; // текущий угол курсора в градусах
     private lastUpdateTime = Date.now(); // время последнего обновления
 
-    constructor({ id, name, engine, logger, position, params, entityId }: IRadar) {
+    constructor(
+        { id, name, engine, logger, position, params, entityId }: IRadar,
+    ) {
         this.id = id;
         this.entityId = entityId;
         this.name = name;
@@ -78,7 +81,7 @@ export class Radar {
 
     public addUpdateListener(
         name: string,
-        listener: IListener['listener'],
+        listener: IListener["listener"],
     ) {
         this.listeners.push({ name, listener });
     }
@@ -91,7 +94,10 @@ export class Radar {
         const allEnemies = this.engine.getFlightObjects()
             .filter((fo) =>
                 fo instanceof Enemy &&
-                BaseRadarObject.getDistance(this.position, fo.getCurrentPoint()) <
+                BaseRadarObject.getDistance(
+                        this.position,
+                        fo.getCurrentPoint(),
+                    ) <
                     this.params.maxDistance
             )
             .sort(DetectedRadarObject.sortByVisibilityComparator);
@@ -142,19 +148,25 @@ export class Radar {
             ...missiles.map((fo) => new DetectedRadarObject(fo, this.params, this.position)),
         ];
 
-        const newRadarObjects = this.radarObjects.filter((ro) => !this.isWithinCursorAngle(ro.x, ro.y));
+        const newRadarObjects = this.radarObjects.filter((ro) =>
+            !this.isWithinCursorAngle(ro.azimuth)
+        );
 
         allRadarObjects.forEach((ro) => {
-            if (this.isWithinCursorAngle(ro.x, ro.y)) {
+            if (this.isWithinCursorAngle(ro.azimuth)) {
                 if (!newRadarObjects.some((obj) => obj.id === ro.id)) {
                     newRadarObjects.push(ro);
                 }
             }
         });
 
-        this.radarObjects = newRadarObjects;
+        this.radarObjects = newRadarObjects.sort((a, b) =>
+            a.distance < b.distance ? -1 : 1
+        );
 
-        this.listeners.forEach((l) => l.listener(this.radarObjects, this.cursorAngle));
+        this.listeners.forEach((l) =>
+            l.listener(this.radarObjects, this.cursorAngle)
+        );
     }
 
     private updateCursorAngle() {
@@ -167,16 +179,8 @@ export class Radar {
         this.cursorAngle = (this.cursorAngle + angleIncrement) % 360;
     }
 
-    private isWithinCursorAngle(x: number, y: number): boolean {
-        const angleToPoint = this.calculateAngleToPoint(x, y);
-        return Math.abs(this.cursorAngle - angleToPoint) < (360 / 40);
-    }
-
-    private calculateAngleToPoint(x: number, y: number): number {
-        let angle = Math.atan2(x, y) * (180 / Math.PI);
-        if (angle < 0) {
-            angle += 360;
-        }
-        return angle;
+    private isWithinCursorAngle(azimuth: number): boolean {
+        const azimuthInDegs = azimuth  * (180 / Math.PI);
+        return Math.abs(this.cursorAngle - azimuthInDegs) < 3
     }
 }

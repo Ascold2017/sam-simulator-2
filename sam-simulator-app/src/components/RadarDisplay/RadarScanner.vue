@@ -1,7 +1,7 @@
 <template>
     <v-layer>
         <v-group :x="canvasSize / 2" :y="canvasSize / 2">
-            <v-line :points="[0, 0, outerRadius, 0]" stroke="green" strokeWidth="1" :rotation="cursorAngle -90" />
+            <v-line :points="[0, 0, outerRadius, 0]" stroke="green" strokeWidth="1" :rotation="cursorAngle" />
         </v-group>
     </v-layer>
 </template>

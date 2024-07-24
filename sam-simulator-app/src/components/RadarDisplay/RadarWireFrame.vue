@@ -57,7 +57,7 @@ const radarRanges = computed(() => {
 const azimuths = computed<Azimuth[]>(() => {
     const azimuths: Azimuth[] = [];
     for (let i = 0; i < 360; i += 10) {
-        const angle = (i - 90) * (Math.PI / 180);
+        const angle = (i) * (Math.PI / 180);
         const outerRadius = props.canvasSize / 2 - props.padding;
         const innerRadius = props.padding / 2;
         const x = center.value + Math.cos(angle) * outerRadius;
