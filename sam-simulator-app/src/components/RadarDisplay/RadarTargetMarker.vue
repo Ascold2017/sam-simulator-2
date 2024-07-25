@@ -12,7 +12,8 @@ import { computed } from 'vue';
 const props = defineProps<{
     index: number;
     target: {
-        position: { x: number; y: number },
+        azimuth: number;
+        distance: number;
         rotation: number;
         isSelected: boolean;
         isDetected: boolean;
@@ -23,9 +24,14 @@ const props = defineProps<{
 }>()
 const center = computed(() => props.canvasSize / 2);
 
-const scaledX = computed(() => center.value + props.target.position.x * props.scale);
-const scaledY = computed(() => center.value + props.target.position.y * props.scale);
+// Calculate scaledX and scaledY using azimuth and distance
+const scaledX = computed(() => {
+    return center.value + Math.cos(props.target.azimuth) * props.target.distance * props.scale;
+});
 
+const scaledY = computed(() => {
+    return center.value + Math.sin(props.target.azimuth) * props.target.distance * props.scale;
+});
 const radius = computed(() => (props.target.isMissile ? 2.5 : 5));
 const markerColor = computed(() => (props.target.isSelected ? 'red' : 'rgb(150, 249, 123)'));
 

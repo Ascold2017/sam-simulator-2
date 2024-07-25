@@ -12,8 +12,6 @@ export class RadarObjectDTO {
     public velocity: number;
     public height: number;
     public param: number;
-    public x: number;
-    public y: number;
     public rotation: number;
     public size: number;
     public visibilityK: number;
@@ -24,8 +22,6 @@ export class RadarObjectDTO {
     ) {
         this.id = radarObject.id;
         this.type = radarObject.type;
-        this.x = radarObject.x;
-        this.y = radarObject.y;
         this.distance = radarObject.distance;
         this.azimuth = radarObject.azimuth;
         this.elevation = radarObject.elevation;

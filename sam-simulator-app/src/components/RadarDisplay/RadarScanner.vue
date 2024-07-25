@@ -1,6 +1,6 @@
 <template>
     <v-layer>
-        <v-group :x="canvasSize / 2" :y="canvasSize / 2">
+        <v-group :x="canvasSize / 2" :y="canvasSize / 2" v-if="isEnabled">
             <v-line :points="[0, 0, outerRadius, 0]" stroke="green" strokeWidth="1" :rotation="cursorAngle" />
         </v-group>
     </v-layer>
@@ -12,6 +12,7 @@ const props = defineProps<{
     canvasSize: number;
     padding: number;
     cursorAngle: number;
+    isEnabled: boolean;
 }>();
 
 const outerRadius = props.canvasSize / 2 - props.padding;

@@ -1,12 +1,11 @@
 <template>
   <div class="panel">
     <div class="panel-display">
-      <RadarDisplay :radar="radar" :radar-objects="radarObjects" :cursor-angle="cursorAngle" />
+      <RadarDisplay :radar="radar" :radar-objects="radarObjects" :cursor-angle="cursorAngle"/>
     </div>
     <div class="panel-buttons">
       <button class="action-button" :class="{ 'action-button--active': radar.isEnabled }" @click="setRadarEnabled(true)">ON</button>
       <button class="action-button" :class="{ 'action-button--active': !radar.isEnabled }" @click="setRadarEnabled(false)">OFF</button>
-
     </div>
   </div>
 </template>
@@ -25,7 +24,6 @@ const gameStore = useGameStore()
 
 const radarObjects = computed(() =>gameStore.radarObjectsByRadarIds[props.radar.gameId] || [])
 const cursorAngle = computed(() => gameStore.cursorAnglesByRadarIds[props.radar.gameId] || 0)
-
 function setRadarEnabled(value: boolean) {
   gameStore.setEnableRadar(props.radar.gameId, value)
 }

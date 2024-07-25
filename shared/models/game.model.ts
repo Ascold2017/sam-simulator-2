@@ -65,8 +65,6 @@ export interface RadarObjectResponse {
     velocity: number;
     height: number;
     param: number;
-    x: number;
-    y: number;
     rotation: number;
     size: number;
     visibilityK: number;
