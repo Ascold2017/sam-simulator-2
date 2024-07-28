@@ -5,6 +5,8 @@ import {
 
 export class RadarObjectDTO {
     public id: string;
+    public x: number;
+    public y: number;
     public distance: number;
     public azimuth: number;
     public elevation: number;
@@ -21,6 +23,8 @@ export class RadarObjectDTO {
         radarObject: RadarObject,
     ) {
         this.id = radarObject.id;
+        this.x = radarObject.x;
+        this.y = radarObject.y;
         this.type = radarObject.type;
         this.distance = radarObject.distance;
         this.azimuth = radarObject.azimuth;

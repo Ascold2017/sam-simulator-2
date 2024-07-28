@@ -1,11 +1,12 @@
 import { httpClient } from "@/adapters/httpClient";
 
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import type { Mission } from '@shared/models/missions.model'
 import { socketClient } from "@/adapters/socketClient";
 import type { EnvironmentRadar, EnvironmentSAM, RadarObjectResponse, RadarUpdateResponse, RadarEnabledResponse, GetCurrentMissionResponse, PostRadarEnabledPayload } from "@shared/models/game.model";
+import _ from 'lodash'
 
 export const useGameStore = defineStore("game", () => {
     const router = useRouter();
@@ -21,6 +22,10 @@ export const useGameStore = defineStore("game", () => {
     const sams = ref<EnvironmentSAM[]>([]);
     const radarObjectsByRadarIds = ref<Record<string, RadarObjectResponse[]>>({})
     const cursorAnglesByRadarIds = ref<Record<string, number>>({})
+    const allRadarObjects = computed<RadarObjectResponse[]>(() => {
+        const allObjects = Object.values(radarObjectsByRadarIds.value).flat();
+        return _.uniqBy(allObjects, 'id');
+    });
 
     socketClient.listenToEvent<RadarUpdateResponse>('radarUpdates', (data) => {
         radarObjectsByRadarIds.value = {
@@ -98,6 +103,7 @@ export const useGameStore = defineStore("game", () => {
     }
 
     return {
+        allRadarObjects,
         cursorAnglesByRadarIds,
         radarObjectsByRadarIds,
         currentMission,

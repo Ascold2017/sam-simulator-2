@@ -58,6 +58,8 @@ export interface PostRadarEnabledPayload {
 
 export interface RadarObjectResponse {
     id: string;
+    x: number;
+    y: number;
     distance: number;
     azimuth: number;
     elevation: number;

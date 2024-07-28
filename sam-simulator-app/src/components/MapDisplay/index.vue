@@ -1,32 +1,34 @@
-
 <template>
     <v-stage ref="stage" :config="stageConfig" class="mission-map-tab__stage">
-                <v-layer>
-                    <v-image :config="imageConfig" v-if="image"/>
-                    <MapWireframe :canvas-size="canvasSize"/>
-                    <RadarMarker v-for="radar in radars" :key="radar.id" :radar="radar" :scale="scale" :canvasSize="canvasSize" />
-                    <SAMMarker v-for="sam in sams" :key="sam.id" :sam="sam" :scale="scale" :canvasSize="canvasSize" />
-
-                    <RadarMarker :radar="{
-                        position: { x: 50000, y: 50000, z: 50 },
-                        maxDistance: 100000,
-                        name: 'Test'
-                    }" :scale="scale" :canvasSize="canvasSize" />
-                </v-layer>
-            </v-stage>
+        <v-layer>
+            <v-image :config="imageConfig" v-if="image" />
+            <MapWireframe :canvas-size="canvasSize" />
+            <RadarMarker v-for="radar in radars" :key="radar.id" :radar="radar" :scale="scale"
+                :canvasSize="canvasSize" />
+            <SAMMarker v-for="sam in sams" :key="sam.id" :sam="sam" :scale="scale" :canvasSize="canvasSize" />
+        </v-layer>
+        <v-layer>
+            <MapTargetMarker v-for="ro in radarObjects" :key="ro.id" :canvasSize="canvasSize" :scale="scale" :target="{
+                x: ro.x,
+                y: ro.y
+            }" />
+        </v-layer>
+    </v-stage>
 </template>
 
 <script setup lang="ts">
-import type { EnvironmentRadar, EnvironmentSAM } from '@shared/models/game.model';
-import {useImage} from '@/utils/useImage';
+import type { EnvironmentRadar, EnvironmentSAM, RadarObjectResponse } from '@shared/models/game.model';
+import { useImage } from '@/utils/useImage';
 import RadarMarker from './RadarMarker.vue'
 import SAMMarker from './MapSAMMarker.vue'
 import MapWireframe from './MapWireframe.vue'
-import { computed, toRef } from 'vue';
+import MapTargetMarker from './MapTargetMarker.vue'
+import { computed } from 'vue';
 
 const props = defineProps<{
     radars: EnvironmentRadar[];
     sams: EnvironmentSAM[];
+    radarObjects: RadarObjectResponse[];
     mapSrc: string;
 }>()
 const canvasSize = 500

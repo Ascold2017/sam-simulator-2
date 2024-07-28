@@ -30,7 +30,7 @@ const scaledX = computed(() => {
 });
 
 const scaledY = computed(() => {
-    return center.value + Math.sin(props.target.azimuth) * props.target.distance * props.scale;
+    return center.value - Math.sin(props.target.azimuth) * props.target.distance * props.scale;
 });
 const radius = computed(() => (props.target.isMissile ? 2.5 : 5));
 const markerColor = computed(() => (props.target.isSelected ? 'red' : 'rgb(150, 249, 123)'));
@@ -39,6 +39,6 @@ const nosePoints = computed(() => {
     const angleRad = (props.target.rotation) * (Math.PI / 180);
     const noseX = Math.cos(angleRad) * (radius.value + 10);
     const noseY = Math.sin(angleRad) * (radius.value + 10);
-    return [0, 0, noseX, noseY];
+    return [0, 0, noseX, -noseY];
 });
 </script>
