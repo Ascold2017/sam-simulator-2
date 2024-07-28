@@ -6,12 +6,12 @@ const MAPBOX_API_KEY = process.env.MAPBOX_API_KEY;
 export async function generateMap(latitude: number, longitude: number) {
   const zoomLevel = 6; // Уровень масштабирования для отображения области 1000x1000 км
   const size256 = 256;
-  const size1024 = 1024;
+  const size1024 = 1280;
 
   const url256 =
-    `https://api.mapbox.com/styles/v1/mapbox/light-v10/static/${longitude},${latitude},${zoomLevel}/${size256}x${size256}?access_token=${MAPBOX_API_KEY}`;
+    `https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/${longitude},${latitude},${zoomLevel}/${size256}x${size256}?access_token=${MAPBOX_API_KEY}`;
   const url1024 =
-    `https://api.mapbox.com/styles/v1/mapbox/light-v10/static/${longitude},${latitude},${zoomLevel}/${size1024}x${size1024}?access_token=${MAPBOX_API_KEY}`;
+    `https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/${longitude},${latitude},${zoomLevel}/${size1024}x${size1024}?access_token=${MAPBOX_API_KEY}`;
 
   const [base64_256, base64_1024] = await Promise.all([
     fetchImageAsBase64(url256),

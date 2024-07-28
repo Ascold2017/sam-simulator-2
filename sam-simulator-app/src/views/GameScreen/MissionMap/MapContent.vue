@@ -6,6 +6,12 @@
                     <v-image :config="imageConfig" v-if="image"/>
                     <RadarMarker v-for="radar in radars" :key="radar.id" :radar="radar" :scale="scale" :canvasSize="canvasSize" />
                     <SAMMarker v-for="sam in sams" :key="sam.id" :sam="sam" :scale="scale" :canvasSize="canvasSize" />
+
+                    <RadarMarker :radar="{
+                        position: { x: 50000, y: 50000, z: 50 },
+                        maxDistance: 100000,
+                        name: 'Test'
+                    }" :scale="scale" :canvasSize="canvasSize" />
                 </v-layer>
             </v-stage>
         </div>

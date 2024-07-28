@@ -1,5 +1,13 @@
 <template>
     <v-layer>
+        <!-- Background Image with circular clipping -->
+        <v-group >
+            <v-image :image="mapImageObj" :x="center + (radar.position.x * scale) - scaledMapWidth / 2"
+                :y="center + (radar.position.y * scale) - scaledMapHeight / 2" :width="scaledMapWidth"
+                :height="scaledMapHeight" />
+        </v-group>
+
+
         <v-text :text="radarDistanceLabel" :x="canvasSize - 75" :y="padding" :fill="'rgb(150, 249, 123)'" />
         <v-circle v-for="range in radarRanges" :key="range" :radius="range * scale" :x="center" :y="center"
             :stroke="'gray'" :strokeWidth="0.5" />
@@ -13,14 +21,16 @@
 </template>
 
 <script setup lang="ts">
+import { useImage } from '@/utils/useImage';
 import type { EnvironmentRadar } from '@shared/models/game.model'
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 
 const props = defineProps<{
     radar: EnvironmentRadar;
     canvasSize: number;
     padding: number;
     scale: number;
+    mapImage: string;
 }>();
 
 
@@ -30,8 +40,16 @@ interface Azimuth {
     textPosition: { x: number; y: number };
 }
 
-const center = computed(() => props.canvasSize / 2);
+const mapImageRef = toRef(props.mapImage)
+const { image: mapImageObj } = useImage(mapImageRef);
+// Scale the map dimensions based on radar's max distance and scale
+const mapSizeKm = 1000; // Map size in kilometers
+const mapSizeMeters = mapSizeKm * 1000; // Map size in meters
+const scaledMapWidth = computed(() => (mapSizeMeters / props.radar.maxDistance) * props.canvasSize);
+const scaledMapHeight = computed(() => (mapSizeMeters / props.radar.maxDistance) * props.canvasSize);
 
+
+const center = computed(() => props.canvasSize / 2);
 const radarRanges = computed(() => {
     let step: number;
     if (props.radar.maxDistance <= 50000) {
@@ -57,7 +75,7 @@ const radarRanges = computed(() => {
 const azimuths = computed<Azimuth[]>(() => {
     const azimuths: Azimuth[] = [];
     for (let i = 0; i < 360; i += 10) {
-        const angle = (i) * (Math.PI / 180) - Math.PI/2;
+        const angle = (i) * (Math.PI / 180) - Math.PI / 2;
         const outerRadius = props.canvasSize / 2 - props.padding;
         const innerRadius = props.padding / 2;
         const x = center.value + Math.cos(angle) * outerRadius;
@@ -78,5 +96,10 @@ const azimuths = computed<Azimuth[]>(() => {
     return azimuths;
 });
 
-const radarDistanceLabel = computed(() => `D ${props.radar.maxDistance / 1000} km`)
+const radarDistanceLabel = computed(() => `D ${props.radar.maxDistance / 1000} km`);
+
+// Define the clip function to create a circular clipping mask
+const clipCircle = (ctx: CanvasRenderingContext2D) => {
+    ctx.arc(center.value, center.value, props.radar.maxDistance * props.scale, 0, Math.PI * 2, true);
+};
 </script>

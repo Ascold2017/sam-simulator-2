@@ -1,6 +1,6 @@
 <template>
   <v-stage :config="stageConfig">
-    <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale"/>
+    <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" :map-image="mapImage"/>
     <RadarScanner :canvasSize="canvasSize" :padding="padding" :cursorAngle="cursorAngle" :is-enabled="radar.isEnabled"/>
     <v-layer>
       <RadarTargetMarker v-for="(radarTarget, i) in radarTargets" :target="radarTarget.target" :canvas-size="canvasSize"
@@ -20,6 +20,7 @@ const props = defineProps<{
   radar: EnvironmentRadar
   radarObjects: RadarObjectResponse[];
   cursorAngle: number;
+  mapImage: string;
 }>()
 const stageConfig = {
   width: 500,
