@@ -7,12 +7,6 @@
                 :canvasSize="canvasSize" />
             <SAMMarker v-for="sam in sams" :key="sam.id" :sam="sam" :scale="scale" :canvasSize="canvasSize" />
         </v-layer>
-        <v-layer>
-            <MapTargetMarker v-for="ro in radarObjects" :key="ro.id" :canvasSize="canvasSize" :scale="scale" :target="{
-                x: ro.x,
-                y: ro.y
-            }" />
-        </v-layer>
     </v-stage>
 </template>
 
@@ -22,7 +16,6 @@ import { useImage } from '@/utils/useImage';
 import RadarMarker from './RadarMarker.vue'
 import SAMMarker from './MapSAMMarker.vue'
 import MapWireframe from './MapWireframe.vue'
-import MapTargetMarker from './MapTargetMarker.vue'
 import { computed } from 'vue';
 
 const props = defineProps<{

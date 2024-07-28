@@ -70,6 +70,12 @@ export class Radar {
             `Radar <${this.name}> ${value ? "enabled" : "disabled"}`,
         );
         this.isEnabled = value;
+        if (value) {
+            this.lastUpdateTime = new Date().getTime();
+        } else {
+            this.cursorAngle = 0;
+        }
+        
     }
 
     public getRadarObjects(): (
@@ -122,6 +128,7 @@ export class Radar {
     private updateRadar() {
         if (!this.isEnabled) {
             this.radarObjects = [];
+            this.cursorAngle = 0;
             return;
         }
         this.updateCursorAngle();
