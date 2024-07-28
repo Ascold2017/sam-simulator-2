@@ -1,10 +1,13 @@
 <template>
     <v-layer>
         <!-- Background Image with circular clipping -->
-        <v-group >
-            <v-image :image="mapImageObj" :x="center + (radar.position.x * scale) - scaledMapWidth / 2"
-                :y="center + (radar.position.y * scale) - scaledMapHeight / 2" :width="scaledMapWidth"
-                :height="scaledMapHeight" />
+        <v-group :clipFunc="clipCircle">
+            <v-image :image="mapImageObj"
+                :x="center - (radar.position.x * scale) - (scaledMapWidth / 2)"
+                :y="center + (radar.position.y * scale) - (scaledMapHeight / 2)"
+                :width="scaledMapWidth"
+                :height="scaledMapHeight"
+            />
         </v-group>
 
 
@@ -45,8 +48,8 @@ const { image: mapImageObj } = useImage(mapImageRef);
 // Scale the map dimensions based on radar's max distance and scale
 const mapSizeKm = 1000; // Map size in kilometers
 const mapSizeMeters = mapSizeKm * 1000; // Map size in meters
-const scaledMapWidth = computed(() => (mapSizeMeters / props.radar.maxDistance) * props.canvasSize);
-const scaledMapHeight = computed(() => (mapSizeMeters / props.radar.maxDistance) * props.canvasSize);
+const scaledMapWidth = computed(() => ((mapSizeMeters / 2) / props.radar.maxDistance) * props.canvasSize);
+const scaledMapHeight = computed(() => ((mapSizeMeters / 2) / props.radar.maxDistance) * props.canvasSize);
 
 
 const center = computed(() => props.canvasSize / 2);
