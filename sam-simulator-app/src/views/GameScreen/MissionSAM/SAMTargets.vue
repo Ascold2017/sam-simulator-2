@@ -23,7 +23,7 @@ const stageConfig = {
 };
 
 const boxWidth = 180;
-const boxHeight = 100;
+const boxHeight = 80;
 const itemHeight = boxHeight + 10;
 
 const formatText = (object: RadarObjectResponse, index: number) => {
@@ -31,12 +31,10 @@ const formatText = (object: RadarObjectResponse, index: number) => {
     const adjustedAzimuth = (azimuthDegrees > 360) ? azimuthDegrees - 360 : azimuthDegrees;
     return `
   ${index + 1}.
-  D: ${(object.distance / 1000).toFixed(1)} km
-  Azimuth: ${adjustedAzimuth.toFixed(1)}
-  Elevation: ${object.elevation.toFixed(0)}
+  D: ${(object.distance / 1000).toFixed(1)} km H: ${object.height.toFixed(0)} m
+  Azimuth: ${adjustedAzimuth.toFixed(1)} Elevation: ${(object.elevation * (180 / Math.PI)).toFixed(1)}
   Vr: ${object.radialVelocity.toFixed(0)} m/s V: ${object.velocity.toFixed(0)} m/s
-  H: ${object.height.toFixed(0)} m  P: ${object.param.toFixed(0)} m
-  Rotation: ${(object.rotation * (180 / Math.PI)).toFixed(1)}
+  P: ${object.param.toFixed(0)} m
 `
 };
 </script>
