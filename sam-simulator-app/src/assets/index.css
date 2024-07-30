@@ -19,6 +19,7 @@
 .action-button {
     @apply w-12 h-12 bg-neutral-700 text-white border-none cursor-pointer;
     @apply shadow-sm shadow-neutral-400 hover:bg-neutral-600;
+    font-family: DS-DigitalB, sans-serif;
 }
 
 .action-button--active {
