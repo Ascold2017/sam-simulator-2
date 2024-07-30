@@ -9,9 +9,19 @@ const router = createRouter({
       component: () => import('../views/StartScreen.vue')
     },
     {
-      path: '/game',
-      name: 'game',
-      component: () => import('../views/GameScreen/index.vue')
+      path: '/game-map',
+      name: 'gameMap',
+      component: () => import('../views/GameMapScreen.vue')
+    },
+    {
+      path: '/radar/:radarGameId',
+      name: 'radar',
+      component: () => import('../views/RadarScreen/index.vue')
+    },
+    {
+      path: '/sam/:samId',
+      name: 'sam',
+      component: () => import('../views/SAMScreen/index.vue')
     }
   ]
 })

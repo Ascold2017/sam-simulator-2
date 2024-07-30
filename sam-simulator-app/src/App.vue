@@ -4,6 +4,7 @@ import { RouterView } from 'vue-router'
 
 <template>
 <div class="app-layout">
+  <RouterLink :to="{ name: 'gameMap' }">Меню миссии</RouterLink>
   <RouterView />
 </div>
 </template>

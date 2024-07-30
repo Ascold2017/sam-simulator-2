@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import type { EnvironmentRadar, EnvironmentSAM, RadarObjectResponse } from '@shared/models/game.model';
+import type { EnvironmentRadar, EnvironmentSAM } from '@shared/models/game.model';
 import { useImage } from '@/utils/useImage';
 import RadarMarker from './RadarMarker.vue'
 import SAMMarker from './MapSAMMarker.vue'
@@ -21,7 +21,6 @@ import { computed } from 'vue';
 const props = defineProps<{
     radars: EnvironmentRadar[];
     sams: EnvironmentSAM[];
-    radarObjects: RadarObjectResponse[];
     mapSrc: string;
 }>()
 const canvasSize = 500

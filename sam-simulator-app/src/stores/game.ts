@@ -12,6 +12,7 @@ export const useGameStore = defineStore("game", () => {
     const router = useRouter();
 
     const isLoadingMission = ref(false);
+    const isInitialized = ref(false);
     const currentMission = ref<Mission>({
         id: 0,
         name: "",
@@ -65,7 +66,7 @@ export const useGameStore = defineStore("game", () => {
                 method: "POST",
             });
             isLoadingMission.value = false;
-            router.push({ name: "game" });
+            router.push({ name: "gameMap" });
         } catch (e) {
             console.error(e);
         }
@@ -81,6 +82,7 @@ export const useGameStore = defineStore("game", () => {
             currentMission.value = data.mission;
             radars.value = data.radars;
             sams.value = data.sams;
+            isInitialized.value = true;
         } catch(e) {
             router.push({ name: "start" });
         }
@@ -108,6 +110,7 @@ export const useGameStore = defineStore("game", () => {
         radarObjectsByRadarIds,
         currentMission,
         isLoadingMission,
+        isInitialized,
         radars,
         sams,
         launchMission,
