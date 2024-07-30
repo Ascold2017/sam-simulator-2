@@ -11,7 +11,7 @@
         </v-group>
 
 
-        <v-text :text="radarDistanceLabel" :x="canvasSize - 75" :y="padding" :fill="'rgb(150, 249, 123)'" />
+        <v-text :text="radarDistanceLabel" :x="canvasSize - 75" :y="padding" :fill="'rgb(150, 249, 123)'" :fontFamily="'DS-Digital, sans-serif'"/>
         <v-circle v-for="range in radarRanges" :key="range" :radius="range * scale" :x="center" :y="center"
             :stroke="'gray'" :strokeWidth="0.5" />
         <v-line v-for="azimuth in azimuths" :key="azimuth.value" :points="azimuth.points" :stroke="'rgb(150, 249, 123)'"

@@ -1,11 +1,11 @@
 <template>
     <v-stage :config="stageConfig">
         <v-layer>
-            <template v-for="(object, index) in radarObjects" :key="object.id">
-                <v-rect :x="10" :y="index * itemHeight + 10" :width="boxWidth" :height="boxHeight" stroke="white"
+            <template v-for="(object, index) in detectedRadarObjects" :key="object.id">
+                <v-rect :x="10" :y="index * itemHeight + 10" :width="boxWidth" :height="boxHeight" stroke="rgb(150, 249, 123)"
                     strokeWidth="1" fill="none" />
                 <v-text :x="10" :y="index * itemHeight + 10" :text="formatText(object, index)" fontSize="12"
-                    fill="white" />
+                    fill="rgb(150, 249, 123)" :fontFamily="'DS-Digital, sans-serif'"/>
             </template>
         </v-layer>
     </v-stage>
@@ -13,6 +13,7 @@
 
 <script setup lang="ts">
 import type { RadarObjectResponse } from '@shared/models/game.model'
+import { computed } from 'vue';
 const props = defineProps<{
     radarObjects: RadarObjectResponse[]
 }>();
@@ -25,7 +26,7 @@ const stageConfig = {
 const boxWidth = 180;
 const boxHeight = 80;
 const itemHeight = boxHeight + 10;
-
+const detectedRadarObjects = computed(() => props.radarObjects.filter(ro => ro.type === 'DETECTED_RADAR_OBJECT'))
 const formatText = (object: RadarObjectResponse, index: number) => {
     const azimuthDegrees = ((object.azimuth + Math.PI / 2) * (180 / Math.PI));
     const adjustedAzimuth = (azimuthDegrees > 360) ? azimuthDegrees - 360 : azimuthDegrees;
