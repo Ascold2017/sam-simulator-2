@@ -12,6 +12,29 @@
     box-shadow: inset 0 0 5px white;
 }
 
+.panel-title {
+    @apply text-white block text-center my-2;
+    font-family: DS-DigitalB, sans-serif;
+}
+
+.display-title {
+    @apply text-white px-2;
+    font-family: DS-DigitalB, sans-serif;
+}
+
+.panel-indicator-block {
+    @apply text-white flex items-center;
+    font-family: DS-DigitalB, sans-serif;
+}
+.panel-indicator {
+    @apply mx-auto;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: block;
+    background-color: red;
+}
+
 .panel-buttons {
     @apply flex flex-col ml-4 space-y-2;
 }

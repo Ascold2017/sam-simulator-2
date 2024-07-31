@@ -1,16 +1,45 @@
 <template>
-  <div class="panel" v-if="sam">
-    <div class="panel-display">
-      <RadarDisplay :radarObjects="radarObjects" :radar="radarConfig!" :cursor-angle="cursorAngle"
-        :map-image="gameStore.currentMission.map1024" />
-      <SAMTargets :radarObjects="radarObjects" />
-    </div>
-    <div class="panel-buttons">
-      <button class="action-button" :class="{ 'action-button--active': sam.radar.isEnabled }"
-        @click="setRadarEnabled(true)">ON</button>
-      <button class="action-button" :class="{ 'action-button--active': !sam.radar.isEnabled }"
-        @click="setRadarEnabled(false)">OFF</button>
-    </div>
+  <div class="sam">
+    <section class="panel" v-if="sam">
+      <div class="panel-display">
+        <RadarDisplay :radarObjects="radarObjects" :radar="radarConfig!" :cursor-angle="cursorAngle"
+          :map-image="gameStore.currentMission.map1024" />
+        <SAMTargets :radarObjects="radarObjects" />
+      </div>
+      <div class="panel-buttons">
+        <div class="panel-title">RADAR</div>
+        <button class="action-button" :class="{ 'action-button--active': sam.radar.isEnabled }"
+          @click="setRadarEnabled(true)">ON</button>
+        <button class="action-button" :class="{ 'action-button--active': !sam.radar.isEnabled }"
+          @click="setRadarEnabled(false)">OFF</button>
+
+        <div class="panel-title">TARGET</div>
+        <button class="action-button">SEEK</button>
+        <button class="action-button">SLCT</button>
+        <button class="action-button">RST</button>
+      </div>
+      <div class="panel-buttons">
+        <div class="panel-title">MISSILES</div>
+        <div class="panel-display">
+          <span class="display-title">10</span>
+        </div>
+        
+        <div class="panel-title">GUIDANCE</div>
+        <div>
+          <button class="action-button">3T</button>
+          <button class="action-button">1/2</button>
+        </div>
+
+        <div class="panel-title">LAUNCHER</div>
+        <div class="panel-indicator-block">READY <div class="panel-indicator"></div></div>
+        <div>
+          <button class="action-button">LAUNCH</button>
+          <button class="action-button">RESET</button>
+        </div>
+
+        
+      </div>
+    </section>
   </div>
 </template>
 
@@ -52,4 +81,12 @@ function setRadarEnabled(value: boolean) {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.sam {
+  @apply flex gap-2 mx-auto justify-center;
+}
+
+.sam>.panel {
+  margin: 0;
+}
+</style>
