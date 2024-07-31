@@ -35,10 +35,8 @@ export interface EnvironmentSAM {
     weapon: {
         gameId: string;
         type: "missile" | "gun";
-        weaponMaxSelectedCount: number;
-        weaponChannelsCount: number;
-        weaponAmmoCount: number;
-        weaponVelocity: number;
+        ammoCount: number;
+        ammoVelocity: number;
         weaponMaxDistance: number;
         ammoKillRadius: number;
         ammoMaxDeltaRotation: number;
@@ -83,4 +81,18 @@ export interface RadarUpdateResponse {
 export interface RadarEnabledResponse {
     radarId: string;
     radarEnabled: boolean;
+}
+
+export interface WeaponCaptureResponse {
+    weaponId: string;
+    capturedTargetId: string
+}
+
+export interface WeaponUnselectedResponse {
+    weaponId: string;
+}
+
+export interface WeaponLaunchedResponse {
+    weaponId: string;
+    launched: boolean;
 }

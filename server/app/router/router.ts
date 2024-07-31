@@ -17,4 +17,8 @@ router.get('/game/current-mission', gameController.getCurrentMission)
 router.post('/game/radar-enabled', gameController.postRadarEnabled)
 router.post('/game/stop-mission', gameController.postStopMission)
 
+router.post('/game/capture-target', gameController.postCaptureTarget)
+router.post('/game/reset-target', gameController.postResetTarget)
+router.post('/game/fire', gameController.postLaunchWeapon)
+
 export default router;

@@ -5,7 +5,7 @@ import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import type { Mission } from '@shared/models/missions.model'
 import { socketClient } from "@/adapters/socketClient";
-import type { EnvironmentRadar, EnvironmentSAM, RadarObjectResponse, RadarUpdateResponse, RadarEnabledResponse, GetCurrentMissionResponse, PostRadarEnabledPayload } from "@shared/models/game.model";
+import { type EnvironmentRadar, type EnvironmentSAM, type RadarObjectResponse, type RadarUpdateResponse, type RadarEnabledResponse, type GetCurrentMissionResponse, type PostRadarEnabledPayload, WeaponCaptureResponse } from "@shared/models/game.model";
 import _ from 'lodash'
 
 const defaultMission = {

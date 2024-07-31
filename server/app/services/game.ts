@@ -14,7 +14,10 @@ import { EventsMap } from "../types/game-service";
 import { RadarObjectDTO } from "../dto/radarObject.dto";
 import { Mission } from "../entities/mission.entity";
 import { MissionDTO } from "../dto/mission.dto";
-import { RadarEnabledResponse, RadarUpdateResponse } from "@shared/models/game.model";
+import {
+    RadarEnabledResponse,
+    RadarUpdateResponse,
+} from "@shared/models/game.model";
 import _ from "lodash";
 
 class GameService {
@@ -101,10 +104,10 @@ class GameService {
 
     public setIsEnabledRadar(radarGameId: string, value: boolean) {
         this.radars.find((r) => r.id === radarGameId)?.setIsEnabled(value);
-        this.eventBus.emit('radarEnabled', {
+        this.eventBus.emit("radarEnabled", {
             radarId: radarGameId,
-            radarEnabled: value
-        })
+            radarEnabled: value,
+        });
     }
 
     public onRadarUpdate(cb: (payload: RadarUpdateResponse) => void) {
@@ -112,7 +115,7 @@ class GameService {
     }
 
     public onRadarEnabled(cb: (payload: RadarEnabledResponse) => void) {
-        this.eventBus.on('radarEnabled', cb)
+        this.eventBus.on("radarEnabled", cb);
     }
 
     public offRadarUpdate(cb: (payload: RadarUpdateResponse) => void) {
@@ -133,13 +136,17 @@ class GameService {
                 ),
             );
 
-            radarEntity.addUpdateListener(env.name, (radarObjects, cursorAngle) => this.eventBus.emit("radarUpdate", {
-                radarId: radarEntity.id,
-                radarObjects: radarObjects.map((ro) =>
-                    new RadarObjectDTO(ro)
-                ),
-                cursorAngle
-            }));
+            radarEntity.addUpdateListener(
+                env.name,
+                (radarObjects, cursorAngle) =>
+                    this.eventBus.emit("radarUpdate", {
+                        radarId: radarEntity.id,
+                        radarObjects: radarObjects.map((ro) =>
+                            new RadarObjectDTO(ro)
+                        ),
+                        cursorAngle,
+                    }),
+            );
             this.radars.push(radarEntity);
         });
     }
@@ -153,13 +160,17 @@ class GameService {
                     env,
                 ),
             );
-            radarEntity.addUpdateListener(env.name, (radarObjects, cursorAngle) => this.eventBus.emit("radarUpdate", {
-                radarId: radarEntity.id,
-                radarObjects: radarObjects.map((ro) =>
-                    new RadarObjectDTO(ro)
-                ),
-                cursorAngle
-            }));
+            radarEntity.addUpdateListener(
+                env.name,
+                (radarObjects, cursorAngle) =>
+                    this.eventBus.emit("radarUpdate", {
+                        radarId: radarEntity.id,
+                        radarObjects: radarObjects.map((ro) =>
+                            new RadarObjectDTO(ro)
+                        ),
+                        cursorAngle,
+                    }),
+            );
 
             this.radars.push(radarEntity);
 
@@ -175,6 +186,45 @@ class GameService {
             this.weapons.push(weaponEntity);
         });
     }
+
+    public captureTarget(
+        weaponGameId: string,
+        azimuth: number,
+        elevation: number,
+        distance: number,
+    ) {
+        const capturedTargetId = this.weapons.find((w) => w.id === weaponGameId)
+            ?.captureTargetByAzimuthElevationDistance(
+                azimuth,
+                elevation,
+                distance,
+            );
+        if (capturedTargetId) {
+            this.eventBus.emit("targetCaptured", {
+                weaponId: weaponGameId,
+                capturedTargetId,
+            });
+        }
+    }
+
+    public resetTarget(
+        weaponGameId: string,
+    ) {
+        this.weapons.find((w) => w.id === weaponGameId)?.unselectTarget();
+        this.eventBus.emit("targetUnselected", {
+            weaponId: weaponGameId,
+        });
+    }
+
+    public fire(weaponGameId: string, method: '3P' | '1/2') {
+        const launched = this.weapons.find((w) => w.id === weaponGameId)?.launchWeapon(method)
+        this.eventBus.emit("weaponLaunched", {
+            weaponId: weaponGameId,
+            launched
+        });
+    }
+
+
 }
 
 const gameService = new GameService();

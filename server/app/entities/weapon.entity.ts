@@ -14,16 +14,10 @@ export class Weapon extends BaseEntity {
   type: 'missile' | 'gun';
 
   @Column()
-  weaponMaxSelectedCount: number;
+  ammoCount: number;
 
   @Column()
-  weaponChannelsCount: number;
-
-  @Column()
-  weaponAmmoCount: number;
-
-  @Column()
-  weaponVelocity: number;
+  ammoVelocity: number;
 
   @Column()
   weaponMaxDistance: number;

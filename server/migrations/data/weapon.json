@@ -2,10 +2,8 @@
     {
       "name": "P-300",
       "type": "missile",
-      "weaponMaxSelectedCount": 6,
-      "weaponChannelsCount": 6,
-      "weaponAmmoCount": 16,
-      "weaponVelocity": 800,
+      "ammoCount": 16,
+      "ammoVelocity": 800,
       "weaponMaxDistance": 75000,
       "ammoKillRadius": 10,
       "ammoMaxDeltaRotation": 0.5
@@ -13,10 +11,8 @@
     {
       "name": "G-4",
       "type": "gun",
-      "weaponMaxSelectedCount": 1,
-      "weaponChannelsCount": 1,
-      "weaponAmmoCount": 2000,
-      "weaponVelocity": 990,
+      "ammoCount": 2000,
+      "ammoVelocity": 990,
       "weaponMaxDistance": 4000,
       "ammoKillRadius": 0.5,
       "ammoMaxDeltaRotation": 0

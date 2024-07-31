@@ -2,13 +2,10 @@ import _ from "lodash";
 import { Enemy, Engine, Missile } from "../Engine";
 import { MissionLogger } from "../MissionLogger";
 import { DetectedRadarObject, Radar } from "../Radar";
-import { WeaponChannel } from "./WeaponChannel";
 import { MissileParams } from "../Engine/FlightObject/Missile";
 
 export interface IWeaponParams extends MissileParams {
 	ammoLeft: number;
-	weaponChannelCount: number;
-	weaponMaxSelectedCount: number;
 }
 
 interface IWeapon {
@@ -24,15 +21,17 @@ export class Weapon {
 	public id: string;
 	public entityId: number;
 	public name: string;
-	private selectedObjectIds: string[] = [];
-	private weaponChannels: Record<number, WeaponChannel> = {};
-	private ammoLeft;
+	private selectedObjectId: string | null = null;
+	private launchedAmmo: Missile | null = null;
+	private ammoLeft: number;
 	private engine: Engine;
 	private radar: Radar;
 	private logger: MissionLogger;
 	private params: IWeaponParams;
 
-	constructor({ id, entityId, name, engine, radar, logger, params }: IWeapon) {
+	constructor(
+		{ id, entityId, name, engine, radar, logger, params }: IWeapon,
+	) {
 		this.id = id;
 		this.entityId = entityId;
 		this.name = name;
@@ -41,18 +40,13 @@ export class Weapon {
 		this.logger = logger;
 		this.params = params;
 		this.ammoLeft = params.ammoLeft;
-		const channelsCount = params.weaponChannelCount || 0;
-		for (let i = 0; i < channelsCount; i++) {
-			this.weaponChannels[i] = new WeaponChannel(i);
-		}
 	}
 
-	public getSelectedObjectIds(): string[] {
-		return this.selectedObjectIds.slice(0);
+	public getSelectedObjectId(): string {
+		return this.selectedObjectId;
 	}
-
-	public getWeaponChannels(): WeaponChannel[] {
-		return _.cloneDeep(Object.values(this.weaponChannels));
+	public get selectedTarget() {
+		return this.radar.getRadarObjects().find(ro => ro.id === this.selectedObjectId) || null
 	}
 
 	public getAmmoCount() {
@@ -60,19 +54,14 @@ export class Weapon {
 	}
 
 	public launchWeapon(
-		targetId: string,
-		channelId: number,
 		method: "3P" | "1/2",
 	) {
 		const target = this.radar.getRadarObjects().find((dfo) =>
-			dfo.id === targetId && dfo instanceof DetectedRadarObject &&
+			dfo.id === this.selectedObjectId &&
+			dfo instanceof DetectedRadarObject &&
 			!dfo.isMissile
 		) as DetectedRadarObject;
-		const channel = this.weaponChannels[channelId];
-		if (
-			target && this.selectedObjectIds.includes(targetId) &&
-			this.ammoLeft > 0 && channel && !channel.missile
-		) {
+		if (target && this.ammoLeft > 0 && !this.launchedAmmo) {
 			const missile = new Missile(
 				this.engine,
 				target.getFlightObject() as Enemy,
@@ -80,61 +69,48 @@ export class Weapon {
 				this.params,
 			);
 			this.ammoLeft--;
-
-			channel.set(target, missile);
+			this.launchedAmmo = missile;
 
 			this.engine.addFlightObject(missile);
 
 			this.logger.log(
-				`[${this.name}] Launch on channel: ${channelId} (method: ${method}). Target: ${target.id}, distance: ${
+				`[${this.name}] Launch (method: ${method}). Target: ${target.id}, distance: ${
 					(target.distance / 1000).toFixed(1)
 				} km`,
 			);
+
+			return true;
 		}
+
+		return false;
 	}
 
-	public resetWeaponChannel(channelId: number) {
-		this.weaponChannels[channelId]?.reset();
-		this.logger.log(`[MISSILE] Reset on channel: ${channelId}`);
+	public resetLaunchedAmmo() {
+		this.launchedAmmo?.destroy();
+		this.logger.log(`[${this.name}] Missile reset`);
 	}
 
-	public selectTarget(targetId: string) {
-		const radarObject = this.radar.getRadarObjects().filter((ro) =>
+	public unselectTarget() {
+		this.selectedObjectId = null;
+		this.resetLaunchedAmmo();
+		this.logger.log(`[${this.name}] Target unselected`);
+	}
+
+	public captureTargetByAzimuthElevationDistance(
+		azimuth: number,
+		elevation: number,
+		distance: number,
+	) {
+		const target = this.radar.getRadarObjects().filter((ro) =>
 			ro instanceof DetectedRadarObject
-		).find((dro) => dro.id === targetId) as DetectedRadarObject;
+		).find((dro) => {
+			return (Math.abs(dro.azimuth - azimuth) < 0.1) &&
+				(Math.abs(dro.elevation - elevation) < 0.1) &&
+				(Math.abs(dro.distance - distance) < 500);
+		}) as DetectedRadarObject;
 
-		if (
-			radarObject &&
-			!this.selectedObjectIds.some((id) => id === targetId) &&
-			this.selectedObjectIds.length < this.params.weaponMaxSelectedCount
-		) {
-			this.selectedObjectIds.push(radarObject.id);
-			this.logger.log(`[${this.name}] Target selected: ${targetId}`);
-		}
-	}
-
-	public unselectTarget(targetId: string) {
-		if (this.selectedObjectIds.some((id) => id === targetId)) {
-			Object.values(this.weaponChannels).forEach((weaponChannel) => {
-				if (
-					weaponChannel.target &&
-					weaponChannel.target.id === targetId
-				) {
-					weaponChannel.reset();
-				}
-			});
-			this.selectedObjectIds = this.selectedObjectIds.filter((id) =>
-				id !== targetId
-			);
-			this.logger.log(`[${this.name}] Target unselected: ${targetId}`);
-		}
-	}
-
-	public resetTargets() {
-		this.selectedObjectIds = [];
-		Object.values(this.weaponChannels).forEach((weaponChannel) =>
-			weaponChannel.reset()
-		);
-		this.logger.log(`[${this.name}] Reset all targets`);
+		this.selectedObjectId = target.id;
+		this.logger.log(`[${this.name}] Target selected: ${target.id}`);
+		return target.id;
 	}
 }

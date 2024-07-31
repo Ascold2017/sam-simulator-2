@@ -39,10 +39,8 @@ export class EnvironmentWeaponConstructorDTO {
         this.radar = radar;
         this.position = { ...environment.position, v: 0 };
         this.params = {
-            ammoLeft: environment.weapon.weaponAmmoCount,
-            weaponChannelCount: environment.weapon.weaponChannelsCount,
-            weaponMaxSelectedCount: environment.weapon.weaponMaxSelectedCount,
-            ammoVelocity: environment.weapon.weaponVelocity,
+            ammoLeft: environment.weapon.ammoCount,
+            ammoVelocity: environment.weapon.ammoVelocity,
             maxDistance: environment.weapon.weaponMaxDistance,
             maxDeltaRotation: environment.weapon.ammoMaxDeltaRotation,
             killRadius: environment.weapon.ammoKillRadius,
@@ -103,10 +101,8 @@ export class EnvironmentSAMResponseDTO {
     weapon: {
         gameId: string;
         type: 'missile' | 'gun';
-        weaponMaxSelectedCount: number;
-        weaponChannelsCount: number;
-        weaponAmmoCount: number;
-        weaponVelocity: number;
+        ammoCount: number;
+        ammoVelocity: number;
         weaponMaxDistance: number;
         ammoKillRadius: number;
         ammoMaxDeltaRotation: number;
@@ -132,10 +128,8 @@ export class EnvironmentSAMResponseDTO {
         this.weapon = {
             gameId: weapon.id,
             type: environment.weapon.type,
-            weaponMaxSelectedCount: environment.weapon.weaponMaxSelectedCount,
-            weaponChannelsCount: environment.weapon.weaponChannelsCount,
-            weaponAmmoCount: environment.weapon.weaponAmmoCount,
-            weaponVelocity: environment.weapon.weaponVelocity,
+            ammoCount: environment.weapon.ammoCount,
+            ammoVelocity: environment.weapon.ammoVelocity,
             weaponMaxDistance: environment.weapon.weaponMaxDistance,
             ammoKillRadius: environment.weapon.ammoKillRadius,
             ammoMaxDeltaRotation: environment.weapon.ammoMaxDeltaRotation
