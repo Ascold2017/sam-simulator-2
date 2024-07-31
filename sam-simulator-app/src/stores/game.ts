@@ -8,25 +8,22 @@ import { socketClient } from "@/adapters/socketClient";
 import type { EnvironmentRadar, EnvironmentSAM, RadarObjectResponse, RadarUpdateResponse, RadarEnabledResponse, GetCurrentMissionResponse, PostRadarEnabledPayload } from "@shared/models/game.model";
 import _ from 'lodash'
 
+const defaultMission = {
+    id: 0,
+    name: "",
+    map1024: "",
+    map256: "",
+}
 export const useGameStore = defineStore("game", () => {
     const router = useRouter();
 
     const isLoadingMission = ref(false);
     const isInitialized = ref(false);
-    const currentMission = ref<Mission>({
-        id: 0,
-        name: "",
-        map1024: "",
-        map256: "",
-    });
+    const currentMission = ref<Mission>(defaultMission);
     const radars = ref<EnvironmentRadar[]>([]);
     const sams = ref<EnvironmentSAM[]>([]);
     const radarObjectsByRadarIds = ref<Record<string, RadarObjectResponse[]>>({})
     const cursorAnglesByRadarIds = ref<Record<string, number>>({})
-    const allRadarObjects = computed<RadarObjectResponse[]>(() => {
-        const allObjects = Object.values(radarObjectsByRadarIds.value).flat();
-        return _.uniqBy(allObjects, 'id');
-    });
 
     socketClient.listenToEvent<RadarUpdateResponse>('radarUpdates', (data) => {
         radarObjectsByRadarIds.value = {
@@ -104,8 +101,27 @@ export const useGameStore = defineStore("game", () => {
         }
     }
 
+    async function stopMission() {
+        try {
+            await httpClient.request<undefined, undefined>({
+                url: "/game/stop-mission",
+                method: "POST",
+            });
+
+            radars.value = []
+            sams.value = []
+            currentMission.value = defaultMission;
+            isInitialized.value = false;
+            radarObjectsByRadarIds.value = {}
+            cursorAnglesByRadarIds.value = {}
+            router.push({ name: 'start' })
+
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     return {
-        allRadarObjects,
         cursorAnglesByRadarIds,
         radarObjectsByRadarIds,
         currentMission,
@@ -115,6 +131,7 @@ export const useGameStore = defineStore("game", () => {
         sams,
         launchMission,
         getCurrentMission,
-        setEnableRadar
+        setEnableRadar,
+        stopMission
     };
 });

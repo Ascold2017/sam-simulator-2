@@ -11,7 +11,7 @@ const router = createRouter({
     {
       path: '/game-map',
       name: 'gameMap',
-      component: () => import('../views/GameMapScreen.vue')
+      component: () => import('../views/MapScreen.vue')
     },
     {
       path: '/radar/:radarGameId',

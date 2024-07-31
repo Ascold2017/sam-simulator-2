@@ -15,5 +15,6 @@ router.delete('/missions/:id', missionController.deleteMission)
 router.post('/game/launch-mission/:id', gameController.postLauchMission)
 router.get('/game/current-mission', gameController.getCurrentMission)
 router.post('/game/radar-enabled', gameController.postRadarEnabled)
+router.post('/game/stop-mission', gameController.postStopMission)
 
 export default router;

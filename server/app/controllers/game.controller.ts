@@ -17,7 +17,7 @@ class GameController {
             gameService.offRadarEnabled(radarEnabledListener)
             if (io.engine.clientsCount === 0) {
                 console.log("All users disconnected.");
-                // Вставьте сюда ваш код для обработки ситуации, когда все клиенты отключились.
+                gameService.stopMission()
             }
         });
 
@@ -64,6 +64,11 @@ class GameController {
 
         gameService.setIsEnabledRadar(radarGameId, value);
         res.json({ ok: true });
+    }
+
+    async postStopMission(req: Request, res: Response) {
+        gameService.stopMission()
+        res.json({ ok: true })
     }
 }
 

@@ -8,7 +8,7 @@
                 :to="{ name: 'radar', params: { radarGameId: radar.gameId } }">{{ radar.name }} -></router-link>
             <router-link v-for="sam in sams" class="action-button action-button--block"
                 :to="{ name: 'sam', params: { samId: sam.id } }">{{ sam.name }} -></router-link>
-            <button class="action-button action-button--block mt-auto"><- END MISSION</button>
+            <button class="action-button action-button--block mt-auto" @click="gameStore.stopMission"><- END MISSION</button>
         </div>
     </div>
 </template>

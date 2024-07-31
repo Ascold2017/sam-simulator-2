@@ -30,4 +30,8 @@ export default class LoopEngine {
 	public getLoops() {
 		return Array.from(this.loops).map(([name, loop]) => loop)
 	}
+
+	public clearLoopsAll() {
+		this.loops.forEach((l, name) => this.removeLoop(name))
+	}
 }

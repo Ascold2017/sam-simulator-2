@@ -37,6 +37,7 @@ export class Engine extends LoopEngine {
 
 	public resetMission() {
 		this.flightObjects.forEach((fo) => this.removeFlightObject(fo.id));
+		this.clearLoopsAll()
 	}
 
 	public addFlightObject(flightObject: BaseFlightObject) {
