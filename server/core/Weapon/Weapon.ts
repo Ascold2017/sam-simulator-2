@@ -28,6 +28,9 @@ export class Weapon {
 	private radar: Radar;
 	private logger: MissionLogger;
 	private params: IWeaponParams;
+	private cursorAzimuth: number = 0;
+	private cursorElevation: number = 0;
+	private cursorDistance: number = 0;
 
 	constructor(
 		{ id, entityId, name, engine, radar, logger, params }: IWeapon,
@@ -96,21 +99,24 @@ export class Weapon {
 		this.logger.log(`[${this.name}] Target unselected`);
 	}
 
-	public captureTargetByAzimuthElevationDistance(
-		azimuth: number,
-		elevation: number,
-		distance: number,
-	) {
+	public captureTarget() {
+
 		const target = this.radar.getRadarObjects().filter((ro) =>
 			ro instanceof DetectedRadarObject
 		).find((dro) => {
-			return (Math.abs(dro.azimuth - azimuth) < 0.1) &&
-				(Math.abs(dro.elevation - elevation) < 0.1) &&
-				(Math.abs(dro.distance - distance) < 500);
+			return (Math.abs(dro.azimuth - this.cursorAzimuth) < 0.1) &&
+				(Math.abs(dro.elevation - this.cursorElevation) < 0.1) &&
+				(Math.abs(dro.distance - this.cursorDistance) < 500);
 		}) as DetectedRadarObject;
 
 		this.selectedObjectId = target.id;
 		this.logger.log(`[${this.name}] Target selected: ${target.id}`);
 		return target.id;
+	}
+
+	public moveCursor(azimuth: number, elevation: number, distance: number) {
+		this.cursorAzimuth = azimuth;
+		this.cursorElevation = elevation;
+		this.cursorDistance = distance;
 	}
 }

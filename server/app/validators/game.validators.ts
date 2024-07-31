@@ -8,9 +8,6 @@ export const enableRadarSchema = z.object({
 
 export const captureTargetSchema = z.object({
     weaponGameId: z.string(),
-    azimuth: z.number(),
-    elevation: z.number(),
-    distance: z.number()
 })
 
 export const resetTargetSchema = z.object({

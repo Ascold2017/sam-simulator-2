@@ -13,18 +13,14 @@ import type {
     PostRadarEnabledPayload,
     RadarEnabledResponse,
     RadarUpdateResponse,
+    WeaponCaptureResponse,
+    WeaponLaunchedResponse,
+    WeaponMoveCursorResponse,
+    WeaponUnselectedResponse,
 } from "@shared/models/game.model";
 
 class GameController {
     registerSocketHandlers(socket: Socket, io: Server) {
-        socket.on("disconnect", () => {
-            gameService.offRadarUpdate(radarUpdateListener);
-            gameService.offRadarEnabled(radarEnabledListener);
-            if (io.engine.clientsCount === 0) {
-                console.log("All users disconnected.");
-                gameService.stopMission();
-            }
-        });
 
         const radarUpdateListener = (radarUpdate: RadarUpdateResponse) => {
             socket.emit("radarUpdates", radarUpdate);
@@ -32,8 +28,41 @@ class GameController {
         const radarEnabledListener = (radarEnabled: RadarEnabledResponse) => {
             socket.emit("radarEnabled", radarEnabled);
         };
+        const weaponCaptureListener = (payload: WeaponCaptureResponse) => {
+            socket.emit('targetCaptured', payload)
+        }
+        const weaponUnselectedListener = (payload: WeaponUnselectedResponse) => {
+            socket.emit('targetUnselected', payload)
+        }
+        const weaponFireListener = (payload: WeaponLaunchedResponse) => {
+            socket.emit('targetFire', payload)
+        }
+        const weaponCursorMoveListener = (payload: WeaponMoveCursorResponse) => {
+            socket.emit('moveCursor', payload)
+        }
         gameService.onRadarUpdate(radarUpdateListener);
         gameService.onRadarEnabled(radarEnabledListener);
+        gameService.onTargetCaptured(weaponCaptureListener);
+        gameService.onTargetUnselected(weaponUnselectedListener);
+        gameService.onFire(weaponFireListener)
+        gameService.onCursorMove(weaponCursorMoveListener)
+
+        socket.on('moveCursor', (data) => {
+            console.log(data)
+        })
+
+        socket.on("disconnect", () => {
+            gameService.offRadarUpdate(radarUpdateListener);
+            gameService.offRadarEnabled(radarEnabledListener);
+            gameService.offTargetCaptured(weaponCaptureListener)
+            gameService.offTargetUnselected(weaponUnselectedListener)
+            gameService.offFire(weaponFireListener)
+            gameService.offCursorMove(weaponCursorMoveListener)
+            if (io.engine.clientsCount === 0) {
+                console.log("All users disconnected.");
+                gameService.stopMission();
+            }
+        });
     }
 
     async postLauchMission(req: Request, res: Response) {
@@ -81,8 +110,8 @@ class GameController {
         if (!result.success) {
             return res.status(422).json({ errors: result.error.errors });
         }
-        const { weaponGameId, azimuth, elevation, distance } = result.data;
-        gameService.captureTarget(weaponGameId, azimuth, elevation, distance);
+        const { weaponGameId } = result.data;
+        gameService.captureTarget(weaponGameId);
         res.json({ ok: true });
     }
 

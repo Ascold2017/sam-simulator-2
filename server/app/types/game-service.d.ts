@@ -1,4 +1,4 @@
-import { RadarEnabledResponse, RadarUpdateResponse, WeaponCaptureResponse, WeaponUnselectedResponse, WeaponLaunchedResponse } from "@shared/models/game.model";
+import { RadarEnabledResponse, RadarUpdateResponse, WeaponCaptureResponse, WeaponUnselectedResponse, WeaponLaunchedResponse, WeaponMoveCursorResponse } from "@shared/models/game.model";
 
 
 export interface EventsMap {
@@ -7,4 +7,5 @@ export interface EventsMap {
     targetCaptured: WeaponCaptureResponse;
     targetUnselected: WeaponUnselectedResponse;
     weaponLaunched: WeaponLaunchedResponse;
+    moveCursor: WeaponMoveCursorResponse
 }

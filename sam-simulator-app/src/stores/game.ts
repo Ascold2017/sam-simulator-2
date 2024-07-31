@@ -5,7 +5,7 @@ import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import type { Mission } from '@shared/models/missions.model'
 import { socketClient } from "@/adapters/socketClient";
-import { type EnvironmentRadar, type EnvironmentSAM, type RadarObjectResponse, type RadarUpdateResponse, type RadarEnabledResponse, type GetCurrentMissionResponse, type PostRadarEnabledPayload, WeaponCaptureResponse } from "@shared/models/game.model";
+import { type EnvironmentRadar, type EnvironmentSAM, type RadarObjectResponse, type RadarUpdateResponse, type RadarEnabledResponse, type GetCurrentMissionResponse, type PostRadarEnabledPayload, type WeaponMoveCursorResponse } from "@shared/models/game.model";
 import _ from 'lodash'
 
 const defaultMission = {
@@ -24,6 +24,7 @@ export const useGameStore = defineStore("game", () => {
     const sams = ref<EnvironmentSAM[]>([]);
     const radarObjectsByRadarIds = ref<Record<string, RadarObjectResponse[]>>({})
     const cursorAnglesByRadarIds = ref<Record<string, number>>({})
+    const targetCursorsByWeaponIds = ref<Record<string, WeaponMoveCursorResponse>>({})
 
     socketClient.listenToEvent<RadarUpdateResponse>('radarUpdates', (data) => {
         radarObjectsByRadarIds.value = {
@@ -53,6 +54,12 @@ export const useGameStore = defineStore("game", () => {
             }
             return sam;
         })
+    })
+    socketClient.listenToEvent<WeaponMoveCursorResponse>('moveCursor', (data) => {
+        targetCursorsByWeaponIds.value = {
+            ...targetCursorsByWeaponIds.value,
+            [data.weaponId]: data
+        }
     })
 
     async function launchMission(missionId: number) {
@@ -121,6 +128,21 @@ export const useGameStore = defineStore("game", () => {
         }
     }
 
+    function moveTargetCursor(weaponId: string, azimuth: number, elevation: number, distance: number) {
+        socketClient.send('moveCursor', {
+            weaponId,
+            azimuth,
+            elevation,
+            distance
+        })
+    }
+
+    async function captureTarget() {}
+
+    async function resetTarget() {}
+
+    async function fire() {}
+
     return {
         cursorAnglesByRadarIds,
         radarObjectsByRadarIds,
@@ -132,6 +154,11 @@ export const useGameStore = defineStore("game", () => {
         launchMission,
         getCurrentMission,
         setEnableRadar,
-        stopMission
+        stopMission,
+
+        moveTargetCursor,
+        captureTarget,
+        resetTarget,
+        fire
     };
 });

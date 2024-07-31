@@ -17,6 +17,10 @@ import { MissionDTO } from "../dto/mission.dto";
 import {
     RadarEnabledResponse,
     RadarUpdateResponse,
+    WeaponCaptureResponse,
+    WeaponLaunchedResponse,
+    WeaponMoveCursorResponse,
+    WeaponUnselectedResponse,
 } from "@shared/models/game.model";
 import _ from "lodash";
 
@@ -118,12 +122,45 @@ class GameService {
         this.eventBus.on("radarEnabled", cb);
     }
 
+    public onTargetCaptured(cb: (payload: WeaponCaptureResponse) => void) {
+        this.eventBus.on("targetCaptured", cb);
+    }
+
+    public onTargetUnselected(cb: (payload: WeaponUnselectedResponse) => void) {
+        this.eventBus.on("targetUnselected", cb);
+    }
+
+    public onFire(cb: (payload: WeaponLaunchedResponse) => void) {
+        this.eventBus.on("weaponLaunched", cb);
+    }
+    public onCursorMove(cb: (payload: WeaponMoveCursorResponse) => void) {
+        this.eventBus.on("moveCursor", cb);
+    }
+
     public offRadarUpdate(cb: (payload: RadarUpdateResponse) => void) {
         this.eventBus.off("radarUpdate", cb);
     }
 
     public offRadarEnabled(cb: (payload: RadarEnabledResponse) => void) {
         this.eventBus.off("radarEnabled", cb);
+    }
+
+    public offTargetCaptured(cb: (payload: WeaponCaptureResponse) => void) {
+        this.eventBus.off("targetCaptured", cb);
+    }
+
+    public offTargetUnselected(
+        cb: (payload: WeaponUnselectedResponse) => void,
+    ) {
+        this.eventBus.off("targetUnselected", cb);
+    }
+
+    public offFire(cb: (payload: WeaponLaunchedResponse) => void) {
+        this.eventBus.off("weaponLaunched", cb);
+    }
+
+    public offCursorMove(cb: (payload: WeaponMoveCursorResponse) => void) {
+        this.eventBus.off("moveCursor", cb);
     }
 
     private initMissionRadars(environments: Environment[]) {
@@ -187,18 +224,27 @@ class GameService {
         });
     }
 
-    public captureTarget(
+    public moveCursor(
         weaponGameId: string,
         azimuth: number,
         elevation: number,
         distance: number,
     ) {
+        this.weapons.find((w) => w.id === weaponGameId)
+            ?.moveCursor(azimuth, elevation, distance);
+        this.eventBus.emit("moveCursor", {
+            weaponId: weaponGameId,
+            azimuth,
+            elevation,
+            distance,
+        });
+    }
+
+    public captureTarget(
+        weaponGameId: string,
+    ) {
         const capturedTargetId = this.weapons.find((w) => w.id === weaponGameId)
-            ?.captureTargetByAzimuthElevationDistance(
-                azimuth,
-                elevation,
-                distance,
-            );
+            ?.captureTarget();
         if (capturedTargetId) {
             this.eventBus.emit("targetCaptured", {
                 weaponId: weaponGameId,
@@ -216,15 +262,14 @@ class GameService {
         });
     }
 
-    public fire(weaponGameId: string, method: '3P' | '1/2') {
-        const launched = this.weapons.find((w) => w.id === weaponGameId)?.launchWeapon(method)
+    public fire(weaponGameId: string, method: "3P" | "1/2") {
+        const launched = this.weapons.find((w) => w.id === weaponGameId)
+            ?.launchWeapon(method);
         this.eventBus.emit("weaponLaunched", {
             weaponId: weaponGameId,
-            launched
+            launched,
         });
     }
-
-
 }
 
 const gameService = new GameService();
