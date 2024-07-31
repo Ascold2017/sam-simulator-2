@@ -1,52 +1,64 @@
 <template>
-  <div class="sam">
-    <section class="panel" v-if="sam">
-      <div class="panel-display">
-        <RadarDisplay :radarObjects="radarObjects" :radar="radarConfig!" :cursor-angle="cursorAngle"
-          :map-image="gameStore.currentMission.map1024" />
-        <SAMTargets :radarObjects="radarObjects" />
-      </div>
-      <div class="panel-buttons">
-        <div class="panel-title">RADAR</div>
+  <section class="panel sam" v-if="sam">
+    <div class="panel-display sam__display">
+      <RadarDisplay :radarObjects="radarObjects" :radar="radarConfig!" :cursor-angle="cursorAngle"
+        :map-image="gameStore.currentMission.map1024" />
+    </div>
+    <div class="sam__controls">
+      <button class="action-button">L</button>
+      <button class="action-button">UP</button>
+        <button class="action-button">DWN</button>
+        <button class="action-button">R</button>
+    </div>
+    <div class="sam__power">
+      <div class="panel-title">POWER</div>
+      <button class="action-button" :class="{ 'action-button--active': sam.radar.isEnabled }"
+        @click="setRadarEnabled(true)">ON</button>
+      <button class="action-button" :class="{ 'action-button--active': !sam.radar.isEnabled }"
+        @click="setRadarEnabled(false)">OFF</button>
+
+      <div class="panel-title">MODE</div>
+      <button class="action-button" :class="{ 'action-button--active': sam.radar.isEnabled }"
+        @click="setRadarEnabled(true)">SRCH</button>
+      <button class="action-button" :class="{ 'action-button--active': !sam.radar.isEnabled }"
+        @click="setRadarEnabled(false)">TG</button>
+
+        <div class="panel-title">CAPTURE</div>
         <button class="action-button" :class="{ 'action-button--active': sam.radar.isEnabled }"
-          @click="setRadarEnabled(true)">ON</button>
-        <button class="action-button" :class="{ 'action-button--active': !sam.radar.isEnabled }"
-          @click="setRadarEnabled(false)">OFF</button>
+        @click="setRadarEnabled(true)">CAPT</button>
+      <button class="action-button" :class="{ 'action-button--active': !sam.radar.isEnabled }"
+        @click="setRadarEnabled(false)">RST</button>
+    </div>
 
-        <div class="panel-title">TARGET</div>
-        <button class="action-button">SEEK</button>
-        <button class="action-button">SLCT</button>
-        <button class="action-button">RST</button>
+    <div class="sam__weapon">
+      <div class="panel-title">MISSILES</div>
+      <div class="panel-display">
+        <span class="display-title">10</span>
       </div>
-      <div class="panel-buttons">
-        <div class="panel-title">MISSILES</div>
-        <div class="panel-display">
-          <span class="display-title">10</span>
-        </div>
-        
-        <div class="panel-title">GUIDANCE</div>
-        <div>
-          <button class="action-button">3T</button>
-          <button class="action-button">1/2</button>
-        </div>
 
-        <div class="panel-title">LAUNCHER</div>
-        <div class="panel-indicator-block">READY <div class="panel-indicator"></div></div>
-        <div>
-          <button class="action-button">LAUNCH</button>
-          <button class="action-button">RESET</button>
-        </div>
-
-        
+      <div class="panel-title">GUIDANCE</div>
+      <div>
+        <button class="action-button">3T</button>
+        <button class="action-button">1/2</button>
       </div>
-    </section>
-  </div>
+
+      <div class="panel-title">LAUNCHER</div>
+      <div class="panel-indicator-block">READY <div class="panel-indicator"></div>
+      </div>
+      <div>
+        <button class="action-button">FIRE</button>
+        <button class="action-button">RESET</button>
+      </div>
+    </div>
+
+
+  </section>
 </template>
 
 <script setup lang="ts">
-import { type EnvironmentRadar, type EnvironmentSAM } from '@shared/models/game.model'
+import { type EnvironmentRadar } from '@shared/models/game.model'
 import RadarDisplay from '@/components/RadarDisplay/index.vue'
-import SAMTargets from './SAMTargets.vue';
+import RadarTargetShape from '@/components/RadarTargetShape/index.vue';
 import { useGameStore } from '@/stores/game';
 import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -83,10 +95,29 @@ function setRadarEnabled(value: boolean) {
 
 <style scoped>
 .sam {
-  @apply flex gap-2 mx-auto justify-center;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 16px;
+  grid-template-areas: 'display power weapon' 'display controls controls';
 }
 
-.sam>.panel {
-  margin: 0;
+.sam__display {
+  grid-area: display;
+}
+
+.sam__power {
+  grid-area: power;
+}
+
+.sam__controls {
+  grid-area: controls;
+}
+
+.sam__weapon {
+  grid-area: weapon;
+}
+
+.sam__target-display {
+  margin-bottom: 16px;
 }
 </style>

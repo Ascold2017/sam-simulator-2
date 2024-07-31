@@ -1,5 +1,5 @@
 <template>
-  <v-stage :config="stageConfig">
+  <v-stage :config="stageConfig" v-if="canvasSize">
     <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" :map-image="mapImage"/>
     <RadarScanner :canvasSize="canvasSize" :padding="padding" :cursorAngle="cursorAngle" :is-enabled="radar.isEnabled"/>
     <v-layer>
@@ -14,7 +14,7 @@ import RadarScanner from './RadarScanner.vue'
 import RadarWireframe from './RadarWireFrame.vue';
 import RadarTargetMarker from './RadarTargetMarker.vue'
 import type { EnvironmentRadar, RadarObjectResponse } from '@shared/models/game.model'
-import { computed } from 'vue';
+import { computed, onBeforeMount, onMounted, ref } from 'vue';
 
 const props = defineProps<{
   radar: EnvironmentRadar
@@ -22,15 +22,16 @@ const props = defineProps<{
   cursorAngle: number;
   mapImage: string;
 }>()
-const stageConfig = {
-  width: 500,
-  height: 500,
-};
-
 const padding = 20; // Отступ от краев для размещения надписей азимутов
-const canvasSize = 500
+let canvasSize = 320
+const stageConfig = computed(() => ({
+  width: canvasSize,
+  height: canvasSize,
+}))
+
+
 const scale = computed(() => {
-  const size = 500 - padding * 2; // Размер канваса с учетом отступов
+  const size = canvasSize - padding * 2; // Размер канваса с учетом отступов
   return size / (props.radar.maxDistance * 2); // Масштаб на основе максимальной дистанции радара
 });
 
