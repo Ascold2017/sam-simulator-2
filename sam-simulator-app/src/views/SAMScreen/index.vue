@@ -4,24 +4,12 @@
       <RadarDisplay :radarObjects="radarObjects" :radar="radarConfig!" :cursor-angle="cursorAngle"
         :map-image="gameStore.currentMission.map1024" />
     </div>
-    <div class="sam__controls">
-      <button class="action-button">L</button>
-      <button class="action-button">UP</button>
-        <button class="action-button">DWN</button>
-        <button class="action-button">R</button>
-    </div>
     <div class="sam__power">
       <div class="panel-title">POWER</div>
       <button class="action-button" :class="{ 'action-button--active': sam.radar.isEnabled }"
         @click="setRadarEnabled(true)">ON</button>
       <button class="action-button" :class="{ 'action-button--active': !sam.radar.isEnabled }"
         @click="setRadarEnabled(false)">OFF</button>
-
-      <div class="panel-title">MODE</div>
-      <button class="action-button" :class="{ 'action-button--active': sam.radar.isEnabled }"
-        @click="setRadarEnabled(true)">SRCH</button>
-      <button class="action-button" :class="{ 'action-button--active': !sam.radar.isEnabled }"
-        @click="setRadarEnabled(false)">TG</button>
 
         <div class="panel-title">CAPTURE</div>
         <button class="action-button" :class="{ 'action-button--active': sam.radar.isEnabled }"
@@ -106,7 +94,7 @@ function moveTargetCursor({ azimuth, elevation }) {
   display: grid;
   grid-template-columns: repeat(3, auto);
   gap: 16px;
-  grid-template-areas: 'display power weapon target' 'display controls controls target';
+  grid-template-areas: 'display power weapon target' 'display power weapon target';
 }
 
 .sam__display {
@@ -115,10 +103,6 @@ function moveTargetCursor({ azimuth, elevation }) {
 
 .sam__power {
   grid-area: power;
-}
-
-.sam__controls {
-  grid-area: controls;
 }
 
 .sam__weapon {

@@ -13,7 +13,7 @@
 }
 
 .panel-title {
-    @apply text-white block text-center mb-2;
+    @apply text-white block text-center my-2;
     font-family: DS-DigitalB, sans-serif;
 }
 
