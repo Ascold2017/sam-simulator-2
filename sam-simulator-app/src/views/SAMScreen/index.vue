@@ -29,7 +29,6 @@
       <button class="action-button" :class="{ 'action-button--active': !sam.radar.isEnabled }"
         @click="setRadarEnabled(false)">RST</button>
     </div>
-
     <div class="sam__weapon">
       <div class="panel-title">MISSILES</div>
       <div class="panel-display">
@@ -50,6 +49,9 @@
         <button class="action-button">RESET</button>
       </div>
     </div>
+    <div class="panel-display sam__target-display">
+      <TvDisplay :cursor="targetCursor" @move-cursor="moveTargetCursor" />
+    </div>
 
 
   </section>
@@ -58,7 +60,7 @@
 <script setup lang="ts">
 import { type EnvironmentRadar } from '@shared/models/game.model'
 import RadarDisplay from '@/components/RadarDisplay/index.vue'
-import RadarTargetShape from '@/components/RadarTargetShape/index.vue';
+import TvDisplay from '@/components/TvDisplay/index.vue';
 import { useGameStore } from '@/stores/game';
 import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -74,6 +76,7 @@ const sam = computed(() => gameStore.sams.find(r => r.id === samId.value));
 
 const radarObjects = computed(() => gameStore.radarObjectsByRadarIds[sam.value?.radar.gameId] || [])
 const cursorAngle = computed(() => gameStore.cursorAnglesByRadarIds[sam.value?.radar.gameId] || 0)
+const targetCursor = computed(() => gameStore.targetCursorsByWeaponIds[sam.value?.weapon.gameId] || { azimuth: 0, elevation: 0 })
 const radarConfig = computed<EnvironmentRadar | null>(() => sam.value ? ({
   ...sam.value?.radar,
   id: sam.value?.id,
@@ -91,6 +94,11 @@ function setRadarEnabled(value: boolean) {
   if (!sam.value) return
   gameStore.setEnableRadar(sam.value.radar.gameId, value)
 }
+
+function moveTargetCursor({ azimuth, elevation }) {
+  if (!sam.value) return
+  gameStore.moveTargetCursor(sam.value.weapon.gameId, azimuth, elevation)
+}
 </script>
 
 <style scoped>
@@ -98,7 +106,7 @@ function setRadarEnabled(value: boolean) {
   display: grid;
   grid-template-columns: repeat(3, auto);
   gap: 16px;
-  grid-template-areas: 'display power weapon' 'display controls controls';
+  grid-template-areas: 'display power weapon target' 'display controls controls target';
 }
 
 .sam__display {
@@ -118,6 +126,6 @@ function setRadarEnabled(value: boolean) {
 }
 
 .sam__target-display {
-  margin-bottom: 16px;
+  grid-area: target;
 }
 </style>

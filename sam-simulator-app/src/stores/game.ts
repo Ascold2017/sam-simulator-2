@@ -128,12 +128,12 @@ export const useGameStore = defineStore("game", () => {
         }
     }
 
-    function moveTargetCursor(weaponId: string, azimuth: number, elevation: number, distance: number) {
+    function moveTargetCursor(weaponId: string, azimuth: number, elevation: number) {
         socketClient.send('moveCursor', {
             weaponId,
             azimuth,
             elevation,
-            distance
+            distance: 0
         })
     }
 
@@ -144,6 +144,7 @@ export const useGameStore = defineStore("game", () => {
     async function fire() {}
 
     return {
+        targetCursorsByWeaponIds,
         cursorAnglesByRadarIds,
         radarObjectsByRadarIds,
         currentMission,

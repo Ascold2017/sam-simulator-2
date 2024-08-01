@@ -21,7 +21,6 @@ import type {
 
 class GameController {
     registerSocketHandlers(socket: Socket, io: Server) {
-
         const radarUpdateListener = (radarUpdate: RadarUpdateResponse) => {
             socket.emit("radarUpdates", radarUpdate);
         };
@@ -29,35 +28,42 @@ class GameController {
             socket.emit("radarEnabled", radarEnabled);
         };
         const weaponCaptureListener = (payload: WeaponCaptureResponse) => {
-            socket.emit('targetCaptured', payload)
-        }
-        const weaponUnselectedListener = (payload: WeaponUnselectedResponse) => {
-            socket.emit('targetUnselected', payload)
-        }
+            socket.emit("targetCaptured", payload);
+        };
+        const weaponUnselectedListener = (
+            payload: WeaponUnselectedResponse,
+        ) => {
+            socket.emit("targetUnselected", payload);
+        };
         const weaponFireListener = (payload: WeaponLaunchedResponse) => {
-            socket.emit('targetFire', payload)
-        }
-        const weaponCursorMoveListener = (payload: WeaponMoveCursorResponse) => {
-            socket.emit('moveCursor', payload)
-        }
-        gameService.onRadarUpdate(radarUpdateListener);
-        gameService.onRadarEnabled(radarEnabledListener);
-        gameService.onTargetCaptured(weaponCaptureListener);
-        gameService.onTargetUnselected(weaponUnselectedListener);
-        gameService.onFire(weaponFireListener)
-        gameService.onCursorMove(weaponCursorMoveListener)
+            socket.emit("targetFire", payload);
+        };
+        const weaponCursorMoveListener = (
+            payload: WeaponMoveCursorResponse,
+        ) => {
+            socket.emit("moveCursor", payload);
+        };
+        gameService.eventBus.on("radarUpdate", radarUpdateListener);
+        gameService.eventBus.on("radarEnabled", radarEnabledListener);
+        gameService.eventBus.on("targetCaptured", weaponCaptureListener);
+        gameService.eventBus.on("targetUnselected", weaponUnselectedListener);
+        gameService.eventBus.on("weaponLaunched", weaponFireListener);
+        gameService.eventBus.on("moveCursor", weaponCursorMoveListener);
 
-        socket.on('moveCursor', (data) => {
-            console.log(data)
-        })
+        socket.on("moveCursor", (data: WeaponMoveCursorResponse) => {
+            gameService.moveCursor(data.weaponId, data.azimuth, data.elevation, data.distance)
+        });
 
         socket.on("disconnect", () => {
-            gameService.offRadarUpdate(radarUpdateListener);
-            gameService.offRadarEnabled(radarEnabledListener);
-            gameService.offTargetCaptured(weaponCaptureListener)
-            gameService.offTargetUnselected(weaponUnselectedListener)
-            gameService.offFire(weaponFireListener)
-            gameService.offCursorMove(weaponCursorMoveListener)
+            gameService.eventBus.off("radarUpdate", radarUpdateListener);
+            gameService.eventBus.off("radarEnabled", radarEnabledListener);
+            gameService.eventBus.off("targetCaptured", weaponCaptureListener);
+            gameService.eventBus.off(
+                "targetUnselected",
+                weaponUnselectedListener,
+            );
+            gameService.eventBus.off("weaponLaunched", weaponFireListener);
+            gameService.eventBus.off("moveCursor", weaponCursorMoveListener);
             if (io.engine.clientsCount === 0) {
                 console.log("All users disconnected.");
                 gameService.stopMission();
@@ -132,7 +138,7 @@ class GameController {
         }
         const { weaponGameId, method } = result.data;
         // @ts-ignore
-        gameService.fire(weaponGameId, method)
+        gameService.fire(weaponGameId, method);
     }
 }
 

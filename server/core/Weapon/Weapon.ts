@@ -49,7 +49,9 @@ export class Weapon {
 		return this.selectedObjectId;
 	}
 	public get selectedTarget() {
-		return this.radar.getRadarObjects().find(ro => ro.id === this.selectedObjectId) || null
+		return this.radar.getRadarObjects().find((ro) =>
+			ro.id === this.selectedObjectId
+		) || null;
 	}
 
 	public getAmmoCount() {
@@ -100,7 +102,6 @@ export class Weapon {
 	}
 
 	public captureTarget() {
-
 		const target = this.radar.getRadarObjects().filter((ro) =>
 			ro instanceof DetectedRadarObject
 		).find((dro) => {
@@ -115,8 +116,24 @@ export class Weapon {
 	}
 
 	public moveCursor(azimuth: number, elevation: number, distance: number) {
-		this.cursorAzimuth = azimuth;
-		this.cursorElevation = elevation;
+		this.cursorAzimuth = this.normalizeAzimuth(azimuth);
+		this.cursorElevation = this.normalizeElevation(elevation);
 		this.cursorDistance = distance;
+		return {
+			azimuth: this.cursorAzimuth,
+			elevation: this.cursorElevation,
+			distance: this.cursorDistance
+		}
+	}
+
+	private normalizeAzimuth(azimuth: number): number {
+		const twoPi = 2 * Math.PI;
+		return ((azimuth % twoPi) + twoPi) % twoPi;
+	}
+
+	private normalizeElevation(elevation: number): number {
+		const minElevation = -3 * (Math.PI / 180); // -3 градуса в радианы
+		const maxElevation = 55 * (Math.PI / 180); // 55 градусов в радианы
+		return Math.max(minElevation, Math.min(maxElevation, elevation));
 	}
 }
