@@ -12,10 +12,10 @@
         @click="setRadarEnabled(false)">OFF</button>
 
         <div class="panel-title">CAPTURE</div>
-        <button class="action-button" :class="{ 'action-button--active': sam.radar.isEnabled }"
-        @click="setRadarEnabled(true)">CAPT</button>
-      <button class="action-button" :class="{ 'action-button--active': !sam.radar.isEnabled }"
-        @click="setRadarEnabled(false)">RST</button>
+        <button class="action-button"
+        @click="captureTarget()">CAPT</button>
+      <button class="action-button" 
+        @click="resetTarget()">RST</button>
     </div>
     <div class="sam__weapon">
       <div class="panel-title">MISSILES</div>
@@ -86,6 +86,16 @@ function setRadarEnabled(value: boolean) {
 function moveTargetCursor({ azimuth, elevation }) {
   if (!sam.value) return
   gameStore.moveTargetCursor(sam.value.weapon.gameId, azimuth, elevation)
+}
+
+function captureTarget() {
+  if (!sam.value) return
+  game.captureTarget(sam.value.weapon.gameId)
+}
+
+function resetTarget() {
+  if (!sam.value) return
+  game.resetTarget(sam.value.weapon.gameId)
 }
 </script>
 

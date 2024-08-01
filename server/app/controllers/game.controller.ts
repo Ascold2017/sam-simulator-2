@@ -54,6 +54,18 @@ class GameController {
             gameService.moveCursor(data.weaponId, data.azimuth, data.elevation, data.distance)
         });
 
+        socket.on('captureTarget', (data) => {
+            gameService.captureTarget(data.weaponId)
+        })
+
+        socket.on('resetTarget', (data) => {
+            gameService.resetTarget(data.weaponId)
+        })
+
+        socket.on('fireTarget', (data) => {
+            gameService.fire(data.weaponId, data.method)
+        })
+
         socket.on("disconnect", () => {
             gameService.eventBus.off("radarUpdate", radarUpdateListener);
             gameService.eventBus.off("radarEnabled", radarEnabledListener);

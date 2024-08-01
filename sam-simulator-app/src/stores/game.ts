@@ -137,9 +137,17 @@ export const useGameStore = defineStore("game", () => {
         })
     }
 
-    async function captureTarget() {}
+    async function captureTarget(weaponId: string) {
+        socketClient.send('captureTarget', {
+            weaponId,
+        })
+    }
 
-    async function resetTarget() {}
+    async function resetTarget(weaponId: string) {
+        socketClient.send('resetTarget', {
+            weaponId,
+        })
+    }
 
     async function fire() {}
 
