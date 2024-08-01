@@ -2,6 +2,7 @@
   <v-stage :config="stageConfig" v-if="canvasSize">
     <RadarWireframe :radar="radar" :canvas-size="canvasSize" :padding="padding" :scale="scale" :map-image="mapImage"/>
     <RadarScanner :canvasSize="canvasSize" :padding="padding" :cursorAngle="cursorAngle" :is-enabled="radar.isEnabled"/>
+    <RadarTargetCursor v-if="targetCursorAngle !== undefined" :targetCursorAngle="targetCursorAngle" :canvasSize="canvasSize" :padding="padding" />
     <v-layer>
       <RadarTargetMarker v-for="(radarTarget, i) in radarTargets" :target="radarTarget.target" :canvas-size="canvasSize"
         :scale="scale" :index="i" />
@@ -13,14 +14,16 @@
 import RadarScanner from './RadarScanner.vue'
 import RadarWireframe from './RadarWireFrame.vue';
 import RadarTargetMarker from './RadarTargetMarker.vue'
+import RadarTargetCursor from './RadarTargetCursor.vue';
 import type { EnvironmentRadar, RadarObjectResponse } from '@shared/models/game.model'
-import { computed, onBeforeMount, onMounted, ref } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
   radar: EnvironmentRadar
   radarObjects: RadarObjectResponse[];
   cursorAngle: number;
   mapImage: string;
+  targetCursorAngle?: number
 }>()
 const padding = 20; // Отступ от краев для размещения надписей азимутов
 let canvasSize = 320

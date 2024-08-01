@@ -2,7 +2,7 @@
   <section class="panel sam" v-if="sam">
     <div class="panel-display sam__display">
       <RadarDisplay :radarObjects="radarObjects" :radar="radarConfig!" :cursor-angle="cursorAngle"
-        :map-image="gameStore.currentMission.map1024" />
+        :map-image="gameStore.currentMission.map1024" :target-cursor-angle="targetCursor.azimuth"/>
     </div>
     <div class="sam__power">
       <div class="panel-title">POWER</div>
@@ -83,19 +83,19 @@ function setRadarEnabled(value: boolean) {
   gameStore.setEnableRadar(sam.value.radar.gameId, value)
 }
 
-function moveTargetCursor({ azimuth, elevation }) {
+function moveTargetCursor({ azimuth, elevation }: { azimuth: number; elevation: number }) {
   if (!sam.value) return
   gameStore.moveTargetCursor(sam.value.weapon.gameId, azimuth, elevation)
 }
 
 function captureTarget() {
   if (!sam.value) return
-  game.captureTarget(sam.value.weapon.gameId)
+  gameStore.captureTarget(sam.value.weapon.gameId)
 }
 
 function resetTarget() {
   if (!sam.value) return
-  game.resetTarget(sam.value.weapon.gameId)
+  gameStore.resetTarget(sam.value.weapon.gameId)
 }
 </script>
 

@@ -37,6 +37,9 @@
 import { computed } from 'vue'
 const props = defineProps<{ canvasSize: number; cursor: { azimuth: number; elevation: number } }>()
 
-const azimuthDeg = computed(() => props.cursor.azimuth * (180 / Math.PI))
+const azimuthDeg = computed(() => {
+  const deg = (props.cursor.azimuth + Math.PI / 2) * (180 / Math.PI);
+  return (deg + 360) % 360;
+});
 const elevationDeg = computed(() => props.cursor.elevation * (180 / Math.PI))
 </script>
