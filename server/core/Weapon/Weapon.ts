@@ -106,13 +106,16 @@ export class Weapon {
 			ro instanceof DetectedRadarObject
 		).find((dro) => {
 			return (Math.abs(dro.azimuth - this.cursorAzimuth) < 0.1) &&
-				(Math.abs(dro.elevation - this.cursorElevation) < 0.1) &&
-				(Math.abs(dro.distance - this.cursorDistance) < 500);
+				(Math.abs(dro.elevation - this.cursorElevation) < 0.1)
 		}) as DetectedRadarObject;
 
-		this.selectedObjectId = target.id;
-		this.logger.log(`[${this.name}] Target selected: ${target.id}`);
-		return target.id;
+		if (target) {
+			this.selectedObjectId = target.id;
+			this.logger.log(`[${this.name}] Target selected: ${target.id}`);
+			return target.id;
+		}
+
+		return null;
 	}
 
 	public moveCursor(azimuth: number, elevation: number, distance: number) {
@@ -122,8 +125,8 @@ export class Weapon {
 		return {
 			azimuth: this.cursorAzimuth,
 			elevation: this.cursorElevation,
-			distance: this.cursorDistance
-		}
+			distance: this.cursorDistance,
+		};
 	}
 
 	private normalizeAzimuth(azimuth: number): number {
