@@ -1,17 +1,23 @@
 <template>
   <v-stage v-if="canvasSize" :config="stageConfig" @mousedown.native="onMouseDown" @mousemove.native="onMouseMove"
-    @mouseup.native="onMouseUp" @mouseleave.native="onMouseUp" @touchstart.native="onMouseDown" @touchmove.native="onMouseMove"
-    @touchend.native="onMouseUp">
-    <TvWireframe :canvas-size="canvasSize" :cursor="cursor"/>
+    @mouseup.native="onMouseUp" @mouseleave.native="onMouseUp" @touchstart.native="onMouseDown"
+    @touchmove.native="onMouseMove" @touchend.native="onMouseUp">
+    <TvWireframe :canvas-size="canvasSize" :cursor="cursor" />
+    <v-layer>
+      <v-circle v-for="target in visibleTargets" :key="target.id" :config="getTargetConfig(target)" />
+    </v-layer>
   </v-stage>
 </template>
 
 <script setup lang="ts">
+import type { RadarObjectResponse } from '@shared/models/game.model';
 import TvWireframe from './TvWireframe.vue'
 import { computed, ref, defineProps, defineEmits, watch, onUnmounted } from 'vue';
+import type { CircleConfig } from 'konva/lib/shapes/Circle';
 
 const props = defineProps<{
   cursor: { azimuth: number; elevation: number }
+  radarObjects: RadarObjectResponse[]
 }>();
 const emit = defineEmits(['moveCursor']);
 let canvasSize = 320;
@@ -117,4 +123,23 @@ const stopAnimation = () => {
 onUnmounted(() => {
   stopAnimation();
 });
+
+const angleOfView = 5 * (Math.PI / 180); // 3 градуса в радианах
+const visibleTargets = computed(() =>
+  props.radarObjects.filter(target => {
+    return (
+      Math.abs(target.azimuth - props.cursor.azimuth) <= angleOfView / 2 &&
+      Math.abs(target.elevation - props.cursor.elevation) <= angleOfView / 2
+    );
+  })
+);
+
+const getTargetConfig = (target: RadarObjectResponse): CircleConfig => {
+  return {
+    x: canvasSize / 2, //+ target.x,
+    y: canvasSize / 2, //- target.y,
+    radius: 10,
+    fill: target.isMissile ? 'red' : 'green',
+  };
+};
 </script>

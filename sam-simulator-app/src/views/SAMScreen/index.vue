@@ -38,7 +38,7 @@
       </div>
     </div>
     <div class="panel-display sam__target-display">
-      <TvDisplay :cursor="targetCursor" @move-cursor="moveTargetCursor" />
+      <TvDisplay :cursor="targetCursor" :radarObjects="radarObjects" @move-cursor="moveTargetCursor" />
     </div>
 
 
