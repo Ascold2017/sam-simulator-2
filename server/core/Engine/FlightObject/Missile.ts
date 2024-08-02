@@ -74,7 +74,6 @@ export class Missile extends BaseFlightObject {
 					dFlightDistance,
 				),
 		};
-
 		const currentPosition = currentPositionHandler[this.method]();
 		this.currentPoint = {
 			x: currentPosition.x() as number,

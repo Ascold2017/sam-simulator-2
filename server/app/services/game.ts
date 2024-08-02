@@ -163,6 +163,19 @@ class GameService {
                 ),
             );
 
+            weaponEntity.addListener((data) => {
+                this.eventBus.emit("moveCursor", {
+                    weaponId: weaponEntity.id,
+                    azimuth: data.cursorAzimuth,
+                    elevation: data.cursorElevation,
+                });
+
+                this.eventBus.emit('targetCaptured', {
+                    weaponId: weaponEntity.id,
+                    capturedTargetId: data.capturedTargetId
+                })
+            });
+
             this.weapons.push(weaponEntity);
         });
     }
@@ -171,28 +184,17 @@ class GameService {
         weaponGameId: string,
         azimuth: number,
         elevation: number,
-        distance: number,
     ) {
-
-        const data = this.weapons.find((w) => w.id === weaponGameId)
-            ?.moveCursor(azimuth, elevation, distance);
-        this.eventBus.emit("moveCursor", {
-            weaponId: weaponGameId,
-            ...data,
-        });
+        const weapon = this.weapons.find((w) => w.id === weaponGameId);
+        if (!weapon || (weapon && !!weapon.selectedTarget)) return;
+        weapon.moveCursor(azimuth, elevation);
     }
 
     public captureTarget(
         weaponGameId: string,
     ) {
-        const capturedTargetId = this.weapons.find((w) => w.id === weaponGameId)
+        this.weapons.find((w) => w.id === weaponGameId)
             ?.captureTarget();
-        if (capturedTargetId) {
-            this.eventBus.emit("targetCaptured", {
-                weaponId: weaponGameId,
-                capturedTargetId,
-            });
-        }
     }
 
     public resetTarget(
@@ -207,6 +209,7 @@ class GameService {
     public fire(weaponGameId: string, method: "3P" | "1/2") {
         const launched = this.weapons.find((w) => w.id === weaponGameId)
             ?.launchWeapon(method);
+        console.log(launched)
         this.eventBus.emit("weaponLaunched", {
             weaponId: weaponGameId,
             launched,

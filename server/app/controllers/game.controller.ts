@@ -51,7 +51,7 @@ class GameController {
         gameService.eventBus.on("moveCursor", weaponCursorMoveListener);
 
         socket.on("moveCursor", (data: WeaponMoveCursorResponse) => {
-            gameService.moveCursor(data.weaponId, data.azimuth, data.elevation, data.distance)
+            gameService.moveCursor(data.weaponId, data.azimuth, data.elevation)
         });
 
         socket.on('captureTarget', (data) => {

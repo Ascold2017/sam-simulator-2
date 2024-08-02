@@ -2,7 +2,7 @@
   <section class="panel sam" v-if="sam">
     <div class="panel-display sam__display">
       <RadarDisplay :radarObjects="radarObjects" :radar="radarConfig!" :cursor-angle="cursorAngle"
-        :map-image="gameStore.currentMission.map1024" :target-cursor-angle="targetCursor.azimuth"/>
+        :map-image="gameStore.currentMission.map1024" :target-cursor-angle="targetCursor.azimuth" />
     </div>
     <div class="sam__power">
       <div class="panel-title">POWER</div>
@@ -11,11 +11,9 @@
       <button class="action-button" :class="{ 'action-button--active': !sam.radar.isEnabled }"
         @click="setRadarEnabled(false)">OFF</button>
 
-        <div class="panel-title">CAPTURE</div>
-        <button class="action-button"
-        @click="captureTarget()">CAPT</button>
-      <button class="action-button" 
-        @click="resetTarget()">RST</button>
+      <div class="panel-title">CAPTURE</div>
+      <button class="action-button" @click="captureTarget()">CAPT</button>
+      <button class="action-button" @click="resetTarget()">RST</button>
     </div>
     <div class="sam__weapon">
       <div class="panel-title">MISSILES</div>
@@ -25,15 +23,17 @@
 
       <div class="panel-title">GUIDANCE</div>
       <div>
-        <button class="action-button">3T</button>
-        <button class="action-button">1/2</button>
+        <button class="action-button" :class="{ 'action-button--active': guidanceMethod === '3P' }"
+          @click="guidanceMethod = '3P'">3P</button>
+        <button class="action-button" :class="{ 'action-button--active': guidanceMethod === '1/2' }"
+          @click="guidanceMethod = '1/2'">1/2</button>
       </div>
 
       <div class="panel-title">LAUNCHER</div>
       <div class="panel-indicator-block">READY <div class="panel-indicator"></div>
       </div>
       <div>
-        <button class="action-button">FIRE</button>
+        <button class="action-button" @click="fireTarget">FIRE</button>
         <button class="action-button">RESET</button>
       </div>
     </div>
@@ -50,7 +50,7 @@ import { type EnvironmentRadar } from '@shared/models/game.model'
 import RadarDisplay from '@/components/RadarDisplay/index.vue'
 import TvDisplay from '@/components/TvDisplay/index.vue';
 import { useGameStore } from '@/stores/game';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 
@@ -59,6 +59,7 @@ const router = useRouter()
 
 const gameStore = useGameStore()
 
+const guidanceMethod = ref<'3P' | '1/2'>('3P')
 const samId = computed(() => +route.params.samId)
 const sam = computed(() => gameStore.sams.find(r => r.id === samId.value));
 
@@ -96,6 +97,11 @@ function captureTarget() {
 function resetTarget() {
   if (!sam.value) return
   gameStore.resetTarget(sam.value.weapon.gameId)
+}
+
+function fireTarget() {
+  if (!sam.value) return;
+  gameStore.fire(sam.value.weapon.gameId, guidanceMethod.value)
 }
 </script>
 

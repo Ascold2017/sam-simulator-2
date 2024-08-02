@@ -149,7 +149,12 @@ export const useGameStore = defineStore("game", () => {
         })
     }
 
-    async function fire() {}
+    async function fire(weaponId: string, method: string) {
+        socketClient.send('fireTarget', {
+            weaponId,
+            method
+        })
+    }
 
     return {
         targetCursorsByWeaponIds,

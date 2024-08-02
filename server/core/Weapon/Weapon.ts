@@ -8,6 +8,15 @@ export interface IWeaponParams extends MissileParams {
 	ammoLeft: number;
 }
 
+type IListener = (
+	payload: {
+		cursorAzimuth: number;
+		cursorElevation: number;
+		ammoLeft: number;
+		capturedTargetId: string | null;
+	},
+) => void;
+
 interface IWeapon {
 	id: string;
 	entityId: number;
@@ -30,7 +39,7 @@ export class Weapon {
 	private params: IWeaponParams;
 	private cursorAzimuth: number = 0;
 	private cursorElevation: number = 0;
-	private cursorDistance: number = 0;
+	private listener: IListener;
 
 	constructor(
 		{ id, entityId, name, engine, radar, logger, params }: IWeapon,
@@ -43,19 +52,40 @@ export class Weapon {
 		this.logger = logger;
 		this.params = params;
 		this.ammoLeft = params.ammoLeft;
+		this.engine.addFPSLoop("updateWeapon:" + this.name, () => this.updateWeapon(), 40);
 	}
 
-	public getSelectedObjectId(): string {
-		return this.selectedObjectId;
+	private updateWeapon() {
+		if (this.selectedObjectId) {
+			if (this.selectedTarget) {
+				this.cursorAzimuth = this.selectedTarget.azimuth;
+				this.cursorElevation = this.selectedTarget.elevation;
+			} else {
+				this.unselectTarget();
+			}
+			
+		}
+
+		this.listener && this.listener({
+			cursorAzimuth: this.cursorAzimuth,
+			cursorElevation: this.cursorElevation,
+			capturedTargetId: this.selectedTarget?.id || null,
+			ammoLeft: this.ammoLeft,
+		});
 	}
+
+	public addListener(cb: IListener) {
+		this.listener = cb;
+	}
+
+	public removeListener() {
+		this.listener = null;
+	}
+
 	public get selectedTarget() {
 		return this.radar.getRadarObjects().find((ro) =>
 			ro.id === this.selectedObjectId
 		) || null;
-	}
-
-	public getAmmoCount() {
-		return this.ammoLeft;
 	}
 
 	public launchWeapon(
@@ -106,7 +136,7 @@ export class Weapon {
 			ro instanceof DetectedRadarObject
 		).find((dro) => {
 			return (Math.abs(dro.azimuth - this.cursorAzimuth) < 0.1) &&
-				(Math.abs(dro.elevation - this.cursorElevation) < 0.1)
+				(Math.abs(dro.elevation - this.cursorElevation) < 0.1);
 		}) as DetectedRadarObject;
 
 		if (target) {
@@ -118,15 +148,9 @@ export class Weapon {
 		return null;
 	}
 
-	public moveCursor(azimuth: number, elevation: number, distance: number) {
+	public moveCursor(azimuth: number, elevation: number) {
 		this.cursorAzimuth = this.normalizeAzimuth(azimuth);
 		this.cursorElevation = this.normalizeElevation(elevation);
-		this.cursorDistance = distance;
-		return {
-			azimuth: this.cursorAzimuth,
-			elevation: this.cursorElevation,
-			distance: this.cursorDistance,
-		};
 	}
 
 	private normalizeAzimuth(azimuth: number): number {

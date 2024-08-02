@@ -101,6 +101,4 @@ export interface WeaponMoveCursorResponse {
     weaponId: string;
     azimuth: number;
     elevation: number;
-    distance: number;
-
 }
