@@ -72,7 +72,7 @@ export default function useJoystick(
         const azimuthChange = deltaX * sensitivity * factor;
         const elevationChange = deltaY * sensitivity * factor;
 
-        const newAzimuth = internalAzimuth.value + azimuthChange;
+        const newAzimuth = internalAzimuth.value - azimuthChange;
         const newElevation = internalElevation.value - elevationChange;
 
         return {

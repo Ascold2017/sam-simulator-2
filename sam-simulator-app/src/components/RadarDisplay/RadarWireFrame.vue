@@ -17,7 +17,7 @@
         <v-line v-for="azimuth in azimuths" :key="azimuth.value" :points="azimuth.points" :stroke="'rgb(150, 249, 123)'"
             :strokeWidth="0.1" />
         <v-text v-for="azimuth in azimuths" :key="'text-' + azimuth.value" :text="azimuth.value.toString()"
-            :x="azimuth.textPosition.x" :y="azimuth.textPosition.y" :rotation="azimuth.value"
+            :x="azimuth.textPosition.x" :y="azimuth.textPosition.y" :rotation="azimuth.rotation"
             :fill="'rgb(150, 249, 123)'" :align="'center'" :offsetX="12.5" :offsetY="2.5" :width="25" :height="12"
             :fontFamily="'DS-Digital, sans-serif'" :fontSize="11" />
     </v-layer>
@@ -41,6 +41,7 @@ interface Azimuth {
     value: number;
     points: number[];
     textPosition: { x: number; y: number };
+    rotation: number
 }
 
 const mapImageRef = toRef(props.mapImage)
@@ -78,7 +79,7 @@ const radarRanges = computed(() => {
 const azimuths = computed<Azimuth[]>(() => {
     const azimuths: Azimuth[] = [];
     for (let i = 0; i < 360; i += 10) {
-        const angle = (i) * (Math.PI / 180) - Math.PI / 2;
+        const angle = 2 * Math.PI - (i) * (Math.PI / 180);
         const outerRadius = props.canvasSize / 2 - props.padding;
         const innerRadius = props.padding / 2;
         const x = center.value + Math.cos(angle) * outerRadius;
@@ -93,7 +94,8 @@ const azimuths = computed<Azimuth[]>(() => {
         azimuths.push({
             value: i,
             points: [innerX, innerY, x, y],
-            textPosition: { x: textX, y: textY }
+            textPosition: { x: textX, y: textY },
+            rotation: 0
         });
     }
     return azimuths;
