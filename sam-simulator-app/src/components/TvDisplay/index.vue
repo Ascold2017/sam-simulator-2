@@ -44,7 +44,7 @@ const getTargetConfig = (target: RadarObjectResponse): CircleConfig => {
   const relativeAzimuth = target.azimuth - props.cursor.azimuth;
   const relativeElevation = target.elevation - props.cursor.elevation;
 
-  const x = canvasSize / 2 + (relativeAzimuth / angleOfView) * (canvasSize);
+  const x = canvasSize / 2 - (relativeAzimuth / angleOfView) * (canvasSize);
   const y = canvasSize / 2 - (relativeElevation / angleOfView) * (canvasSize);
 
   return {
