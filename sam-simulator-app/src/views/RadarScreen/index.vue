@@ -2,6 +2,7 @@
   <div class="panel" v-if="radar">
     <div class="panel-display">
       <RadarDisplay :radar="radar" :radar-objects="radarObjects" :cursor-angle="cursorAngle" :map-image="gameStore.currentMission.map1024"/>
+      <RadarTargets :radarObjects="radarObjects" />
     </div>
     <div class="panel-buttons">
       <button class="action-button" :class="{ 'action-button--active': radar?.isEnabled }" @click="setRadarEnabled(true)">ON</button>
@@ -11,6 +12,7 @@
 </template>
 
 <script setup lang="ts">
+import RadarTargets from './RadarTargets.vue'
 import RadarDisplay from '@/components/RadarDisplay/index.vue'
 import { computed, onMounted, watch } from 'vue';
 import { useGameStore } from '@/stores/game';
