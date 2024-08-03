@@ -71,7 +71,6 @@ export class Weapon {
 			}
 			
 		}
-
 		this.targetObjects = this.engine.getFlightObjects().map(fo => new TargetObject({
 			id: fo.id,
 			currentPoint: fo.getCurrentPoint(),

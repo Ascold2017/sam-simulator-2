@@ -25,8 +25,11 @@ const gameStore = useGameStore()
 
 const radarGameId = computed(() => route.params.radarGameId as string)
 const radar = computed(() => gameStore.radars.find(r => r.gameId === radarGameId.value));
-const radarObjects = computed(() =>gameStore.radarObjectsByRadarIds[radarGameId.value] || [])
-const cursorAngle = computed(() => gameStore.cursorAnglesByRadarIds[radarGameId.value] || 0)
+const radarUpdate = computed(() => {
+  return gameStore.radarUpdateByIds[radarGameId.value] || null
+})
+const radarObjects = computed(() => radarUpdate.value?.radarObjects || [])
+const cursorAngle = computed(() => radarUpdate.value?.cursorAngle || 0)
 
 onMounted(() => {
   if (!gameStore.isInitialized) {

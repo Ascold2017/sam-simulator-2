@@ -27,11 +27,12 @@ export class TargetObject {
     constructor(payload: TargetObjectConstructor) {
         this.id = payload.id;
         this.weaponParams = payload.params;
+        this.weaponPosition = payload.weaponPosition;
         this.currentPoint = payload.currentPoint;
         this.cursorAzimuth = payload.targetCursorAzimuth;
         this.cursorElevation = payload.targetCursorElevation;
         const distance = this.getDistance(
-            this.weaponPosition,
+            payload.weaponPosition,
             payload.currentPoint,
         );
         this.distance = distance;
@@ -56,19 +57,19 @@ export class TargetObject {
         return isUnderHorizont && isOnCursorRay;
     }
 
-    public getDistance(radarPoint: IPoint, currentPoint: IPoint) {
+    private getDistance(radarPoint: IPoint, currentPoint: IPoint) {
         const dx = currentPoint.x - radarPoint.x;
         const dy = currentPoint.y - radarPoint.y;
         return Math.hypot(dx, dy);
     }
 
-    protected getAzimuth(currentPoint: IPoint) {
+    private getAzimuth(currentPoint: IPoint) {
         const dx = currentPoint.x - this.weaponPosition.x;
         const dy = currentPoint.y - this.weaponPosition.y;
         return Math.atan2(dy, dx);
     }
 
-    protected getTargetElevation(distance: number, height: number) {
+    private getTargetElevation(distance: number, height: number) {
         const targetHeightOffset = height - this.weaponPosition.z;
         // Vertical angle from SNR to target
         return (targetHeightOffset / distance);

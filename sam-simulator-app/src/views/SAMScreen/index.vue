@@ -6,9 +6,9 @@
     </div>
     <div class="sam__power">
       <div class="panel-title">POWER</div>
-      <button class="action-button" :class="{ 'action-button--active': sam.radar.isEnabled }"
+      <button class="action-button" :class="{ 'action-button--active': isEnabledRadar }"
         @click="setRadarEnabled(true)">ON</button>
-      <button class="action-button" :class="{ 'action-button--active': !sam.radar.isEnabled }"
+      <button class="action-button" :class="{ 'action-button--active': !isEnabledRadar }"
         @click="setRadarEnabled(false)">OFF</button>
 
       <div class="panel-title">CAPTURE</div>
@@ -30,7 +30,7 @@
       </div>
 
       <div class="panel-title">LAUNCHER</div>
-      <div class="panel-indicator-block">READY <div class="panel-indicator"></div>
+      <div class="panel-indicator-block">READY <div class="panel-indicator" :class="{ 'panel-indicator--active': isCaptured }"></div>
       </div>
       <div>
         <button class="action-button" @click="fireTarget">FIRE</button>
@@ -38,7 +38,7 @@
       </div>
     </div>
     <div class="panel-display sam__target-display">
-      <TvDisplay :cursor="targetCursor" :radarObjects="radarObjects" @move-cursor="moveTargetCursor" />
+      <TvDisplay :cursor="targetCursor" :targetObjects="targetObjects" @move-cursor="moveTargetCursor" />
     </div>
 
 
@@ -63,9 +63,22 @@ const guidanceMethod = ref<'3P' | '1/2'>('3P')
 const samId = computed(() => +route.params.samId)
 const sam = computed(() => gameStore.sams.find(r => r.id === samId.value));
 
-const radarObjects = computed(() => gameStore.radarObjectsByRadarIds[sam.value?.radar.gameId] || [])
-const cursorAngle = computed(() => gameStore.cursorAnglesByRadarIds[sam.value?.radar.gameId] || 0)
-const targetCursor = computed(() => gameStore.targetCursorsByWeaponIds[sam.value?.weapon.gameId] || { azimuth: 0, elevation: 0 })
+const radarUpdate = computed(() => {
+  if (!sam.value) return null
+  return gameStore.radarUpdateByIds[sam.value.radar.gameId] || null
+})
+const radarObjects = computed(() => radarUpdate.value?.radarObjects || [])
+const cursorAngle = computed(() => radarUpdate.value?.cursorAngle || 0)
+const isEnabledRadar = computed(() => radarUpdate.value?.enabled);
+
+const weaponUpdate = computed(() => {
+  if (!sam.value) return null
+  return gameStore.weaponUpdateByIds[sam.value.weapon.gameId] || null
+})
+
+const targetObjects = computed(() => weaponUpdate.value?.targetObjects || [])
+const targetCursor = computed(() => ({ azimuth: weaponUpdate.value?.cursorAzimuth || 0, elevation: weaponUpdate.value?.cursorElevation || 0 }))
+const isCaptured = computed(() => !!weaponUpdate.value?.capturedTargetId)
 const radarConfig = computed<EnvironmentRadar | null>(() => sam.value ? ({
   ...sam.value?.radar,
   id: sam.value?.id,

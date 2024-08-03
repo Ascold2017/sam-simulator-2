@@ -15,7 +15,7 @@ import { RadarObjectDTO } from "../dto/radarObject.dto";
 import { Mission } from "../entities/mission.entity";
 import { MissionDTO } from "../dto/mission.dto";
 import _ from "lodash";
-import { TargetObjectDTO } from "app/dto/targetObject.dto";
+import { TargetObjectDTO } from "../dto/targetObject.dto";
 
 class GameService {
     private currentMission: Mission | null = null;

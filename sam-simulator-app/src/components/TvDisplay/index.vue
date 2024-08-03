@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import type { RadarObjectResponse } from '@shared/models/game.model';
+import type { RadarObjectResponse, TargetObjectResponse } from '@shared/models/game.model';
 import TvWireframe from './TvWireframe.vue'
 import { computed, defineProps, defineEmits, } from 'vue';
 import type { CircleConfig } from 'konva/lib/shapes/Circle';
@@ -18,7 +18,7 @@ import useJoystick from './useJoystick';
 
 const props = defineProps<{
   cursor: { azimuth: number; elevation: number }
-  radarObjects: RadarObjectResponse[]
+  targetObjects: TargetObjectResponse[]
 }>();
 const emit = defineEmits(['moveCursor']);
 let canvasSize = 320;
@@ -31,7 +31,7 @@ const { onMouseDown, onMouseMove, onMouseUp } = useJoystick(computed(() => props
 
 const angleOfView = 5 * (Math.PI / 180); // 3 градуса в радианах
 const visibleTargets = computed(() =>
-  props.radarObjects.filter((target, i) => {
+  props.targetObjects.filter((target, i) => {
     return (
       Math.abs(target.azimuth - props.cursor.azimuth) <= angleOfView / 2 &&
       Math.abs(target.elevation - props.cursor.elevation) <= angleOfView / 2
@@ -39,7 +39,7 @@ const visibleTargets = computed(() =>
   })
 );
 
-const getTargetConfig = (target: RadarObjectResponse): CircleConfig => {
+const getTargetConfig = (target: TargetObjectResponse): CircleConfig => {
   // Перевод азимута и угла возвышения в координаты x и y
   const relativeAzimuth = target.azimuth - props.cursor.azimuth;
   const relativeElevation = target.elevation - props.cursor.elevation;
@@ -50,8 +50,8 @@ const getTargetConfig = (target: RadarObjectResponse): CircleConfig => {
   return {
     x: x,
     y: y,
-    radius: 10,
-    fill: target.isMissile ? 'red' : 'green',
+    radius: 7,
+    fill: 'green',
   };
 };
 </script>

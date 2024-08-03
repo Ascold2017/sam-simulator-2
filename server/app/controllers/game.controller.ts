@@ -21,7 +21,7 @@ class GameController {
             socket.emit("radarUpdates", radarUpdate);
         };
         const weaponUpdateListener = (weaponUpdate: WeaponUpdateResponse) => {
-            socket.emit("weaponUpdate", weaponUpdate);
+            socket.emit("weaponUpdates", weaponUpdate);
         };
        
         gameService.eventBus.on("radarUpdate", radarUpdateListener);
