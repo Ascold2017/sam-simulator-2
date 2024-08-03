@@ -4,7 +4,7 @@
             <template v-for="(object, index) in detectedRadarObjects" :key="object.id">
                 <v-rect :x="10" :y="index * itemHeight + 10" :width="boxWidth" :height="boxHeight" stroke="rgb(150, 249, 123)"
                     strokeWidth="1" fill="none" />
-                <v-text :x="10" :y="index * itemHeight + 10" :text="formatText(object, index)" fontSize="12"
+                <v-text :x="10" :y="index * itemHeight + 10" :text="formatText(object, index)" :fontSize="12"
                     fill="rgb(150, 249, 123)" :fontFamily="'DS-Digital, sans-serif'"/>
             </template>
         </v-layer>
