@@ -75,30 +75,23 @@ export interface RadarObjectResponse {
 export interface RadarUpdateResponse {
     radarId: string;
     radarObjects: RadarObjectResponse[];
-    cursorAngle: number
+    cursorAngle: number;
+    enabled: boolean;
 }
 
-export interface RadarEnabledResponse {
-    radarId: string;
-    radarEnabled: boolean;
-}
-
-export interface WeaponCaptureResponse {
-    weaponId: string;
-    capturedTargetId: string
-}
-
-export interface WeaponUnselectedResponse {
-    weaponId: string;
-}
-
-export interface WeaponLaunchedResponse {
-    weaponId: string;
-    launched: boolean;
-}
-
-export interface WeaponMoveCursorResponse {
-    weaponId: string;
+export interface TargetObjectResponse {
+    id: string;
     azimuth: number;
     elevation: number;
+    size: number;
+    visibilityK: number;
+}
+
+export interface WeaponUpdateResponse {
+    weaponId: string;
+    targetObjects: TargetObjectResponse[];
+    cursorAzimuth: number;
+    cursorElevation: number;
+    capturedTargetId: string | null;
+    ammoLeft: number;
 }

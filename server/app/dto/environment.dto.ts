@@ -44,7 +44,10 @@ export class EnvironmentWeaponConstructorDTO {
             maxDistance: environment.weapon.weaponMaxDistance,
             maxDeltaRotation: environment.weapon.ammoMaxDeltaRotation,
             killRadius: environment.weapon.ammoKillRadius,
-            minCaptureRange: environment.radar.minCaptureRange
+            minCaptureRange: environment.radar.minCaptureRange,
+            minElevation: environment.weapon.minElevation,
+            maxElevation: environment.weapon.maxElevation,
+            angleOfView: environment.weapon.angleOfView
         }
         this.id = uuidv4();
         this.entityId = environment.id

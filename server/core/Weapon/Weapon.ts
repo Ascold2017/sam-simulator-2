@@ -3,9 +3,13 @@ import { Enemy, Engine, Missile } from "../Engine";
 import { MissionLogger } from "../MissionLogger";
 import { DetectedRadarObject, Radar } from "../Radar";
 import { MissileParams } from "../Engine/FlightObject/Missile";
+import { TargetObject } from "./TargetObject";
 
 export interface IWeaponParams extends MissileParams {
 	ammoLeft: number;
+	minElevation: number;
+	maxElevation: number;
+	angleOfView: number;
 }
 
 type IListener = (
@@ -14,6 +18,7 @@ type IListener = (
 		cursorElevation: number;
 		ammoLeft: number;
 		capturedTargetId: string | null;
+		targetObjects: TargetObject[]
 	},
 ) => void;
 
@@ -40,6 +45,7 @@ export class Weapon {
 	private cursorAzimuth: number = 0;
 	private cursorElevation: number = 0;
 	private listener: IListener;
+	private targetObjects: TargetObject[] = []
 
 	constructor(
 		{ id, entityId, name, engine, radar, logger, params }: IWeapon,
@@ -66,11 +72,22 @@ export class Weapon {
 			
 		}
 
+		this.targetObjects = this.engine.getFlightObjects().map(fo => new TargetObject({
+			id: fo.id,
+			currentPoint: fo.getCurrentPoint(),
+			targetCursorAzimuth: this.cursorAzimuth,
+			targetCursorElevation: this.cursorElevation,
+			weaponPosition: this.radar.position,
+			visibilityK: fo.visibilityK,
+			params: this.params
+		})).filter(to => to.isVisible)
+
 		this.listener && this.listener({
 			cursorAzimuth: this.cursorAzimuth,
 			cursorElevation: this.cursorElevation,
 			capturedTargetId: this.selectedTarget?.id || null,
 			ammoLeft: this.ammoLeft,
+			targetObjects: this.targetObjects
 		});
 	}
 

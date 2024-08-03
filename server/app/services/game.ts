@@ -15,6 +15,7 @@ import { RadarObjectDTO } from "../dto/radarObject.dto";
 import { Mission } from "../entities/mission.entity";
 import { MissionDTO } from "../dto/mission.dto";
 import _ from "lodash";
+import { TargetObjectDTO } from "app/dto/targetObject.dto";
 
 class GameService {
     private currentMission: Mission | null = null;
@@ -100,10 +101,6 @@ class GameService {
 
     public setIsEnabledRadar(radarGameId: string, value: boolean) {
         this.radars.find((r) => r.id === radarGameId)?.setIsEnabled(value);
-        this.eventBus.emit("radarEnabled", {
-            radarId: radarGameId,
-            radarEnabled: value,
-        });
     }
 
     private initMissionRadars(environments: Environment[]) {
@@ -116,16 +113,15 @@ class GameService {
                 ),
             );
 
-            radarEntity.addUpdateListener(
-                env.name,
-                (radarObjects, cursorAngle) =>
-                    this.eventBus.emit("radarUpdate", {
-                        radarId: radarEntity.id,
-                        radarObjects: radarObjects.map((ro) =>
-                            new RadarObjectDTO(ro)
-                        ),
-                        cursorAngle,
-                    }),
+            radarEntity.setUpdateListener((data) =>
+                this.eventBus.emit("radarUpdate", {
+                    radarId: radarEntity.id,
+                    radarObjects: data.radarObjects.map((ro) =>
+                        new RadarObjectDTO(ro)
+                    ),
+                    cursorAngle: data.cursorAngle,
+                    enabled: data.enabled,
+                })
             );
             this.radars.push(radarEntity);
         });
@@ -140,16 +136,15 @@ class GameService {
                     env,
                 ),
             );
-            radarEntity.addUpdateListener(
-                env.name,
-                (radarObjects, cursorAngle) =>
-                    this.eventBus.emit("radarUpdate", {
-                        radarId: radarEntity.id,
-                        radarObjects: radarObjects.map((ro) =>
-                            new RadarObjectDTO(ro)
-                        ),
-                        cursorAngle,
-                    }),
+            radarEntity.setUpdateListener((data) =>
+                this.eventBus.emit("radarUpdate", {
+                    radarId: radarEntity.id,
+                    radarObjects: data.radarObjects.map((ro) =>
+                        new RadarObjectDTO(ro)
+                    ),
+                    cursorAngle: data.cursorAngle,
+                    enabled: data.enabled,
+                })
             );
 
             this.radars.push(radarEntity);
@@ -164,16 +159,14 @@ class GameService {
             );
 
             weaponEntity.addListener((data) => {
-                this.eventBus.emit("moveCursor", {
+                this.eventBus.emit("weaponUpdate", {
                     weaponId: weaponEntity.id,
-                    azimuth: data.cursorAzimuth,
-                    elevation: data.cursorElevation,
+                    cursorAzimuth: data.cursorAzimuth,
+                    cursorElevation: data.cursorElevation,
+                    capturedTargetId: data.capturedTargetId,
+                    targetObjects: data.targetObjects.map(to => new TargetObjectDTO(to)),
+                    ammoLeft: data.ammoLeft,
                 });
-
-                this.eventBus.emit('targetCaptured', {
-                    weaponId: weaponEntity.id,
-                    capturedTargetId: data.capturedTargetId
-                })
             });
 
             this.weapons.push(weaponEntity);
@@ -201,19 +194,11 @@ class GameService {
         weaponGameId: string,
     ) {
         this.weapons.find((w) => w.id === weaponGameId)?.unselectTarget();
-        this.eventBus.emit("targetUnselected", {
-            weaponId: weaponGameId,
-        });
     }
 
     public fire(weaponGameId: string, method: "3P" | "1/2") {
-        const launched = this.weapons.find((w) => w.id === weaponGameId)
+        this.weapons.find((w) => w.id === weaponGameId)
             ?.launchWeapon(method);
-        console.log(launched)
-        this.eventBus.emit("weaponLaunched", {
-            weaponId: weaponGameId,
-            launched,
-        });
     }
 }
 

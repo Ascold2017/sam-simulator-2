@@ -1,12 +1,15 @@
 [
     {
-      "name": "P-300",
+      "name": "P-25",
       "type": "missile",
       "ammoCount": 16,
       "ammoVelocity": 800,
-      "weaponMaxDistance": 75000,
+      "weaponMaxDistance": 25000,
       "ammoKillRadius": 10,
-      "ammoMaxDeltaRotation": 0.5
+      "ammoMaxDeltaRotation": 0.5,
+      "minElevation": -0.0523599,
+      "maxElevation": 0.959931,
+      "angleOfView": 0.0523599
     },
     {
       "name": "G-4",
@@ -15,7 +18,10 @@
       "ammoVelocity": 990,
       "weaponMaxDistance": 4000,
       "ammoKillRadius": 0.5,
-      "ammoMaxDeltaRotation": 0
+      "ammoMaxDeltaRotation": 0,
+      "minElevation": -0.0523599,
+      "maxElevation": 1.39626,
+      "angleOfView": 0.0523599
     }
   ]
   

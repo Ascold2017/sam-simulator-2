@@ -28,6 +28,15 @@ export class Weapon extends BaseEntity {
   @Column({ type: 'double precision' })
   ammoMaxDeltaRotation: number;
 
+  @Column({ type: 'double precision' })
+  minElevation: number;
+
+  @Column({ type: 'double precision' })
+  maxElevation: number;
+
+  @Column({ type: 'double precision' })
+  angleOfView: number;
+
   @OneToOne(() => Environment, environment => environment.weapon)
   environment: Environment;
 }

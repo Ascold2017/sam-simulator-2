@@ -8,10 +8,7 @@ import _ from "lodash";
 
 export type RadarObject = DetectedRadarObject | UndetectedRadarObject;
 
-interface IListener {
-    name: string;
-    listener: (radarObjects: RadarObject[], cursorAngle: number) => void;
-}
+type IListener = (payload: { radarObjects: RadarObject[]; cursorAngle: number; enabled: boolean }) => void;
 
 export interface IRadarParams {
     maxDistance: number;
@@ -44,7 +41,7 @@ export class Radar {
     private engine: Engine;
     private logger: MissionLogger;
     private radarObjects: RadarObject[] = [];
-    private listeners = [] as IListener[];
+    private listener: IListener | null = null;
     private cursorAngle = 0; // текущий угол курсора в градусах
     private lastUpdateTime = Date.now(); // время последнего обновления
 
@@ -85,15 +82,14 @@ export class Radar {
         return _.cloneDeep(this.radarObjects);
     }
 
-    public addUpdateListener(
-        name: string,
-        listener: IListener["listener"],
+    public setUpdateListener(
+        listener: IListener,
     ) {
-        this.listeners.push({ name, listener });
+        this.listener = listener;
     }
 
-    public removeUpdateListener(name: string) {
-        this.listeners = this.listeners.filter((l) => l.name !== name);
+    public removeUpdateListener() {
+        this.listener = null;
     }
 
     private getEnemies() {
@@ -129,6 +125,12 @@ export class Radar {
         if (!this.isEnabled) {
             this.radarObjects = [];
             this.cursorAngle = 0;
+            
+            this.listener && this.listener({
+                radarObjects: [],
+                cursorAngle: 0,
+                enabled: false
+            })
             return;
         }
         this.updateCursorAngle();
@@ -171,9 +173,11 @@ export class Radar {
             a.distance < b.distance ? -1 : 1
         );
 
-        this.listeners.forEach((l) =>
-            l.listener(this.radarObjects, this.cursorAngle)
-        );
+        this.listener && this.listener({
+            radarObjects: this.radarObjects,
+            cursorAngle: this.cursorAngle,
+            enabled: this.isEnabled
+        })
     }
 
     private updateCursorAngle() {
