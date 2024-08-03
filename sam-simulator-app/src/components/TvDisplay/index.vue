@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import type { RadarObjectResponse, TargetObjectResponse } from '@shared/models/game.model';
+import type { TargetObjectResponse } from '@shared/models/game.model';
 import TvWireframe from './TvWireframe.vue'
 import { computed, defineProps, defineEmits, } from 'vue';
 import type { CircleConfig } from 'konva/lib/shapes/Circle';
@@ -18,6 +18,7 @@ import useJoystick from './useJoystick';
 
 const props = defineProps<{
   cursor: { azimuth: number; elevation: number }
+  angleOfView: number;
   targetObjects: TargetObjectResponse[]
 }>();
 const emit = defineEmits(['moveCursor']);
@@ -29,12 +30,11 @@ const stageConfig = computed(() => ({
 
 const { onMouseDown, onMouseMove, onMouseUp } = useJoystick(computed(() => props.cursor), emit);
 
-const angleOfView = 5 * (Math.PI / 180); // 3 градуса в радианах
 const visibleTargets = computed(() =>
   props.targetObjects.filter((target, i) => {
     return (
-      Math.abs(target.azimuth - props.cursor.azimuth) <= angleOfView / 2 &&
-      Math.abs(target.elevation - props.cursor.elevation) <= angleOfView / 2
+      Math.abs(target.azimuth - props.cursor.azimuth) <= props.angleOfView / 2 &&
+      Math.abs(target.elevation - props.cursor.elevation) <= props.angleOfView / 2
     );
   })
 );
@@ -44,8 +44,8 @@ const getTargetConfig = (target: TargetObjectResponse): CircleConfig => {
   const relativeAzimuth = target.azimuth - props.cursor.azimuth;
   const relativeElevation = target.elevation - props.cursor.elevation;
 
-  const x = canvasSize / 2 - (relativeAzimuth / angleOfView) * (canvasSize);
-  const y = canvasSize / 2 - (relativeElevation / angleOfView) * (canvasSize);
+  const x = canvasSize / 2 - (relativeAzimuth / props.angleOfView) * (canvasSize);
+  const y = canvasSize / 2 - (relativeElevation / props.angleOfView) * (canvasSize);
 
   return {
     x: x,

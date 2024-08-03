@@ -82,27 +82,26 @@ export class Missile extends BaseFlightObject {
 			v: this.velocity,
 		};
 
-		const prevMissileRotation = this.currentRotation;
-
 		this.currentRotation = Math.atan2(
 			this.currentPoint.y - (prevMissileVector.y() as number),
 			this.currentPoint.x - (prevMissileVector.x() as number),
 		);
 
+		/*
+		const prevMissileRotation = this.currentRotation;
 		const deltaRotation = Math.abs(
 			prevMissileRotation - this.currentRotation,
 		);
-
 		if (
-			this.traveledDistance > this.params.minCaptureRange &&
-			deltaRotation > this.params.maxDeltaRotation
+			this.traveledDistance > this.params.minCaptureRange 
+			&& deltaRotation > this.params.maxDeltaRotation
 		) {
 			this.logger.log(
 				`[MISSILE] Overloaded. Method: ${this.method}. Target: ${this.target.id}`,
 			);
 			this.destroy();
 			return;
-		}
+		}*/
 
 		if (targetDistance <= this.killRadius) {
 			this.target.kill();

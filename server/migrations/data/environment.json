@@ -18,7 +18,7 @@
     {
       "name": "SAM Position B",
       "type": "sam",
-      "radar": 4,
+      "radar": 2,
       "weapon": 2,
       "position": { "x": -1300, "y": -200, "z": 38 },
       "mission": 1

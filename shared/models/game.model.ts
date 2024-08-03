@@ -40,6 +40,7 @@ export interface EnvironmentSAM {
         weaponMaxDistance: number;
         ammoKillRadius: number;
         ammoMaxDeltaRotation: number;
+        angleOfView: number;
     };
 }
 

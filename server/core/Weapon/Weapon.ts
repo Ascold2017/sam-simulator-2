@@ -58,19 +58,11 @@ export class Weapon {
 		this.logger = logger;
 		this.params = params;
 		this.ammoLeft = params.ammoLeft;
-		this.engine.addFPSLoop("updateWeapon:" + this.name, () => this.updateWeapon(), 40);
+		this.engine.addFPSLoop("updateWeapon:" + this.name, () => this.updateWeapon());
 	}
 
 	private updateWeapon() {
-		if (this.selectedObjectId) {
-			if (this.selectedTarget) {
-				this.cursorAzimuth = this.selectedTarget.azimuth;
-				this.cursorElevation = this.selectedTarget.elevation;
-			} else {
-				this.unselectTarget();
-			}
-			
-		}
+		
 		this.targetObjects = this.engine.getFlightObjects().map(fo => new TargetObject({
 			id: fo.id,
 			currentPoint: fo.getCurrentPoint(),
@@ -80,6 +72,16 @@ export class Weapon {
 			visibilityK: fo.visibilityK,
 			params: this.params
 		})).filter(to => to.isVisible)
+
+		if (this.selectedObjectId) {
+			if (this.selectedTarget) {
+				this.cursorAzimuth = this.selectedTarget.azimuth;
+				this.cursorElevation = this.selectedTarget.elevation;
+			} else {
+				this.unselectTarget();
+			}
+			
+		}
 
 		this.listener && this.listener({
 			cursorAzimuth: this.cursorAzimuth,
@@ -99,7 +101,7 @@ export class Weapon {
 	}
 
 	public get selectedTarget() {
-		return this.radar.getRadarObjects().find((ro) =>
+		return this.targetObjects.find((ro) =>
 			ro.id === this.selectedObjectId
 		) || null;
 	}
@@ -112,7 +114,10 @@ export class Weapon {
 			dfo instanceof DetectedRadarObject &&
 			!dfo.isMissile
 		) as DetectedRadarObject;
-		if (target && this.ammoLeft > 0 && !this.launchedAmmo) {
+		if (target && this.ammoLeft > 0) {
+			if (this.launchedAmmo) {
+				this.resetLaunchedAmmo()
+			}
 			const missile = new Missile(
 				this.engine,
 				target.getFlightObject() as Enemy,
@@ -138,6 +143,7 @@ export class Weapon {
 
 	public resetLaunchedAmmo() {
 		this.launchedAmmo?.destroy();
+		this.launchedAmmo = null;
 		this.logger.log(`[${this.name}] Missile reset`);
 	}
 
@@ -165,6 +171,7 @@ export class Weapon {
 	}
 
 	public moveCursor(azimuth: number, elevation: number) {
+		if (this.selectedObjectId) return;
 		this.cursorAzimuth = this.normalizeAzimuth(azimuth);
 		this.cursorElevation = this.normalizeElevation(elevation);
 	}

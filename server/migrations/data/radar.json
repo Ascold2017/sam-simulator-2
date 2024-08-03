@@ -14,7 +14,7 @@
       "name": "T-25",
       "maxDistance": 25000,
       "maxCaptureRange": 22000,
-      "minCaptureRange": 2000,
+      "minCaptureRange": 1000,
       "maxDetectCount": 8,
       "minElevation": -2,
       "maxElevation": 60,
@@ -22,26 +22,15 @@
       "updateTime": 3
     },
     {
-      "name": "T-80",
-      "maxDistance": 80000,
-      "maxCaptureRange": 75000,
-      "minCaptureRange": 2200,
-      "maxDetectCount": 16,
+      "name": "T-40",
+      "maxDistance": 40000,
+      "maxCaptureRange": 35000,
+      "minCaptureRange": 1000,
+      "maxDetectCount": 8,
       "minElevation": -2,
-      "maxElevation": 60,
-      "radarHeight": 4,
-      "updateTime": 6
-    },
-    {
-      "name": "T-200",
-      "maxDistance": 200000,
-      "maxCaptureRange": 185000,
-      "minCaptureRange": 5000,
-      "maxDetectCount": 32,
-      "minElevation": -2,
-      "maxElevation": 60,
-      "radarHeight": 10,
-      "updateTime": 12
+      "maxElevation": 55,
+      "radarHeight": 2,
+      "updateTime": 3
     }
   ]
   

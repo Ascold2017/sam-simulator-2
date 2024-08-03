@@ -109,6 +109,7 @@ export class EnvironmentSAMResponseDTO {
         weaponMaxDistance: number;
         ammoKillRadius: number;
         ammoMaxDeltaRotation: number;
+        angleOfView: number
     }
    
     constructor(environment: Environment, radar: Radar, weapon: Weapon) {
@@ -135,7 +136,8 @@ export class EnvironmentSAMResponseDTO {
             ammoVelocity: environment.weapon.ammoVelocity,
             weaponMaxDistance: environment.weapon.weaponMaxDistance,
             ammoKillRadius: environment.weapon.ammoKillRadius,
-            ammoMaxDeltaRotation: environment.weapon.ammoMaxDeltaRotation
+            ammoMaxDeltaRotation: environment.weapon.ammoMaxDeltaRotation,
+            angleOfView: environment.weapon.angleOfView
         }
     }
 }

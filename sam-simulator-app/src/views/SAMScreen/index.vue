@@ -18,7 +18,7 @@
     <div class="sam__weapon">
       <div class="panel-title">MISSILES</div>
       <div class="panel-display">
-        <span class="display-title">10</span>
+        <span class="display-title">{{ ammoLeft }}</span>
       </div>
 
       <div class="panel-title">GUIDANCE</div>
@@ -27,6 +27,8 @@
           @click="guidanceMethod = '3P'">3P</button>
         <button class="action-button" :class="{ 'action-button--active': guidanceMethod === '1/2' }"
           @click="guidanceMethod = '1/2'">1/2</button>
+          <button class="action-button" :class="{ 'action-button--active': guidanceMethod === '1' }"
+          @click="guidanceMethod = '1'">1</button>
       </div>
 
       <div class="panel-title">LAUNCHER</div>
@@ -38,7 +40,7 @@
       </div>
     </div>
     <div class="panel-display sam__target-display">
-      <TvDisplay :cursor="targetCursor" :targetObjects="targetObjects" @move-cursor="moveTargetCursor" />
+      <TvDisplay :cursor="targetCursor" :angle-of-view="sam.weapon.angleOfView" :targetObjects="targetObjects" @move-cursor="moveTargetCursor" />
     </div>
 
 
@@ -50,7 +52,7 @@ import { type EnvironmentRadar } from '@shared/models/game.model'
 import RadarDisplay from '@/components/RadarDisplay/index.vue'
 import TvDisplay from '@/components/TvDisplay/index.vue';
 import { useGameStore } from '@/stores/game';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 
@@ -59,7 +61,7 @@ const router = useRouter()
 
 const gameStore = useGameStore()
 
-const guidanceMethod = ref<'3P' | '1/2'>('3P')
+const guidanceMethod = ref<'3P' | '1/2' | '1'>('3P')
 const samId = computed(() => +route.params.samId)
 const sam = computed(() => gameStore.sams.find(r => r.id === samId.value));
 
@@ -79,6 +81,7 @@ const weaponUpdate = computed(() => {
 const targetObjects = computed(() => weaponUpdate.value?.targetObjects || [])
 const targetCursor = computed(() => ({ azimuth: weaponUpdate.value?.cursorAzimuth || 0, elevation: weaponUpdate.value?.cursorElevation || 0 }))
 const isCaptured = computed(() => !!weaponUpdate.value?.capturedTargetId)
+const ammoLeft = computed(() => weaponUpdate.value?.ammoLeft || 0)
 const radarConfig = computed<EnvironmentRadar | null>(() => sam.value ? ({
   ...sam.value?.radar,
   id: sam.value?.id,
@@ -116,6 +119,8 @@ function fireTarget() {
   if (!sam.value) return;
   gameStore.fire(sam.value.weapon.gameId, guidanceMethod.value)
 }
+
+watch(radarUpdate, (v) => {})
 </script>
 
 <style scoped>
